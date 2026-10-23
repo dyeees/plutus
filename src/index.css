@@ -1,1 +1,17 @@
 @import "tailwindcss";
+
+@theme {
+  --font-serif: 'Newsreader', Georgia, serif;
+  --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+    
+  /* ── Ink (text) ── */
+  --color-ink: #1E2D26;
+  --color-ink-muted: #4A6358;
+  --color-ink-dim: #7A9488;
+}
+
+body {
+  background-color: #F7F4EE;
+  color: var(--color-ink);
+}

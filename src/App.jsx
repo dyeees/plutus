@@ -50,7 +50,7 @@ function App() {
             </div>
           </div>
 
-          {/* Navigation Links */}
+          {/* Sidebar Navigation */}
           <nav className="space-y-1">
             <div className="px-2 pb-2 text-[10px] font-mono uppercase tracking-[0.2em] text-[#A8CABD]">
               Navigation
@@ -81,7 +81,7 @@ function App() {
 
       {/* ── Mobile Nav ──*/}
       <div className="flex-1 flex flex-col min-h-screen">
-        {/* Mobile Header */}
+        {/* Header */}
         <header className="md:hidden sticky top-0 z-30 bg-[#386D59] backdrop-blur border-b border-black/10 px-4 py-3 flex items-center justify-between">
           <div className="flex items-center gap-2.5">
             <div className="w-7 h-7 border border-[#F6C163]/40 bg-[#285041] flex items-center justify-center text-[#F6C163] font-serif text-sm leading-none">
@@ -94,7 +94,28 @@ function App() {
           </div>
         </header>
 
-        
+        {/* Bottom Navigation */}
+        <nav className="md:hidden fixed bottom-0 left-0 right-0 z-30 bg-[#386D59] border-t border-black/10 grid grid-cols-4 safe-area-bottom">
+          {NAV_ITEMS.map(item => {
+            const isActive = activeTab === item.key
+            const Icon = item.icon
+            return (
+              <button
+                key={item.key}
+                onClick={() => navigate(item.key)}
+                className={`flex flex-col items-center justify-center py-2.5 gap-1 text-[10px] font-medium transition-colors relative ${
+                  isActive ? 'text-[#FAF8F2]' : 'text-[#A8CABD] hover:text-[#C8E0D6]'
+                }`}
+              >
+                {isActive && (
+                  <span className="absolute top-0 left-1/2 -translate-x-1/2 w-6 h-[2px] bg-[#F6C163]" />
+                )}
+                <Icon className={`w-4 h-4 ${isActive ? 'text-[#F6C163]' : 'text-[#A8CABD]'}`} />
+                <span className="tracking-wide">{item.label}</span>
+              </button>
+            )
+          })}
+        </nav>
       </div>
     </div>
   )

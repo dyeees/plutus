@@ -1,10 +1,36 @@
+import { useState } from 'react'
+import {
+  LayoutDashboard,
+  Receipt,
+  CalendarDays,
+  Sliders,
+} from 'lucide-react'
 import './index.css'
 
+const NAV_ITEMS = [
+  { key: 'home', label: 'Overview', icon: LayoutDashboard},
+  { key: 'bills', label: 'Bills', icon: Receipt},
+  { key: 'calendar', label: 'Calendar', icon: CalendarDays},
+  { key: 'settings', label: 'Settings', icon: Sliders},
+]
+
 function App() {
+  const [currentScreen, setCurrentScreen] = useState('home')
+  const [screenParams, setScreenParams] = useState({})
+
+  const activeTab = ['add-bill', 'edit-bill', 'bill-detail'].includes(currentScreen)
+    ? 'bills'
+    : currentScreen
+
+  function navigate(screen, params = {}) {
+    setCurrentScreen(screen)
+    setScreenParams(params)
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
 
   return (
     <div className="min-h-screen flex flex-col md:flex-row font-sans selection:bg-[#C8860A]/20 selection:text-ink">
-      {/* ── Sidebar ──*/}
+      {/* ── Desktop Nav ──*/}
       <aside className="hidden md:flex flex-col w-64 bg-[#386D59] border-r border-black/10 p-5 shrink-0 justify-between">
         <div className="space-y-6">
           {/* Brand */}
@@ -24,9 +50,36 @@ function App() {
             </div>
           </div>
 
-          
+          {/* Navigation Links */}
+          <nav className="space-y-1">
+            <div className="px-2 pb-2 text-[10px] font-mono uppercase tracking-[0.2em] text-[#A8CABD]">
+              Navigation
+            </div>
+            {NAV_ITEMS.map(item => {
+              const isActive = activeTab === item.key
+              const Icon = item.icon
+              return (
+                <button
+                  key={item.key}
+                  onClick={() => navigate(item.key)}
+                  className={`w-full flex items-center justify-between px-3 py-2 text-xs font-medium tracking-wide rounded-sm transition-all duration-150 text-left ${
+                    isActive
+                      ? 'bg-[#285041] text-[#FAF8F2] border-l-2 border-[#F6C163] pl-2.5 shadow-sm'
+                      : 'text-[#C8E0D6] hover:text-[#FAF8F2] hover:bg-[#2F5C4A]'
+                  }`}
+                >
+                  <span className="flex items-center gap-2.5">
+                    <Icon className={`w-4 h-4 ${isActive ? 'text-[#F6C163]' : 'text-[#A8CABD]'}`} />
+                    <span>{item.label}</span>
+                  </span>
+                </button>
+              )
+            })}
+          </nav>
         </div>
       </aside>
+
+      
     </div>
   )
 }

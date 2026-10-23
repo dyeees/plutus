@@ -4,6 +4,7 @@ import {
   Receipt,
   CalendarDays,
   Sliders,
+  Plus
 } from 'lucide-react'
 import './index.css'
 
@@ -40,7 +41,7 @@ function App() {
                 <span className="translate-y-0.5">P</span>
               </div>
               <div>
-                <h1 className="font-serif font-medium text-lg uppercase tracking-wide text-[#FAF8F2] leading-tight">
+                <h1 className="font-serif font-medium text-xl uppercase tracking-wide text-[#FAF8F2] leading-tight">
                   Plutus
                 </h1>
                 <p className="font-mono text-[9px] tracking-[0.2em] uppercase text-[#A8CABD]">
@@ -50,11 +51,21 @@ function App() {
             </div>
           </div>
 
+          <div>
+            <button
+              onClick={() => navigate('')}
+              className="w-full group flex items-center justify-between px-3.5 py-2.5 bg-[#2F5C4A] hover:bg-[#285041] border border-white/15 hover:border-[#F6C163]/60 text-[#FAF8F2] font-medium text-xs tracking-wide rounded-sm transition-all duration-150"
+            >
+              <span className="flex items-center gap-2">
+                <Plus className="translate-y-px w-3.5 h-3.5 text-[#F6C163] group-hover:rotate-90 transition-transform duration-200" />
+                <span className="text-sm">Record Bill</span>
+              </span>
+            </button>
+          </div>
+
           {/* Sidebar Navigation */}
           <nav className="space-y-1">
-            <div className="px-2 pb-2 text-[10px] font-mono uppercase tracking-[0.2em] text-[#A8CABD]">
-              Navigation
-            </div>
+            <div className="pt-4 border-t border-white/15 space-y-3 px-1"/>
             {NAV_ITEMS.map(item => {
               const isActive = activeTab === item.key
               const Icon = item.icon
@@ -62,7 +73,7 @@ function App() {
                 <button
                   key={item.key}
                   onClick={() => navigate(item.key)}
-                  className={`w-full flex items-center justify-between px-3 py-2 text-xs font-medium tracking-wide rounded-sm transition-all duration-150 text-left ${
+                  className={`w-full flex items-center justify-between px-3 py-2 text-sm font-medium tracking-wide rounded-sm transition-all duration-150 text-left ${
                     isActive
                       ? 'bg-[#285041] text-[#FAF8F2] border-l-2 border-[#F6C163] pl-2.5 shadow-sm'
                       : 'text-[#C8E0D6] hover:text-[#FAF8F2] hover:bg-[#2F5C4A]'
@@ -108,7 +119,7 @@ function App() {
                 }`}
               >
                 {isActive && (
-                  <span className="absolute top-0 left-1/2 -translate-x-1/2 w-6 h-[2px] bg-[#F6C163]" />
+                  <span className="absolute top-0 left-1/2 -translate-x-1/2 w-6 h-0.5 bg-[#F6C163]" />
                 )}
                 <Icon className={`w-4 h-4 ${isActive ? 'text-[#F6C163]' : 'text-[#A8CABD]'}`} />
                 <span className="tracking-wide">{item.label}</span>

@@ -103,6 +103,18 @@ function App() {
               <span className="font-mono text-[9px] text-[#A8CABD] ml-2 tracking-widest uppercase">(Tracker?)</span>
             </div>
           </div>
+
+          {currentScreen !== 'add-bill' && (
+            <button
+              onClick={() => navigate('')}
+              className="bg-[#2F5C4A] hover:bg-[#285041] border border-white/15 text-[#FAF8F2] text-xs font-medium px-3 py-1.5 rounded-sm flex items-center gap-0.5 transition-colors"
+            >
+              <span className="flex items-center gap-0.5 -translate-x-0.5">
+                <Plus className="w-3.5 h-3.5 text-[#F6C163]" />
+                <span>Record</span>
+              </span>
+            </button>
+          )}
         </header>
 
         {/* Bottom Navigation */}

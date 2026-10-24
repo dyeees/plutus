@@ -77,6 +77,21 @@ function App() {
           </nav>
         </div>
       </aside>
+
+      {/* ── Mobile Nav ──*/}
+      <div className="flex-1 flex flex-col min-h-screen">
+        {/* Header */}
+        <header className="md:hidden sticky top-0 z-30 bg-[#386D59] backdrop-blur border-b border-black/10 px-4 py-3 flex items-center justify-between">
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 border border-[#F6C163]/40 bg-[#285041] flex items-center justify-center text-[#F6C163] font-serif text-m leading-none">
+              <span className="translate-y-0.5">P</span>
+            </div>
+            <div>
+              <span className="italic font-serif font-medium text-base tracking-wide text-[#FAF8F2]">frugalis</span>
+            </div>
+          </div>
+        </header>
+      </div>
     </div>
   )
 }

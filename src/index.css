@@ -1,1 +1,16 @@
 @import "tailwindcss";
+
+@theme {
+  --font-serif: 'Newsreader', Georgia, serif;
+  --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+body {
+  background-color: #F7F4EE;
+}
+
+#root {
+  background-image: url('./assets/peonies.svg');
+  min-height: 100vh;
+}

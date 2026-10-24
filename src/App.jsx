@@ -10,7 +10,7 @@ import './index.css'
 
 const NAV_ITEMS = [
   { key: 'home', label: 'Overview', icon: LayoutDashboard},
-  { key: 'bills', label: 'Bills', icon: Receipt},
+  { key: 'bills', label: 'Bills & Loans', icon: Receipt},
   { key: 'calendar', label: 'Calendar', icon: CalendarDays},
   { key: 'settings', label: 'Settings', icon: Sliders},
 ]
@@ -95,12 +95,12 @@ function App() {
         {/* Header */}
         <header className="md:hidden sticky top-0 z-30 bg-[#386D59] backdrop-blur border-b border-black/10 px-4 py-3 flex items-center justify-between">
           <div className="flex items-center gap-2.5">
-            <div className="w-7 h-7 border border-[#F6C163]/40 bg-[#285041] flex items-center justify-center text-[#F6C163] font-serif text-sm leading-none">
+            <div className="w-8 h-8 border border-[#F6C163]/40 bg-[#285041] flex items-center justify-center text-[#F6C163] font-serif text-m leading-none">
               <span className="translate-y-0.5">P</span>
             </div>
             <div>
-              <span className="font-serif font-medium text-base tracking-wide text-[#FAF8F2]">Plutus</span>
-              <span className="font-mono text-[9px] text-[#A8CABD] ml-2 tracking-widest uppercase">(Tracker?)</span>
+              <span className="italic font-serif font-medium text-base tracking-wide text-[#FAF8F2]">frugalis</span>
+              {/* <span className="font-mono text-[9px] text-[#A8CABD] ml-2 tracking-widest uppercase">(Tracker?)</span> */}
             </div>
           </div>
 
@@ -126,14 +126,14 @@ function App() {
               <button
                 key={item.key}
                 onClick={() => navigate(item.key)}
-                className={`flex flex-col items-center justify-center py-2.5 gap-1 text-[10px] font-medium transition-colors relative ${
+                className={`flex flex-col items-center justify-center py-2.5 pb-4 gap-1 text-xs font-medium transition-colors relative ${
                   isActive ? 'text-[#FAF8F2]' : 'text-[#A8CABD] hover:text-[#C8E0D6]'
                 }`}
               >
                 {isActive && (
                   <span className="absolute top-0 left-1/2 -translate-x-1/2 w-6 h-0.5 bg-[#F6C163]" />
                 )}
-                <Icon className={`w-4 h-4 ${isActive ? 'text-[#F6C163]' : 'text-[#A8CABD]'}`} />
+                <Icon className={`w-5 h-5 ${isActive ? 'text-[#F6C163]' : 'text-[#A8CABD]'}`} />
                 <span className="tracking-wide">{item.label}</span>
               </button>
             )

@@ -10,7 +10,7 @@ import './index.css'
 
 const NAV_ITEMS = [
   { key: 'home', label: 'Overview', icon: LayoutDashboard},
-  { key: 'bills', label: 'Bills & Loans', icon: Receipt},
+  { key: 'financials', label: 'Financials', icon: Receipt},
   { key: 'calendar', label: 'Calendar', icon: CalendarDays},
   { key: 'settings', label: 'Settings', icon: Sliders},
 ]
@@ -19,8 +19,8 @@ function App() {
   const [currentScreen, setCurrentScreen] = useState('home')
   const [screenParams, setScreenParams] = useState({})
 
-  const activeTab = ['add-bill', 'edit-bill', 'bill-detail'].includes(currentScreen)
-    ? 'bills'
+  const activeTab = ['add-record', 'edit-record', 'record-detail'].includes(currentScreen)
+    ? 'financials'
     : currentScreen
 
   function navigate(screen, params = {}) {
@@ -49,6 +49,18 @@ function App() {
                 </p>
               </div>
             </div>
+          </div>
+
+          <div>
+            <button
+              onClick={() => navigate('')}
+              className="w-full group flex items-center justify-between px-3.5 py-2.5 bg-[#2F5C4A] hover:bg-[#285041] border border-white/15 hover:border-[#F6C163]/60 text-[#FAF8F2] font-medium text-xs tracking-wide rounded-sm transition-all duration-150"
+            >
+              <span className="flex items-center gap-2">
+                <Plus className="translate-y-px w-3.5 h-3.5 text-[#F6C163] group-hover:rotate-90 transition-transform duration-200" />
+                <span className="text-sm">Record</span>
+              </span>
+            </button>
           </div>
 
           {/* Sidebar Navigation */}
@@ -90,6 +102,18 @@ function App() {
               <span className="italic font-serif font-medium text-base tracking-wide text-[#FAF8F2]">frugalis</span>
             </div>
           </div>
+
+          {currentScreen !== 'add-bill' && (
+            <button
+              onClick={() => navigate('')}
+              className="bg-[#2F5C4A] hover:bg-[#285041] border border-white/15 text-[#FAF8F2] text-xs font-medium px-3 py-1.5 rounded-sm flex items-center gap-0.5 transition-colors"
+            >
+              <span className="flex items-center gap-0.5 -translate-x-0.5">
+                <Plus className="w-3.5 h-3.5 text-[#F6C163]" />
+                <span>Record</span>
+              </span>
+            </button>
+          )}
         </header>
 
         {/* Bottom Navigation */}

@@ -15,3 +15,8 @@ body {
   background-color: #F7F4EE;
   color: var(--color-ink);
 }
+
+#root {
+  background-image: url('./assets/peonies.svg');
+  min-height: 100vh;
+}

@@ -91,6 +91,29 @@ function App() {
             </div>
           </div>
         </header>
+
+        {/* Bottom Navigation */}
+        <nav className="md:hidden fixed bottom-0 left-0 right-0 z-30 bg-[#386D59] border-t border-black/10 grid grid-cols-4 safe-area-bottom">
+          {NAV_ITEMS.map(item => {
+            const isActive = activeTab === item.key
+            const Icon = item.icon
+            return (
+              <button
+                key={item.key}
+                onClick={() => navigate(item.key)}
+                className={`flex flex-col items-center justify-center py-2.5 pb-4 gap-1 text-xs font-medium transition-colors relative ${
+                  isActive ? 'text-[#FAF8F2]' : 'text-[#A8CABD] hover:text-[#C8E0D6]'
+                }`}
+              >
+                {isActive && (
+                  <span className="absolute top-0 left-1/2 -translate-x-1/2 w-6 h-0.5 bg-[#F6C163]" />
+                )}
+                <Icon className={`w-5 h-5 ${isActive ? 'text-[#F6C163]' : 'text-[#A8CABD]'}`} />
+                <span className="tracking-wide">{item.label}</span>
+              </button>
+            )
+          })}
+        </nav>
       </div>
     </div>
   )

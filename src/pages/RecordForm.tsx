@@ -1,9 +1,16 @@
 import { useState } from 'react'
 
+const CLASSIFICATIONS = [
+  'Housing',
+  'Utilities',
+  'Subscriptions',
+  'Loans',
+]
 
 function RecordForm () {
   const [name, setName] = useState('')
   const [amount, setAmount] = useState('')
+  const [classification, setClassification] = useState('Utilities')
 
   function adjustAmount(delta) {
     const current = parseFloat(amount) || 0
@@ -44,20 +51,19 @@ function RecordForm () {
           />
         </div>
 
-        {/* Amount & Due Date Row */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {/* Amount */}
           <div className="space-y-1.5">
-            <label htmlFor="bill-amount" className="text-xs font-mono text-[#4A6358] flex items-center justify-between">
+            <label htmlFor="record-amount" className="text-xs font-mono text-[#4A6358] flex items-center justify-between">
               <span>Installment Amount <strong className="text-[#C8860A]">*</strong></span>
-              <span className="text-[10px] text-[#7A9488] font-mono">PHP</span>
+              <span className="text-[10px] text-[#7A9488] font-mono mr-2">PHP</span>
             </label>
             <div className="relative">
               <span className="absolute left-3.5 top-[0.54rem] font-mono text-[#C8860A]">
                 ₱
               </span>
               <input
-                id="bill-amount"
+                id="record-amount"
                 type="number"
                 step="0.01"
                 min="0"
@@ -80,6 +86,25 @@ function RecordForm () {
                 </button>
               ))}
             </div>
+          </div>
+
+          {/*Classification */}
+          <div className="space-y-1.5">
+            <label htmlFor="record-classification" className="text-xs font-mono text-[#4A6358] flex items-center justify-between">
+              Expense Classification
+            </label>
+            <select
+              id="record-classification"
+              value={classification}
+              onChange={e => setClassification(e.target.value)}
+              className="w-full bg-white border border-black/12 rounded-sm px-3.5 py-2.5 text-sm font-mono text-[#1E2D26] focus:outline-none focus:border-[#C8860A] shadow-sm"
+            >
+              {CLASSIFICATIONS.map(c => (
+                <option key={c} value={c}>
+                  {c}
+                </option>
+              ))}
+            </select>
           </div>
         </div>
       </form>

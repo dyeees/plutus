@@ -8,11 +8,22 @@ const CLASSIFICATIONS = [
   'Loans',
 ]
 
+const RECURRENCES = [
+  { value: 'Monthly', label: 'Monthly' },
+  { value: 'Bi-weekly', label: 'Bi-weekly' },
+  { value: 'Weekly', label: 'Weekly' },
+  { value: 'Quarterly', label: 'Quarterly' },
+  { value: 'Semiannual', label: 'Semiannual' },
+  { value: 'Annually', label: 'Annually' },
+  { value: 'One-time', label: 'One-time' },
+]
+
 function RecordForm () {
   const [name, setName] = useState('')
   const [amount, setAmount] = useState('')
   const [classification, setClassification] = useState('Utilities')
   const [dueDate, setDueDate] = useState(new Date().toISOString().split('T')[0])
+  const [recurrence, setRecurrence] = useState('Monthly')
 
   return (
     <div className="max-w-xl mx-auto space-y-6">
@@ -85,11 +96,11 @@ function RecordForm () {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 -mt-2">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {/* Due Date */}
           <div className="space-y-1.5">
-            <label htmlFor="bill-due-date" className="text-xs font-mono text-[#4A6358]">
-              Due Date <strong className="text-[#C8860A]">*</strong>
+            <label htmlFor="bill-due-date" className="text-xs font-mono text-[#4A6358] flex items-center justify-between">
+              <span>Due Date <strong className="text-[#C8860A]">*</strong></span>
             </label>
             <input
               id="bill-due-date"
@@ -98,6 +109,19 @@ function RecordForm () {
               value={dueDate}
               onChange={e => setDueDate(e.target.value)}
               className="w-full bg-white border border-black/12 rounded-sm px-3.5 py-2.5 text-sm font-mono text-[#1E2D26] focus:outline-none focus:border-[#C8860A] transition-colors shadow-sm"
+            />
+          </div>
+
+          {/* Recurrence */}
+          <div className="space-y-1.5">
+            <label htmlFor="bill-recurrence" className="text-xs font-mono text-[#4A6358] flex items-center justify-between">
+              Payment Frequency
+            </label>
+            <Dropdown
+              id="bill-recurrence"
+              value={recurrence}
+              options={RECURRENCES.map(r => r.value)}
+              onChange={setRecurrence}
             />
           </div>
         </div>

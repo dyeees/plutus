@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import Dropdown from '../components/Dropdown'
 
 const CLASSIFICATIONS = [
   'Housing',
@@ -12,7 +13,7 @@ function RecordForm () {
   const [amount, setAmount] = useState('')
   const [classification, setClassification] = useState('Utilities')
 
-  function adjustAmount(delta) {
+  function adjustAmount(delta: number) {
     const current = parseFloat(amount) || 0
     const next = Math.max(0, current + delta)
     setAmount(next.toFixed(2))
@@ -38,7 +39,6 @@ function RecordForm () {
         <div className="space-y-1.5">
           <label htmlFor="record-name" className="text-xs font-mono text-[#4A6358] flex items-center justify-between">
             <span>Payee or Obligation Name <strong className="text-[#C8860A]">*</strong></span>
-            {/*<span className="text-[10px] text-[#7A9488]">e.g. BDO Personal Loan, Home Loan</span>*/}
           </label>
           <input
             id="record-name"
@@ -93,18 +93,12 @@ function RecordForm () {
             <label htmlFor="record-classification" className="text-xs font-mono text-[#4A6358] flex items-center justify-between">
               Expense Classification
             </label>
-            <select
+            <Dropdown
               id="record-classification"
               value={classification}
-              onChange={e => setClassification(e.target.value)}
-              className="w-full bg-white border border-black/12 rounded-sm px-3.5 py-2.5 text-sm font-mono text-[#1E2D26] focus:outline-none focus:border-[#C8860A] shadow-sm"
-            >
-              {CLASSIFICATIONS.map(c => (
-                <option key={c} value={c}>
-                  {c}
-                </option>
-              ))}
-            </select>
+              options={CLASSIFICATIONS}
+              onChange={setClassification}
+            />
           </div>
         </div>
       </form>

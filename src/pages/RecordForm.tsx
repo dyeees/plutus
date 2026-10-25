@@ -12,12 +12,7 @@ function RecordForm () {
   const [name, setName] = useState('')
   const [amount, setAmount] = useState('')
   const [classification, setClassification] = useState('Utilities')
-
-  function adjustAmount(delta: number) {
-    const current = parseFloat(amount) || 0
-    const next = Math.max(0, current + delta)
-    setAmount(next.toFixed(2))
-  }
+  const [dueDate, setDueDate] = useState(new Date().toISOString().split('T')[0])
 
   return (
     <div className="max-w-xl mx-auto space-y-6">
@@ -74,18 +69,6 @@ function RecordForm () {
                 className="w-full bg-white border border-black/12 rounded-sm pl-8 pr-3.5 py-2.5 text-sm font-mono font-semibold tabular-numbers text-[#1E2D26] placeholder-[#7A9488] focus:outline-none focus:border-[#C8860A] transition-colors shadow-sm"
               />
             </div>
-            <div className="flex items-center gap-1.5 pt-1">
-              {[100, 500, 1000].map(val => (
-                <button
-                  key={val}
-                  type="button"
-                  onClick={() => adjustAmount(val)}
-                  className="font-mono text-[10px] px-2 py-0.5 bg-[#E8E4DA] hover:bg-[#E2DED4] border border-black/8 text-[#4A6358] hover:text-[#1E2D26] rounded-xs transition-colors"
-                >
-                  +{val}
-                </button>
-              ))}
-            </div>
           </div>
 
           {/*Classification */}
@@ -98,6 +81,23 @@ function RecordForm () {
               value={classification}
               options={CLASSIFICATIONS}
               onChange={setClassification}
+            />
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 -mt-2">
+          {/* Due Date */}
+          <div className="space-y-1.5">
+            <label htmlFor="bill-due-date" className="text-xs font-mono text-[#4A6358]">
+              Due Date <strong className="text-[#C8860A]">*</strong>
+            </label>
+            <input
+              id="bill-due-date"
+              type="date"
+              required
+              value={dueDate}
+              onChange={e => setDueDate(e.target.value)}
+              className="w-full bg-white border border-black/12 rounded-sm px-3.5 py-2.5 text-sm font-mono text-[#1E2D26] focus:outline-none focus:border-[#C8860A] transition-colors shadow-sm"
             />
           </div>
         </div>

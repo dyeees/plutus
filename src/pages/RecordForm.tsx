@@ -24,6 +24,7 @@ function RecordForm () {
   const [classification, setClassification] = useState('Utilities')
   const [dueDate, setDueDate] = useState(new Date().toISOString().split('T')[0])
   const [recurrence, setRecurrence] = useState('Monthly')
+  const [notes, setNotes] = useState('')
 
   return (
     <div className="max-w-xl mx-auto space-y-6">
@@ -62,7 +63,7 @@ function RecordForm () {
           <div className="space-y-1.5">
             <label htmlFor="record-amount" className="text-xs font-mono text-[#4A6358] flex items-center justify-between">
               <span>Installment Amount <strong className="text-[#C8860A]">*</strong></span>
-              <span className="text-[10px] text-[#7A9488] font-mono mr-2">PHP</span>
+              <span className="text-[10px] text-[#7A9488] font-mono mr-1">PHP</span>
             </label>
             <div className="relative">
               <span className="absolute left-3.5 top-[0.54rem] font-mono text-[#C8860A]">
@@ -124,6 +125,22 @@ function RecordForm () {
               onChange={setRecurrence}
             />
           </div>
+        </div>
+
+        {/* Notes */}
+        <div className="space-y-1.5">
+          <label htmlFor="bill-notes" className="text-xs font-mono text-[#4A6358] flex items-center justify-between">
+            <span>Payment Notes / Instructions</span>
+            <span className="text-[10px] text-[#7A9488]">Optional</span>
+          </label>
+          <textarea
+            id="bill-notes"
+            rows={3}
+            placeholder="Account number, portal URL, reference codes, bank details..."
+            value={notes}
+            onChange={e => setNotes(e.target.value)}
+            className="w-full bg-white border border-black/12 rounded-sm px-3.5 py-2.5 text-xs font-mono text-[#1E2D26] placeholder-[#7A9488] focus:outline-none focus:border-[#C8860A] transition-colors leading-relaxed shadow-sm"
+          />
         </div>
       </form>
     </div>

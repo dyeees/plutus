@@ -20,6 +20,8 @@ function Dropdown<T extends string>({
 }: DropdownProps<T>) {
   const [open, setOpen] = useState(false)
   const [active, setActive] = useState(0)
+  const [placement, setPlacement] = useState<'top' | 'bottom'>('bottom')
+  const [menuMaxHeight, setMenuMaxHeight] = useState(240)
   const wrapperRef = useRef<HTMLDivElement>(null)
   const buttonRef = useRef<HTMLButtonElement>(null)
 
@@ -35,6 +37,18 @@ function Dropdown<T extends string>({
   }, [open])
 
   function openMenu () {
+    const rect = buttonRef.current?.getBoundingClientRect()
+    if (rect) {
+      const edge = 12
+      const spaceBelow = window.innerHeight - rect.bottom - edge
+      const spaceAbove = rect.top - edge
+      const nextPlacement =
+        spaceBelow < 240 && spaceAbove > spaceBelow ? 'top' : 'bottom'
+      setPlacement(nextPlacement)
+      setMenuMaxHeight(
+        Math.max(96, nextPlacement === 'top' ? spaceAbove : spaceBelow)
+      )
+    }
     setActive(Math.max(0, options.indexOf(value)))
     setOpen(true)
   }
@@ -105,7 +119,10 @@ function Dropdown<T extends string>({
           id={`${id}-listbox`}
           role="listbox"
           aria-labelledby={id}
-          className="absolute z-30 mt-1 max-h-60 w-full overflow-auto rounded-sm border border-black/12 bg-white py-1 shadow-md"
+          className={`absolute z-30 w-full overflow-auto rounded-sm border border-black/12 bg-white py-1 shadow-md ${
+            placement === 'top' ? 'bottom-full mb-1' : 'top-full mt-1'
+          }`}
+          style={{ maxHeight: menuMaxHeight }}
         >
           {options.map((option, i) => (
             <li

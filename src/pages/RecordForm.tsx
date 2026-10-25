@@ -3,6 +3,13 @@ import { useState } from 'react'
 
 function RecordForm () {
   const [name, setName] = useState('')
+  const [amount, setAmount] = useState('')
+
+  function adjustAmount(delta) {
+    const current = parseFloat(amount) || 0
+    const next = Math.max(0, current + delta)
+    setAmount(next.toFixed(2))
+  }
 
   return (
     <div className="max-w-xl mx-auto space-y-6">
@@ -35,6 +42,45 @@ function RecordForm () {
             onChange={e => setName(e.target.value)}
             className="w-full bg-white border border-black/12 font-mono px-3.5 py-2.5 text-sm text-[#1E2D26] placeholder-[#7A9488] focus:outline-none focus:border-[#C8860A] transition-colors shadow-sm"
           />
+        </div>
+
+        {/* Amount & Due Date Row */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {/* Amount */}
+          <div className="space-y-1.5">
+            <label htmlFor="bill-amount" className="text-xs font-mono text-[#4A6358] flex items-center justify-between">
+              <span>Installment Amount <strong className="text-[#C8860A]">*</strong></span>
+              <span className="text-[10px] text-[#7A9488] font-mono">PHP</span>
+            </label>
+            <div className="relative">
+              <span className="absolute left-3.5 top-[0.54rem] font-mono text-[#C8860A]">
+                ₱
+              </span>
+              <input
+                id="bill-amount"
+                type="number"
+                step="0.01"
+                min="0"
+                required
+                placeholder="0.00"
+                value={amount}
+                onChange={e => setAmount(e.target.value)}
+                className="w-full bg-white border border-black/12 rounded-sm pl-8 pr-3.5 py-2.5 text-sm font-mono font-semibold tabular-numbers text-[#1E2D26] placeholder-[#7A9488] focus:outline-none focus:border-[#C8860A] transition-colors shadow-sm"
+              />
+            </div>
+            <div className="flex items-center gap-1.5 pt-1">
+              {[100, 500, 1000].map(val => (
+                <button
+                  key={val}
+                  type="button"
+                  onClick={() => adjustAmount(val)}
+                  className="font-mono text-[10px] px-2 py-0.5 bg-[#E8E4DA] hover:bg-[#E2DED4] border border-black/8 text-[#4A6358] hover:text-[#1E2D26] rounded-xs transition-colors"
+                >
+                  +{val}
+                </button>
+              ))}
+            </div>
+          </div>
         </div>
       </form>
     </div>

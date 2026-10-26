@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import Dropdown from '../components/Dropdown'
+import { Check } from 'lucide-react'
 
 const CLASSIFICATIONS = [
   'Housing',
@@ -141,6 +142,24 @@ function RecordForm () {
             onChange={e => setNotes(e.target.value)}
             className="w-full bg-white border border-black/12 rounded-sm px-3.5 py-2.5 text-xs font-mono text-[#1E2D26] placeholder-[#7A9488] focus:outline-none focus:border-[#C8860A] transition-colors leading-relaxed shadow-sm"
           />
+        </div>
+
+        {/* Form Actions */}
+        <div className="pt-3 border-t border-black/8 flex items-center justify-end gap-3">
+          <button
+            type="button"
+            onClick={()=>{}}
+            className="px-4 py-2 text-xs font-mono text-[#4A6358] hover:text-[#1E2D26] border border-black/10 bg-[#E8E4DA] hover:bg-[#E2DED4] rounded-sm transition-colors"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            className="px-5 py-2 bg-[#386D59] hover:bg-[#2F5C4A] active:bg-[#285041] text-white font-mono text-xs font-semibold rounded-sm transition-colors shadow-sm flex items-center gap-1.5"
+          >
+            <Check className="w-3.5 h-3.5 stroke-[2.5]" />
+            <span>{'Record Entry'}</span>
+          </button>
         </div>
       </form>
     </div>

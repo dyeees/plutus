@@ -3,7 +3,8 @@
   "private": true,
   "version": "0.0.0",
   "workspaces": [
-    "client"
+    "client",
+    "server"
   ],
   "scripts": {
     "dev": "npm --workspace client run dev --",

@@ -1,10 +1,55 @@
-import { useState } from 'react'
-import { Receipt, CalendarDays, Cloud } from 'lucide-react'
+import type { ReactNode, FormEvent } from 'react'
 import peonies from '../assets/peonies.svg'
+import { 
+  Receipt, 
+  CalendarDays, 
+  Cloud,
+  AlertCircle,
+  User,
+  Mail,
+  Lock,
+  Eye,
+  EyeOff,
+  ArrowRight,
+  Loader2,
+} from 'lucide-react'
+import type { LucideIcon } from 'lucide-react'
 
-function AuthPage() {
-  const [isSignUp, setIsSignUp] = useState(false)
-  
+type AuthPageProps = {
+  isSignUp?: boolean
+  onSubmit?: (event: FormEvent<HTMLFormElement>) => void
+  serverError?: string | null
+  form?: { name?: string; email?: string; password?: string, confirm?: string }
+  errors?: Record<string, string | undefined>
+  onFieldChange?: (field: string, value: string) => void
+  showPassword?: boolean
+  onTogglePassword?: () => void
+  passwordStrength?: {
+    level: number
+    label: string
+    color: string
+  }
+  onForgotPassword?: () => void
+  busy?: boolean
+}
+
+function AuthPage({
+  isSignUp = false,
+  onSubmit = () => {},
+  serverError,
+  form = {},
+  errors = {},
+  onFieldChange = () => {},
+  showPassword = false,
+  onTogglePassword = () => {},
+  passwordStrength = {
+    level: 0,
+    label: '',
+    color: '',
+  },
+  onForgotPassword,
+  busy,
+}: AuthPageProps) {
   return (
     <div className={`relative min-h-screen flex flex-col lg:flex-row text-[#1E2D26] font-sans overflow-hidden lg:overflow-visible bg-[#386D59] lg:bg-[#F7F4EE]`}>
       {/* Left Desktop Panel */}
@@ -95,10 +140,161 @@ function AuthPage() {
                   <span className="translate-y-0.5">P</span>
                 </div>
               </div>
+
+              <FormHeading isSignUp={isSignUp} className="mb-6 lg:mb-4" />
+
+              <div className="lg:border lg:border-black/10 lg:bg-[#FBF9F4] lg:rounded-sm lg:shadow-sm">
+                <form onSubmit={onSubmit} className="space-y-4 lg:space-y-4 lg:p-6" noValidate>
+                  {serverError && (
+                    <div
+                      role="alert"
+                      className="flex items-start gap-2.5 border border-[#C0392B]/30 bg-[#C0392B]/[0.07] rounded-sm px-3 py-2.5"
+                    >
+                      <AlertCircle className="w-4 h-4 shrink-0 text-[#C0392B] mt-0.5" />
+                      <p className="text-[11px] leading-relaxed text-[#C0392B] font-mono">
+                        {serverError}
+                      </p>
+                    </div>
+                  )}
+
+                  {isSignUp && (
+                    <Field id="name" label="Full name" icon={User} error={errors.name}>
+                      <input
+                        id="name"
+                        name="name"
+                        type="text"
+                        autoComplete="name"
+                        value={form.name}
+                        onChange={e => onFieldChange('name', e.target.value)}
+                        placeholder="Ada Lovelace"
+                        className="flex-1 min-w-0 bg-white border border-black/12 rounded-sm px-3.5 py-2.5 text-sm text-[#1E2D26] placeholder-[#7A9488] focus:outline-none focus:border-[#C8860A] transition-colors shadow-sm lg:border-0 lg:bg-transparent lg:rounded-none lg:px-0 lg:py-3 lg:shadow-none lg:focus:border-0"
+                      />
+                    </Field>
+                  )}
+
+                  <Field id="email" label="Email address" icon={Mail} error={errors.email}>
+                    <input
+                      id="email"
+                      name="email"
+                      type="email"
+                      inputMode="email"
+                      autoComplete="email"
+                      value={form.email}
+                      onChange={e => onFieldChange('email', e.target.value)}
+                      placeholder="you@example.com"
+                      className="flex-1 min-w-0 bg-white border border-black/12 rounded-sm px-3.5 py-2.5 text-sm text-[#1E2D26] placeholder-[#7A9488] focus:outline-none focus:border-[#C8860A] transition-colors shadow-sm lg:border-0 lg:bg-transparent lg:rounded-none lg:px-0 lg:py-3 lg:shadow-none lg:focus:border-0"
+                    />
+                  </Field>
+
+                  <Field
+                    id="password"
+                    label="Password"
+                    icon={Lock}
+                    error={errors.password}
+                    right={
+                      <button
+                        type="button"
+                        onClick={onTogglePassword}
+                        aria-label={showPassword ? 'Hide password' : 'Show password'}
+                        className="p-1 -mr-1 text-[#7A9488] hover:text-[#1E2D26] transition-colors rounded-xs focus:outline-none focus-visible:ring-2 focus-visible:ring-[#C8860A]/40"
+                      >
+                        {showPassword ? (
+                          <EyeOff className="w-4 h-4" />
+                        ) : (
+                          <Eye className="w-4 h-4" />
+                        )}
+                      </button>
+                    }
+                  >
+                    <input
+                      id="password"
+                      name="password"
+                      type={showPassword ? 'text' : 'password'}
+                      autoComplete={isSignUp ? 'new-password' : 'current-password'}
+                      value={form.password}
+                      onChange={e => onFieldChange('password', e.target.value)}
+                      placeholder={isSignUp ? 'At least 8 characters' : '••••••••'}
+                      className="flex-1 min-w-0 bg-white border border-black/12 rounded-sm px-3.5 pr-10 py-2.5 text-sm text-[#1E2D26] placeholder-[#7A9488] focus:outline-none focus:border-[#C8860A] transition-colors shadow-sm lg:border-0 lg:bg-transparent lg:rounded-none lg:px-0 lg:pr-0 lg:py-3 lg:shadow-none lg:focus:border-0"
+                    />
+                  </Field>
+
+                  {isSignUp && form.password && passwordStrength && (
+                    <div className="flex items-center gap-2 -mt-1">
+                      <div className="flex-1 flex gap-1">
+                        {[1, 2, 3].map(step => (
+                          <span
+                            key={step}
+                            className="h-1 flex-1 rounded-full transition-colors duration-200"
+                            style={{
+                              backgroundColor:
+                                passwordStrength.level >= step ? passwordStrength.color : '#E2DED4',
+                            }}
+                          />
+                        ))}
+                      </div>
+                      <span
+                        className="font-mono text-[10px] tracking-wider uppercase"
+                        style={{ color: passwordStrength.color }}
+                      >
+                        {passwordStrength.label}
+                      </span>
+                    </div>
+                  )}
+
+                  {isSignUp && (
+                    <Field
+                      id="confirm"
+                      label="Confirm password"
+                      icon={Lock}
+                      error={errors.confirm}
+                    >
+                      <input
+                        id="confirm"
+                        name="confirm"
+                        type={showPassword ? 'text' : 'password'}
+                        autoComplete="new-password"
+                        value={form.confirm}
+                        onChange={e => onFieldChange('confirm', e.target.value)}
+                        placeholder="Repeat password"
+                        className="flex-1 min-w-0 bg-white border border-black/12 rounded-sm px-3.5 py-2.5 text-sm text-[#1E2D26] placeholder-[#7A9488] focus:outline-none focus:border-[#C8860A] transition-colors shadow-sm lg:border-0 lg:bg-transparent lg:rounded-none lg:px-0 lg:py-3 lg:shadow-none lg:focus:border-0"
+                      />
+                    </Field>
+                  )}
+
+                  {!isSignUp && (
+                    <div className="flex items-center justify-end pt-0.5">
+                      <button
+                        type="button"
+                        onClick={onForgotPassword}
+                        className="font-mono text-[11px] text-[#C8860A] hover:text-[#A36D06] hover:underline transition-colors"
+                      >
+                        Forgot password?
+                      </button>
+                    </div>
+                  )}
+
+                  <button
+                    type="submit"
+                    disabled={busy}
+                    className="w-full flex items-center justify-center gap-2 bg-[#386D59] hover:bg-[#2F5C4A] active:bg-[#285041] disabled:opacity-60 disabled:cursor-not-allowed text-white font-mono font-semibold text-xs tracking-wide px-4 py-3 rounded-sm shadow-sm transition-colors duration-150 mt-1"
+                  >
+                    {busy ? (
+                      <>
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                        <span>{isSignUp ? 'Opening ledger…' : 'Signing in…'}</span>
+                      </>
+                    ) : (
+                      <>
+                        <span>{isSignUp ? 'Create Account' : 'Sign In'}</span>
+                        <ArrowRight className="w-4 h-4" />
+                      </>
+                    )}
+                  </button>
+
+
+                </form>
+              </div>
             </div>
-
-            <FormHeading isSignUp={isSignUp} className="mb-6 lg:mb-4" />
-
           </div>
         </div>
       </main>
@@ -106,7 +302,71 @@ function AuthPage() {
   )
 }
 
-function Feature({ icon: Icon, title, note }) {
+type FieldProps = {
+  id: string
+  label: string
+  icon: LucideIcon
+  error?: string
+  children: ReactNode
+  right?: ReactNode
+}
+
+function Field({ id, label, icon: Icon, error, children, right }: FieldProps) {
+  return (
+    <div className="space-y-1.5">
+      <label
+        htmlFor={id}
+        className="block font-mono text-xs text-[#4A6358] lg:text-[10px] lg:tracking-[0.18em] lg:uppercase"
+      >
+        {label}
+      </label>
+      <div
+        className={`relative flex items-center gap-2.5 lg:rounded-md lg:border lg:px-3.5 lg:bg-white lg:transition-all lg:duration-150 lg:focus-within:ring-2 lg:focus-within:ring-[#C8860A]/15 ${
+          error
+            ? 'lg:border-[#C0392B]/60 lg:focus-within:border-[#C0392B]'
+            : 'lg:border-black/15 lg:focus-within:border-[#C8860A]'
+        }`}
+      >
+        <Icon className="hidden lg:block w-4 h-4 shrink-0 text-[#7A9488]" />
+        {children}
+        {right && (
+          <div className="absolute right-3 top-1/2 -translate-y-1/2 lg:static lg:translate-y-0">
+            {right}
+          </div>
+        )}
+      </div>
+      {error && (
+        <p className="flex items-center gap-1.5 text-[11px] text-[#C0392B] font-mono">
+          <AlertCircle className="w-3 h-3 shrink-0" />
+          <span>{error}</span>
+        </p>
+      )}
+    </div>
+  )
+}
+
+function FormHeading({ isSignUp, className = '' }: { isSignUp?: boolean; className?: string }) {
+  return (
+    <div className={className}>
+      <div className="hidden lg:flex items-center gap-2 mb-2">
+        <span className="font-mono text-[10px] tracking-[0.2em] uppercase text-[#C8860A] bg-[#C8860A]/10 px-2 py-0.5 rounded-sm border border-[#C8860A]/25">
+          {isSignUp ? 'New Account' : 'Access'}
+        </span>
+        <span className="font-mono text-[10px] tracking-[0.14em] uppercase text-[#7A9488]">
+          Plutus Ledger
+        </span>
+      </div>
+      <h2 className="font-serif text-[24px] sm:text-3xl font-medium tracking-tight text-[#1E2D26] text-center lg:text-left">
+        {isSignUp ? 'Register' : 'Sign In'}
+      </h2>
+      <p className="text-[13px] mt-1 lg:mt-1 leading-relaxed text-[#4A6358] text-center lg:text-left">
+        {isSignUp ? 'Create an account to get started.' : 'Enter your details to continue.'}
+      </p>
+    </div>
+  )
+}
+
+function Feature({ icon: Icon, title, note }: { icon: LucideIcon; title: string; note: string }) {
   return (
     <div className="flex items-center gap-3">
       <div className="w-8 h-8 shrink-0 rounded-sm border border-white/15 bg-[#2F5C4A] flex items-center justify-center">
@@ -116,27 +376,6 @@ function Feature({ icon: Icon, title, note }) {
         <p className="text-xs font-semibold text-[#FAF8F2] tracking-wide">{title}</p>
         <p className="text-[11px] text-[#A8CABD] leading-relaxed mt-0.5">{note}</p>
       </div>
-    </div>
-  )
-}
-
-function FormHeading({ isSignUp, className = '' }) {
-  return (
-    <div className={className}>
-      <div className="hidden lg:flex items-center gap-2 mb-2">
-        <span className="font-mono text-[10px] tracking-[0.2em] uppercase text-[#C8860A] bg-[#C8860A]/10 px-2 py-0.5 rounded-sm border border-[#C8860A]/25">
-          {isSignUp ? 'New Account' : 'Access'}
-        </span>
-        <span className="font-mono text-[10px] tracking-[0.14em] uppercase text-[#7A9488]">
-          Folio Ledger
-        </span>
-      </div>
-      <h2 className="font-serif text-[24px] sm:text-3xl font-medium tracking-tight text-[#1E2D26] text-center lg:text-left">
-        {isSignUp ? 'Register' : 'Sign In'}
-      </h2>
-      <p className="text-[13px] mt-1.5 lg:mt-1 leading-relaxed text-[#4A6358] text-center lg:text-left">
-        {isSignUp ? 'Create an account to get started.' : 'Enter your details to continue.'}
-      </p>
     </div>
   )
 }

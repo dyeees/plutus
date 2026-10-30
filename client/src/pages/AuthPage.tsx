@@ -3,12 +3,12 @@ import { Receipt, CalendarDays, Cloud } from 'lucide-react'
 import peonies from '../assets/peonies.svg'
 
 function AuthPage() {
-  const [entryOpen, setEntryOpen] = useState(false)
-
+  const [isSignUp, setIsSignUp] = useState(false)
+  
   return (
-    <div className={`relative min-h-screen flex flex-col lg:flex-row text-[#1E2D26] font-sans overflow-hidden lg:overflow-visible ${entryOpen ? 'bg-[#F7F4EE]' : 'bg-[#386D59]'} lg:bg-[#F7F4EE]`}>
+    <div className={`relative min-h-screen flex flex-col lg:flex-row text-[#1E2D26] font-sans overflow-hidden lg:overflow-visible bg-[#386D59] lg:bg-[#F7F4EE]`}>
       {/* Left Desktop Panel */}
-      <aside className={`absolute inset-0 z-0 ${entryOpen ? 'hidden' : 'flex'} h-full w-full flex-col justify-start overflow-hidden bg-[#386D59] px-5 pt-4 sm:px-8 sm:pt-5 lg:relative lg:inset-auto lg:top-auto lg:z-10 lg:flex lg:h-auto lg:min-h-0 lg:justify-between lg:border-r lg:border-black/20 lg:w-[46%] lg:p-9 xl:w-[43%] xl:p-12`}>
+      <aside className={`absolute inset-0 z-0 flex h-full w-full flex-col justify-start overflow-hidden bg-[#386D59] px-5 pt-4 sm:px-8 sm:pt-5 lg:relative lg:inset-auto lg:top-auto lg:z-10 lg:flex lg:h-auto lg:min-h-0 lg:justify-between lg:border-r lg:border-black/20 lg:w-[46%] lg:p-9 xl:w-[43%] xl:p-12`}>
         <div
           className="pointer-events-none absolute inset-0 opacity-[0.10] lg:opacity-[0.12] bg-repeat"
           style={{ backgroundImage: `url(${peonies})`, backgroundSize: '360px' }}
@@ -67,12 +67,12 @@ function AuthPage() {
         </div>
 
         <div className="relative border-t border-white/15 pt-5 hidden lg:flex items-center justify-between gap-4">
-          <p className="hidden sm:block font-serif italic text-sm text-[#C8E0D6] max-w-[240px]">
-            “A ledger is a promise kept in writing.”
+          <p className="hidden sm:block font-serif italic text-sm text-[#C8E0D6] max-w-60">
+            “A clearer view of every commitment.”
           </p>
           <div className="text-right shrink-0">
             <p className="font-mono text-[9px] tracking-[0.18em] uppercase text-[#A8CABD]">
-              Cloud-based Storage
+              Cloud-based
             </p>
             <p className="font-mono text-[9px] tracking-[0.18em] uppercase text-[#6FD4A4] flex items-center justify-end gap-1.5 mt-1">
               <span className="w-1.5 h-1.5 rounded-full bg-[#6FD4A4]" />
@@ -81,6 +81,27 @@ function AuthPage() {
           </div>
         </div>
       </aside>
+
+      {/* Access Column */}
+      <main className="relative z-20 flex-1 flex flex-col min-h-screen lg:min-h-0">
+        <div className="flex-1 flex flex-col lg:flex-row items-stretch lg:items-center justify-center px-4 py-4 sm:px-8 sm:py-8 lg:p-12">
+          <div
+            className={`relative w-full max-w-107.5 mx-auto flex flex-1 flex-col rounded-sm border border-black/10 bg-[#F7F4EE]/92 px-4 pb-4 pt-1 shadow-[0_10px_30px_-12px_rgba(30,45,38,0.35)] backdrop-blur-md backdrop-saturate-150 [text-shadow:0_1px_0_rgba(255,255,255,0.6)] sm:px-5 sm:pb-6 sm:pt-2 lg:my-0 lg:block lg:flex-none lg:rounded-none lg:border-0 lg:bg-transparent lg:p-0 lg:shadow-none lg:backdrop-blur-none lg:backdrop-saturate-100 lg:text-shadow:none`}
+          >
+            <div className="flex flex-1 flex-col justify-center pt-6 lg:block lg:flex-none lg:justify-start">
+              <div className="lg:hidden relative mx-auto mb-5 w-14 h-14">
+                <div className="absolute -inset-2 rounded-sm bg-[#C8860A]/20 blur-xl" />
+                <div className="relative w-full h-full border border-[#C8860A]/60 bg-linear-to-br from-[#386D59] to-[#285041] flex items-center justify-center text-[#F6C163] font-serif font-medium text-2xl leading-none rounded-sm shadow-[0_8px_20px_-8px_rgba(40,80,65,0.6)] ring-1 ring-[#F6C163]/15">
+                  <span className="translate-y-0.5">P</span>
+                </div>
+              </div>
+            </div>
+
+            <FormHeading isSignUp={isSignUp} className="mb-6 lg:mb-4" />
+
+          </div>
+        </div>
+      </main>
     </div>
   )
 }
@@ -95,6 +116,27 @@ function Feature({ icon: Icon, title, note }) {
         <p className="text-xs font-semibold text-[#FAF8F2] tracking-wide">{title}</p>
         <p className="text-[11px] text-[#A8CABD] leading-relaxed mt-0.5">{note}</p>
       </div>
+    </div>
+  )
+}
+
+function FormHeading({ isSignUp, className = '' }) {
+  return (
+    <div className={className}>
+      <div className="hidden lg:flex items-center gap-2 mb-2">
+        <span className="font-mono text-[10px] tracking-[0.2em] uppercase text-[#C8860A] bg-[#C8860A]/10 px-2 py-0.5 rounded-sm border border-[#C8860A]/25">
+          {isSignUp ? 'New Account' : 'Access'}
+        </span>
+        <span className="font-mono text-[10px] tracking-[0.14em] uppercase text-[#7A9488]">
+          Folio Ledger
+        </span>
+      </div>
+      <h2 className="font-serif text-[24px] sm:text-3xl font-medium tracking-tight text-[#1E2D26] text-center lg:text-left">
+        {isSignUp ? 'Register' : 'Sign In'}
+      </h2>
+      <p className="text-[13px] mt-1.5 lg:mt-1 leading-relaxed text-[#4A6358] text-center lg:text-left">
+        {isSignUp ? 'Create an account to get started.' : 'Enter your details to continue.'}
+      </p>
     </div>
   )
 }

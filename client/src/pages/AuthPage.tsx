@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import type { ReactNode, FormEvent } from 'react'
 import peonies from '../assets/peonies.svg'
 import { 
@@ -39,8 +40,8 @@ function AuthPage({
   form = {},
   errors = {},
   onFieldChange = () => {},
-  showPassword = false,
-  onTogglePassword = () => {},
+  showPassword,
+  onTogglePassword,
   passwordStrength = {
     level: 0,
     label: '',
@@ -49,6 +50,11 @@ function AuthPage({
   onForgotPassword,
   busy,
 }: AuthPageProps) {
+  const [localShowPassword, setLocalShowPassword] = useState(false)
+  const passwordVisible = showPassword ?? localShowPassword
+  const togglePassword =
+    onTogglePassword ?? (() => setLocalShowPassword(visible => !visible))
+
   return (
     <div className={`relative min-h-screen flex flex-col lg:flex-row text-[#1E2D26] font-sans overflow-hidden lg:overflow-visible bg-[#386D59] lg:bg-[#F7F4EE]`}>
       {/* Left Desktop Panel */}
@@ -193,11 +199,11 @@ function AuthPage({
                     right={
                       <button
                         type="button"
-                        onClick={onTogglePassword}
-                        aria-label={showPassword ? 'Hide password' : 'Show password'}
+                        onClick={togglePassword}
+                        aria-label={passwordVisible ? 'Hide password' : 'Show password'}
                         className="p-1 -mr-1 text-[#7A9488] hover:text-[#1E2D26] transition-colors rounded-xs focus:outline-none focus-visible:ring-2 focus-visible:ring-[#C8860A]/40"
                       >
-                        {showPassword ? (
+                        {passwordVisible ? (
                           <EyeOff className="w-4 h-4" />
                         ) : (
                           <Eye className="w-4 h-4" />
@@ -208,7 +214,7 @@ function AuthPage({
                     <input
                       id="password"
                       name="password"
-                      type={showPassword ? 'text' : 'password'}
+                      type={passwordVisible ? 'text' : 'password'}
                       autoComplete={isSignUp ? 'new-password' : 'current-password'}
                       value={form.password}
                       onChange={e => onFieldChange('password', e.target.value)}
@@ -250,7 +256,7 @@ function AuthPage({
                       <input
                         id="confirm"
                         name="confirm"
-                        type={showPassword ? 'text' : 'password'}
+                        type={passwordVisible ? 'text' : 'password'}
                         autoComplete="new-password"
                         value={form.confirm}
                         onChange={e => onFieldChange('confirm', e.target.value)}

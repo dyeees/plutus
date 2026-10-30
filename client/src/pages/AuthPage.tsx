@@ -12,6 +12,7 @@ import {
   Eye,
   EyeOff,
   Loader2,
+  Sparkles,
 } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 
@@ -30,8 +31,12 @@ type AuthPageProps = {
     color: string
   }
   onForgotPassword?: () => void
+  onFillDemo?: () => void
   busy?: boolean
 }
+
+const DEMO_EMAIL = 'demo@plutus.app'
+const DEMO_PASSWORD = 'demo1234'
 
 function AuthPage({
   isSignUp = false,
@@ -48,12 +53,34 @@ function AuthPage({
     color: '',
   },
   onForgotPassword,
+  onFillDemo,
   busy,
 }: AuthPageProps) {
   const [localShowPassword, setLocalShowPassword] = useState(false)
+  const [localFields, setLocalFields] = useState<Record<string, string>>({})
   const passwordVisible = showPassword ?? localShowPassword
   const togglePassword =
     onTogglePassword ?? (() => setLocalShowPassword(visible => !visible))
+
+  const valueOf = (key: string) =>
+    (form as Record<string, string | undefined>)[key] ?? localFields[key] ?? ''
+
+  const changeField = (key: string, value: string) => {
+    setLocalFields(previous => ({ ...previous, [key]: value }))
+    onFieldChange(key, value)
+  }
+
+  const fillDemo =
+    onFillDemo ??
+    (() => {
+      setLocalFields(previous => ({
+        ...previous,
+        email: DEMO_EMAIL,
+        password: DEMO_PASSWORD,
+      }))
+      onFieldChange('email', DEMO_EMAIL)
+      onFieldChange('password', DEMO_PASSWORD)
+    })
 
   return (
     <div className={`relative min-h-screen flex flex-col lg:flex-row text-[#1E2D26] font-sans overflow-hidden lg:overflow-visible bg-[#386D59] lg:bg-[#F7F4EE]`}>
@@ -169,8 +196,8 @@ function AuthPage({
                         name="name"
                         type="text"
                         autoComplete="name"
-                        value={form.name}
-                        onChange={e => onFieldChange('name', e.target.value)}
+                        value={valueOf('name')}
+                        onChange={e => changeField('name', e.target.value)}
                         placeholder="Ada Lovelace"
                         className="flex-1 min-w-0 h-10 lg:h-auto bg-white border border-black/12 rounded-sm px-3.5 py-2.5 text-xs lg:text-sm text-[#1E2D26] placeholder-[#7A9488] focus:outline-none focus:border-[#C8860A] transition-colors shadow-sm lg:border-0 lg:bg-transparent lg:rounded-none lg:px-0 lg:py-3 lg:shadow-none lg:focus:border-0"
                       />
@@ -184,8 +211,8 @@ function AuthPage({
                       type="email"
                       inputMode="email"
                       autoComplete="email"
-                      value={form.email}
-                      onChange={e => onFieldChange('email', e.target.value)}
+                      value={valueOf('email')}
+                      onChange={e => changeField('email', e.target.value)}
                       placeholder="you@example.com"
                       className="flex-1 min-w-0 h-10 lg:h-auto bg-white border border-black/12 rounded-sm px-3.5 py-2.5 text-xs lg:text-sm text-[#1E2D26] placeholder-[#7A9488] focus:outline-none focus:border-[#C8860A] transition-colors shadow-sm lg:border-0 lg:bg-transparent lg:rounded-none lg:px-0 lg:py-3 lg:shadow-none lg:focus:border-0"
                     />
@@ -216,8 +243,8 @@ function AuthPage({
                       name="password"
                       type={passwordVisible ? 'text' : 'password'}
                       autoComplete={isSignUp ? 'new-password' : 'current-password'}
-                      value={form.password}
-                      onChange={e => onFieldChange('password', e.target.value)}
+                      value={valueOf('password')}
+                      onChange={e => changeField('password', e.target.value)}
                       placeholder={isSignUp ? 'At least 8 characters' : '••••••••'}
                       className="flex-1 min-w-0 h-10 lg:h-auto bg-white border border-black/12 rounded-sm px-3.5 pr-10 py-2.5 text-xs lg:text-sm text-[#1E2D26] placeholder-[#7A9488] focus:outline-none focus:border-[#C8860A] transition-colors shadow-sm lg:border-0 lg:bg-transparent lg:rounded-none lg:px-0 lg:pr-0 lg:py-3 lg:shadow-none lg:focus:border-0"
                     />
@@ -258,8 +285,8 @@ function AuthPage({
                         name="confirm"
                         type={passwordVisible ? 'text' : 'password'}
                         autoComplete="new-password"
-                        value={form.confirm}
-                        onChange={e => onFieldChange('confirm', e.target.value)}
+                        value={valueOf('confirm')}
+                        onChange={e => changeField('confirm', e.target.value)}
                         placeholder="Repeat password"
                         className="flex-1 min-w-0 h-10 lg:h-auto bg-white border border-black/12 rounded-sm px-3.5 py-2.5 text-xs lg:text-sm text-[#1E2D26] placeholder-[#7A9488] focus:outline-none focus:border-[#C8860A] transition-colors shadow-sm lg:border-0 lg:bg-transparent lg:rounded-none lg:px-0 lg:py-3 lg:shadow-none lg:focus:border-0"
                       />
@@ -293,7 +320,44 @@ function AuthPage({
                     )}
                   </button>
 
+                  {!isSignUp && (
+                    <>
+                      <div className="hidden lg:flex items-center gap-3 pt-0.5">
+                        <span className="h-px flex-1 bg-black/10" />
+                        <span className="font-mono text-[9px] tracking-[0.18em] uppercase text-[#7A9488]">
+                          or
+                        </span>
+                        <span className="h-px flex-1 bg-black/10" />
+                      </div>
 
+                      <button
+                        type="button"
+                        onClick={fillDemo}
+                        className="hidden lg:flex w-full items-center justify-between gap-2 border border-black/15 bg-[#EDE9E0] hover:bg-[#E8E4DA] px-3.5 py-2.5 rounded-sm text-left transition-colors"
+                      >
+                        <span className="flex items-center gap-2.5 min-w-0">
+                          <Sparkles className="w-4 h-4 text-[#C8860A] shrink-0" />
+                          <span className="min-w-0">
+                            <span className="block text-[11px] font-semibold text-[#1E2D26]">
+                              Try the demo ledger
+                            </span>
+                            <span className="block font-mono text-[10px] text-[#7A9488] truncate">
+                              {DEMO_EMAIL} · {DEMO_PASSWORD}
+                            </span>
+                          </span>
+                        </span>
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={fillDemo}
+                        className="lg:hidden w-full flex items-center justify-center gap-1.5 py-1 font-mono text-[11px] text-[#C8860A] hover:text-[#A36D06] transition-colors"
+                      >
+                        <Sparkles className="w-3.5 h-3.5" />
+                        <span>Try demo ledger</span>
+                      </button>
+                    </>
+                  )}
                 </form>
               </div>
             </div>

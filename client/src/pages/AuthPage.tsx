@@ -32,6 +32,7 @@ type AuthPageProps = {
   }
   onForgotPassword?: () => void
   onFillDemo?: () => void
+  onSwitchMode?: (mode: 'signin' | 'signup') => void
   busy?: boolean
 }
 
@@ -39,7 +40,7 @@ const DEMO_EMAIL = 'demo@plutus.app'
 const DEMO_PASSWORD = 'demo1234'
 
 function AuthPage({
-  isSignUp = false,
+  isSignUp: isSignUpProp,
   onSubmit = () => {},
   serverError,
   form = {},
@@ -54,13 +55,20 @@ function AuthPage({
   },
   onForgotPassword,
   onFillDemo,
+  onSwitchMode,
   busy,
 }: AuthPageProps) {
   const [localShowPassword, setLocalShowPassword] = useState(false)
   const [localFields, setLocalFields] = useState<Record<string, string>>({})
+  const [localIsSignUp, setLocalIsSignUp] = useState(false)
+  const isSignUp = isSignUpProp ?? localIsSignUp
   const passwordVisible = showPassword ?? localShowPassword
   const togglePassword =
     onTogglePassword ?? (() => setLocalShowPassword(visible => !visible))
+
+  const switchMode =
+    onSwitchMode ??
+    ((mode: 'signin' | 'signup') => setLocalIsSignUp(mode === 'signup'))
 
   const valueOf = (key: string) =>
     (form as Record<string, string | undefined>)[key] ?? localFields[key] ?? ''
@@ -361,6 +369,17 @@ function AuthPage({
                 </form>
               </div>
             </div>
+            
+            <p className="mt-4 pt-0 text-center font-mono text-[11px] text-[#4A6358] lg:mt-4 lg:text-[11px]">
+              {isSignUp ? 'Already have an account?' : 'Don\'t have an account?'}{' '}
+              <button
+                type="button"
+                onClick={() => switchMode(isSignUp ? 'signin' : 'signup')}
+                className="font-semibold text-[#386D59] underline underline-offset-2 hover:text-[#C8860A] transition-colors"
+              >
+                {isSignUp ? 'Sign In' : 'Sign Up'}
+              </button>
+            </p>
           </div>
         </div>
       </main>

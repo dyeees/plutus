@@ -172,7 +172,7 @@ function AuthPage({
                         value={form.name}
                         onChange={e => onFieldChange('name', e.target.value)}
                         placeholder="Ada Lovelace"
-                        className="flex-1 min-w-0 font-mono bg-white border border-black/12 rounded-sm px-3.5 py-2.5 text-sm text-[#1E2D26] placeholder-[#7A9488] focus:outline-none focus:border-[#C8860A] transition-colors shadow-sm lg:border-0 lg:bg-transparent lg:rounded-none lg:px-0 lg:py-3 lg:shadow-none lg:focus:border-0"
+                        className="flex-1 min-w-0 h-10 lg:h-auto bg-white border border-black/12 rounded-sm px-3.5 py-2.5 text-xs lg:text-sm text-[#1E2D26] placeholder-[#7A9488] focus:outline-none focus:border-[#C8860A] transition-colors shadow-sm lg:border-0 lg:bg-transparent lg:rounded-none lg:px-0 lg:py-3 lg:shadow-none lg:focus:border-0"
                       />
                     </Field>
                   )}
@@ -187,7 +187,7 @@ function AuthPage({
                       value={form.email}
                       onChange={e => onFieldChange('email', e.target.value)}
                       placeholder="you@example.com"
-                      className="flex-1 min-w-0 font-mono bg-white border border-black/12 rounded-sm px-3.5 py-2.5 text-sm text-[#1E2D26] placeholder-[#7A9488] focus:outline-none focus:border-[#C8860A] transition-colors shadow-sm lg:border-0 lg:bg-transparent lg:rounded-none lg:px-0 lg:py-3 lg:shadow-none lg:focus:border-0"
+                      className="flex-1 min-w-0 h-10 lg:h-auto bg-white border border-black/12 rounded-sm px-3.5 py-2.5 text-xs lg:text-sm text-[#1E2D26] placeholder-[#7A9488] focus:outline-none focus:border-[#C8860A] transition-colors shadow-sm lg:border-0 lg:bg-transparent lg:rounded-none lg:px-0 lg:py-3 lg:shadow-none lg:focus:border-0"
                     />
                   </Field>
 
@@ -219,7 +219,7 @@ function AuthPage({
                       value={form.password}
                       onChange={e => onFieldChange('password', e.target.value)}
                       placeholder={isSignUp ? 'At least 8 characters' : '••••••••'}
-                      className="flex-1 min-w-0 font-mono bg-white border border-black/12 rounded-sm px-3.5 pr-10 py-2.5 text-sm text-[#1E2D26] placeholder-[#7A9488] focus:outline-none focus:border-[#C8860A] transition-colors shadow-sm lg:border-0 lg:bg-transparent lg:rounded-none lg:px-0 lg:pr-0 lg:py-3 lg:shadow-none lg:focus:border-0"
+                      className="flex-1 min-w-0 h-10 lg:h-auto bg-white border border-black/12 rounded-sm px-3.5 pr-10 py-2.5 text-xs lg:text-sm text-[#1E2D26] placeholder-[#7A9488] focus:outline-none focus:border-[#C8860A] transition-colors shadow-sm lg:border-0 lg:bg-transparent lg:rounded-none lg:px-0 lg:pr-0 lg:py-3 lg:shadow-none lg:focus:border-0"
                     />
                   </Field>
 
@@ -261,7 +261,7 @@ function AuthPage({
                         value={form.confirm}
                         onChange={e => onFieldChange('confirm', e.target.value)}
                         placeholder="Repeat password"
-                        className="flex-1 min-w-0 font-mono bg-white border border-black/12 rounded-sm px-3.5 py-2.5 text-sm text-[#1E2D26] placeholder-[#7A9488] focus:outline-none focus:border-[#C8860A] transition-colors shadow-sm lg:border-0 lg:bg-transparent lg:rounded-none lg:px-0 lg:py-3 lg:shadow-none lg:focus:border-0"
+                        className="flex-1 min-w-0 h-10 lg:h-auto bg-white border border-black/12 rounded-sm px-3.5 py-2.5 text-xs lg:text-sm text-[#1E2D26] placeholder-[#7A9488] focus:outline-none focus:border-[#C8860A] transition-colors shadow-sm lg:border-0 lg:bg-transparent lg:rounded-none lg:px-0 lg:py-3 lg:shadow-none lg:focus:border-0"
                       />
                     </Field>
                   )}

@@ -1,19 +1,23 @@
 import { useState } from 'react'
+import type { FormEvent } from 'react'
 import Sidebar from './components/Sidebar'
 import Navbar from './components/Navbar'
 import RecordForm from './pages/RecordForm'
 import AuthPage from './pages/AuthPage'
 import './index.css'
 
-// Auth page shows first. Set to false to show the main app.
-const SHOW_AUTH_PAGE = true
-
 function App() {
+  const [authenticated, setAuthenticated] = useState(false)
   const [currentScreen, setCurrentScreen] = useState('overview')
   const [screenParams, setScreenParams] = useState({})
 
-  if (SHOW_AUTH_PAGE) {
-    return <AuthPage />
+  function handleAuthSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+    setAuthenticated(true)
+  }
+
+  if (!authenticated) {
+    return <AuthPage onSubmit={handleAuthSubmit} />
   }
 
   const activeTab = ['add-record', 'edit-record', 'record-detail'].includes(currentScreen)

@@ -1,13 +1,40 @@
 import express from 'express'
 import type { NextFunction, Request, Response } from 'express'
 import cors from 'cors'
+import session from 'express-session'
+import MySQLStoreFactory from 'express-mysql-session'
+
 import { config } from './config.js'
+import { pool } from './db.js'
 import { authRouter } from './routes/auth.js'
 
-export const app = express()
+const MySQLStore = MySQLStoreFactory(session)
+const sessionStore = new MySQLStore({}, pool as any)
 
-app.use(cors({ origin: config.corsOrigin }))
+export const app = express()
+app.use(
+  cors({
+    origin: config.corsOrigin,
+    credentials: true,
+  }),
+)
 app.use(express.json({ limit: '100kb' }))
+
+app.use(
+  session({
+    name: 'plutus.sid',
+    secret: process.env.SESSION_SECRET!,
+    store: sessionStore,
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 30 * 24 * 60 * 60 * 1000,
+    },
+  }),
+)
 
 app.use('/api/auth', authRouter)
 

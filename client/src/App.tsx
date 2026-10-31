@@ -10,6 +10,7 @@ import { signup, login } from './services/auth'
 
 function App() {
   const [authenticated, setAuthenticated] = useState(false)
+  const [user, setUser] = useState<{name: string, email: string} | null>(null)
   const [currentScreen, setCurrentScreen] = useState('overview')
   const [screenParams, setScreenParams] = useState({})
 
@@ -58,6 +59,10 @@ function App() {
           password: form.password,
         })
 
+        setUser({
+          name: form.email.split('@')[0],
+          email: form.email,
+        })
         setAuthenticated(true)
       }
     } catch (error) {
@@ -74,6 +79,12 @@ function App() {
       ...previous,
       [field]: value,
     }))
+  }
+
+  const signOut = () => {
+    setAuthenticated(false) 
+    setUser(null)
+    setCurrentScreen('overview')
   }
 
   if (!authenticated) {
@@ -108,6 +119,8 @@ function App() {
       <Sidebar
         activeTab={activeTab}
         navigate={navigate}
+        user={user}
+        signOut={signOut}
       />
 
       {/* ──── Main Content ────*/}

@@ -16,20 +16,29 @@ import {
 } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 
+type AuthForm = {
+  name?: string
+  email?: string
+  password?: string
+  confirm?: string
+}
+
+type PasswordStrength = {
+  level: number
+  label: string
+  color: string
+}
+
 type AuthPageProps = {
   isSignUp?: boolean
   onSubmit?: (event: FormEvent<HTMLFormElement>) => void
   serverError?: string | null
-  form?: { name?: string; email?: string; password?: string, confirm?: string }
+  form?: AuthForm
   errors?: Record<string, string | undefined>
   onFieldChange?: (field: string, value: string) => void
   showPassword?: boolean
   onTogglePassword?: () => void
-  passwordStrength?: {
-    level: number
-    label: string
-    color: string
-  }
+  passwordStrength?: PasswordStrength
   onForgotPassword?: () => void
   onFillDemo?: () => void
   onSwitchMode?: (mode: 'signin' | 'signup') => void
@@ -39,56 +48,54 @@ type AuthPageProps = {
 const DEMO_EMAIL = 'demo@plutus.app'
 const DEMO_PASSWORD = 'demo1234'
 
-function AuthPage({
-  isSignUp: isSignUpProp,
-  onSubmit = () => {},
-  serverError,
-  form = {},
-  errors = {},
-  onFieldChange = () => {},
-  showPassword,
-  onTogglePassword,
-  passwordStrength = {
-    level: 0,
-    label: '',
-    color: '',
-  },
-  onForgotPassword,
-  onFillDemo,
-  onSwitchMode,
-  busy,
-}: AuthPageProps) {
+function AuthPage(props: AuthPageProps) {
+  const {
+    isSignUp: isSignUpProp,
+    onSubmit,
+    serverError,
+    form = {},
+    errors = {},
+    onFieldChange,
+    showPassword,
+    onTogglePassword,
+    passwordStrength,
+    onForgotPassword,
+    onFillDemo,
+    onSwitchMode,
+    busy,
+  } = props
+
   const [localShowPassword, setLocalShowPassword] = useState(false)
   const [localFields, setLocalFields] = useState<Record<string, string>>({})
   const [localIsSignUp, setLocalIsSignUp] = useState(false)
+
   const isSignUp = isSignUpProp ?? localIsSignUp
   const passwordVisible = showPassword ?? localShowPassword
+
   const togglePassword =
-    onTogglePassword ?? (() => setLocalShowPassword(visible => !visible))
+    onTogglePassword ?? (() => setLocalShowPassword(v => !v))
 
   const switchMode =
     onSwitchMode ??
     ((mode: 'signin' | 'signup') => setLocalIsSignUp(mode === 'signup'))
 
   const valueOf = (key: string) =>
-    (form as Record<string, string | undefined>)[key] ?? localFields[key] ?? ''
+    form[key as keyof AuthForm] ?? localFields[key] ?? ''
 
   const changeField = (key: string, value: string) => {
-    setLocalFields(previous => ({ ...previous, [key]: value }))
-    onFieldChange(key, value)
+    setLocalFields(prev => ({ ...prev, [key]: value }))
+    onFieldChange?.(key, value)
   }
 
-  const fillDemo =
-    onFillDemo ??
-    (() => {
-      setLocalFields(previous => ({
-        ...previous,
-        email: DEMO_EMAIL,
-        password: DEMO_PASSWORD,
-      }))
-      onFieldChange('email', DEMO_EMAIL)
-      onFieldChange('password', DEMO_PASSWORD)
-    })
+  const fillDemo = onFillDemo ?? (() => {
+    setLocalFields(prev => ({
+      ...prev,
+      email: DEMO_EMAIL,
+      password: DEMO_PASSWORD,
+    }))
+    onFieldChange?.('email', DEMO_EMAIL)
+    onFieldChange?.('password', DEMO_PASSWORD)
+  })
 
   return (
     <div className={`relative min-h-screen flex flex-col lg:flex-row text-[#1E2D26] font-sans overflow-hidden lg:overflow-visible bg-[#386D59] lg:bg-[#F7F4EE]`}>

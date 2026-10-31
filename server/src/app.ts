@@ -2,11 +2,14 @@ import express from 'express'
 import type { NextFunction, Request, Response } from 'express'
 import cors from 'cors'
 import { config } from './config.js'
+import { authRouter } from './routes/auth.js'
 
 export const app = express()
 
 app.use(cors({ origin: config.corsOrigin }))
 app.use(express.json({ limit: '100kb' }))
+
+app.use('/api/auth', authRouter)
 
 app.get('/', (_req, res) => {
   res.json({

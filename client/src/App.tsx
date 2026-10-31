@@ -6,7 +6,7 @@ import './index.css'
 
 import { useState } from 'react'
 import type { FormEvent } from 'react'
-import { signup } from './services/auth'
+import { signup, login } from './services/auth'
 
 function App() {
   const [authenticated, setAuthenticated] = useState(false)
@@ -36,24 +36,33 @@ function App() {
     setBusy(true)
 
     try {
-      await signup({
-        name: form.name,
-        email: form.email,
-        password: form.password,
-      })
+      if (isSignUp) {
+        await signup({
+          name: form.name,
+          email: form.email,
+          password: form.password,
+        })
 
-      alert('Account created successfully! You can now sign in.')
+        alert('Account created successfully! You can now sign in.')
 
-      setIsSignUp(false)
-      setForm({
-        name: '',
-        email: form.email,
-        password: '',
-        confirm: '',
-      })
+        setIsSignUp(false)
+        setForm({
+          name: '',
+          email: form.email,
+          password: '',
+          confirm: '',
+        })
+      } else {
+        await login({
+          email: form.email,
+          password: form.password,
+        })
+
+        setAuthenticated(true)
+      }
     } catch (error) {
       setServerError(
-        error instanceof Error ? error.message : 'Unable to create account.',
+        error instanceof Error ? error.message : 'Authentication failed.'
       )
     } finally {
       setBusy(false)

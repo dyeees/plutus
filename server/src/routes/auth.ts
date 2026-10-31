@@ -87,13 +87,35 @@ authRouter.post('/login', async (req, res) => {
       return
     }
 
-    res.status(200).json({
-      message: 'Login successful!',
-      user: {
+    req.session.regenerate((error) => {
+      if (error) {
+        console.error(error)
+        res.status(500).json({
+          error: 'Unable to create session.',
+        })
+        return
+      }
+
+      req.session.user = {
         id: user.id,
         name: user.name,
         email: user.email,
-      },
+      }
+
+      req.session.save((error) => {
+        if (error) {
+          console.error(error)
+          res.status(500).json({
+            error: 'Unable to save session.',
+          })
+          return
+        }
+
+        res.status(200).json({
+          message: 'Login successful!',
+          user: req.session.user,
+        })
+      })
     })
   } catch (error) {
     console.error(error)
@@ -101,4 +123,37 @@ authRouter.post('/login', async (req, res) => {
       error: 'Internal server error',
     })
   }
+})
+
+authRouter.get('/me', (req, res) => {
+  if (!req.session.user) {
+    res.status(401).json({
+      error: 'Not authenticated.',
+    })
+    return
+  }
+
+  res.status(200).json({
+    user: req.session.user,
+  })
+})
+
+authRouter.post('/logout', (req, res) => {
+  req.session.destroy((error) => {
+    if (error) {
+      console.error(error)
+      res.status(500).json({
+        error: 'Unable to log out.',
+      })
+      return
+    }
+
+    res.clearCookie('plutus.sid', {
+      path: '/',
+    })
+
+    res.status(200).json({
+      message: 'Logged out successfully!',
+    })
+  })
 })

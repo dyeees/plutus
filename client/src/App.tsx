@@ -4,13 +4,37 @@ import RecordForm from './pages/RecordForm'
 import AuthPage from './pages/AuthPage'
 import './index.css'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import type { FormEvent } from 'react'
-import { signup, login } from './services/auth'
+import { signup, login, getCurrentUser, logout } from './services/auth'
 
 function App() {
   const [authenticated, setAuthenticated] = useState(false)
+  const [isCheckingSession, setIsCheckingSession] = useState(true)
   const [user, setUser] = useState<{name: string, email: string} | null>(null)
+
+  useEffect(() => {
+    async function checkSession() {
+      try {
+        const currentUser = await getCurrentUser()
+
+        if (currentUser) {
+          setUser({
+            name: currentUser.name,
+            email: currentUser.email,
+          })
+          setAuthenticated(true)
+        }
+      } catch (error) {
+        console.error('Session check failed:', error)
+      } finally {
+        setIsCheckingSession(false)
+      }
+    }
+
+    checkSession()
+  }, [])
+
   const [currentScreen, setCurrentScreen] = useState('overview')
   const [screenParams, setScreenParams] = useState({})
 
@@ -81,10 +105,22 @@ function App() {
     }))
   }
 
-  const signOut = () => {
-    setAuthenticated(false) 
-    setUser(null)
-    setCurrentScreen('overview')
+  const signOut = async () => {
+    try {
+      await logout()
+
+      setAuthenticated(false)
+      setUser(null)
+      setCurrentScreen('overview')
+    } catch (error) {
+      console.error('Logout failed:', error)
+    }
+  }
+
+  if (isCheckingSession) {
+    return <div className="min-h-screen flex items-center justify-center">
+      Loading Plutus...
+    </div>
   }
 
   if (!authenticated) {

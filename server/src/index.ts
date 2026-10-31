@@ -1,10 +1,15 @@
 import { app } from './app'
+import { config, assertDbConfig } from './config.js'
+import { pingDb } from './db.js'
 
 async function main() {
-  const PORT = 3000
+  assertDbConfig()
 
-  app.listen(PORT, () => {
-    console.log(`Plutus API running on http://localhost:${PORT}`)
+  await pingDb()
+  console.log('Database connected successfully!')
+
+  app.listen(config.port, () => {
+    console.log(`Plutus API running on http://localhost:${config.port}`)
   })
 }
 

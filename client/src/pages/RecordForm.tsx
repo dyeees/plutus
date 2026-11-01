@@ -55,7 +55,7 @@ function RecordForm () {
             placeholder="e.g. Personal Loan — BDO, Car Loan, HDMF"
             value={name}
             onChange={e => setName(e.target.value)}
-            className="w-full bg-white border border-black/12 font-mono px-3.5 py-2.5 text-[13px] text-[#1E2D26] placeholder-[#7A9488] focus:outline-none focus:border-[#C8860A] transition-colors shadow-sm"
+            className="w-full bg-white border border-black/12 font-mono px-3.5 py-2.5 text-[12px] sm:text-[13px] text-[#1E2D26] placeholder-[#7A9488] focus:outline-none focus:border-[#C8860A] transition-colors shadow-sm"
           />
         </div>
 
@@ -79,7 +79,7 @@ function RecordForm () {
                 placeholder="0.00"
                 value={amount}
                 onChange={e => setAmount(e.target.value)}
-                className="w-full bg-white border border-black/12 rounded-sm pl-8 pr-3.5 py-2.5 text-[13px] font-mono font-semibold tabular-numbers text-[#1E2D26] placeholder-[#7A9488] focus:outline-none focus:border-[#C8860A] transition-colors shadow-sm"
+                className="w-full bg-white border border-black/12 rounded-sm pl-8 pr-3.5 py-2.5 text-[12px] sm:text-[13px] font-mono font-semibold tabular-numbers text-[#1E2D26] placeholder-[#7A9488] focus:outline-none focus:border-[#C8860A] transition-colors shadow-sm"
               />
             </div>
           </div>
@@ -110,7 +110,7 @@ function RecordForm () {
               required
               value={dueDate}
               onChange={e => setDueDate(e.target.value)}
-              className="w-full bg-white border border-black/12 rounded-sm px-3.5 py-2.5 text-[13px] font-mono text-[#1E2D26] focus:outline-none focus:border-[#C8860A] transition-colors shadow-sm"
+              className="w-full bg-white border border-black/12 rounded-sm px-3.5 py-2.5 text-[12px] sm:text-[13px] font-mono text-[#1E2D26] focus:outline-none focus:border-[#C8860A] transition-colors shadow-sm"
             />
           </div>
 
@@ -140,7 +140,7 @@ function RecordForm () {
             placeholder="Account number, portal URL, reference codes, bank details..."
             value={notes}
             onChange={e => setNotes(e.target.value)}
-            className="w-full bg-white border border-black/12 rounded-sm px-3.5 py-2.5 text-[13px] font-mono text-[#1E2D26] placeholder-[#7A9488] focus:outline-none focus:border-[#C8860A] transition-colors leading-relaxed shadow-sm"
+            className="w-full bg-white border border-black/12 rounded-sm px-3.5 py-2.5 text-[12px] sm:text-[13px] font-mono text-[#1E2D26] placeholder-[#7A9488] focus:outline-none focus:border-[#C8860A] transition-colors leading-relaxed shadow-sm"
           />
         </div>
 

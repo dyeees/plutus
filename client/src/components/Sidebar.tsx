@@ -9,7 +9,7 @@ import {
 } from 'lucide-react'
 
 const NAV_ITEMS = [
-  { key: 'overview', label: 'Overview', icon: LayoutDashboard },
+  { key: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { key: 'finances', label: 'Finances', icon: Receipt },
   { key: 'calendar', label: 'Calendar', icon: CalendarDays },
   { key: 'settings', label: 'Settings', icon: Sliders },

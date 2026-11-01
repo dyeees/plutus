@@ -107,7 +107,7 @@ function Dropdown<T extends string>({
         disabled={disabled}
         onClick={() => (open ? setOpen(false) : openMenu())}
         onKeyDown={onKeyDown}
-        className="flex w-full items-center justify-between gap-3 rounded-sm border border-black/12 bg-white px-3.5 py-2.5 text-left font-mono text-[13px] text-[#1E2D26] shadow-sm focus:border-[#C8860A] focus:outline-none disabled:cursor-not-allowed disabled:opacity-50"
+        className="flex w-full items-center justify-between gap-3 rounded-sm border border-black/12 bg-white px-3.5 py-2.5 text-left font-mono text-[12px] sm:text-[13px] text-[#1E2D26] shadow-sm focus:border-[#C8860A] focus:outline-none disabled:cursor-not-allowed disabled:opacity-50"
       >
         <span>{value}</span>
         <ChevronDown
@@ -132,7 +132,7 @@ function Dropdown<T extends string>({
               onMouseDown={e => e.preventDefault()}
               onClick={() => select(option)}
               onMouseEnter={() => setActive(i)}
-              className={`cursor-pointer px-3.5 py-2 font-mono text-[13px] ${
+              className={`cursor-pointer px-3.5 py-2 font-mono text-[12px] sm:text-[13px] ${
                 i === active
                   ? 'bg-[#F3F0E8] text-[#C8860A]'
                   : 'text-[#1E2D26]'

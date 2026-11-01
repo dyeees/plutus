@@ -54,7 +54,7 @@ function Sidebar({ activeTab, navigate, user, signOut, isLoggingOut  }: SidebarP
           >
             <span className="flex items-center gap-2">
               <Plus className="translate-y-px w-3.5 h-3.5 text-[#F6C163] group-hover:rotate-90 transition-transform duration-200" />
-              <span className="text-sm">Record Bill</span>
+              <span className="text-[13px]">Record Bill</span>
             </span>
           </button>
         </div>
@@ -69,7 +69,7 @@ function Sidebar({ activeTab, navigate, user, signOut, isLoggingOut  }: SidebarP
               <button
                 key={item.key}
                 onClick={() => navigate(item.key)}
-                className={`w-full flex items-center justify-between px-3 py-2 text-sm font-medium tracking-wide rounded-sm transition-all duration-150 text-left ${
+                className={`w-full flex items-center justify-between px-3 py-2 text-[13px] font-medium tracking-wide rounded-sm transition-all duration-150 text-left ${
                   isActive
                     ? 'bg-[#285041] text-[#FAF8F2] border-l-2 border-[#F6C163] pl-2.5 shadow-sm'
                     : 'text-[#C8E0D6] hover:text-[#FAF8F2] hover:bg-[#2F5C4A]'

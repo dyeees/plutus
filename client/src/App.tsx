@@ -47,6 +47,7 @@ function App() {
   })
 
   const [busy, setBusy] = useState(false)
+  const [isLoggingOut, setIsLoggingOut] = useState(false)
   const [serverError, setServerError] = useState<string | null>(null)
 
   async function handleAuthSubmit(event: FormEvent<HTMLFormElement>) {
@@ -106,14 +107,19 @@ function App() {
   }
 
   const signOut = async () => {
+    setIsLoggingOut(true)
     try {
       await logout()
-
       setAuthenticated(false)
       setUser(null)
       setCurrentScreen('overview')
+      setForm({name: '', email: '', password: '', confirm: '',})
+      setIsSignUp(false)
+      setServerError(null)
     } catch (error) {
       console.error('Logout failed:', error)
+    } finally {
+      setIsLoggingOut(false)
     }
   }
 
@@ -157,6 +163,7 @@ function App() {
         navigate={navigate}
         user={user}
         signOut={signOut}
+        isLoggingOut={isLoggingOut}
       />
 
       {/* ──── Main Content ────*/}

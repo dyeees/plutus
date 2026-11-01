@@ -5,6 +5,7 @@ import {
   Sliders,
   Plus,
   LogOut,
+  LoaderCircle,
 } from 'lucide-react'
 
 const NAV_ITEMS = [
@@ -22,9 +23,10 @@ type SidebarProps = {
     email: string
   } | null
   signOut: () => void
+  isLoggingOut: boolean
 }
 
-function Sidebar({ activeTab, navigate, user, signOut }: SidebarProps) {
+function Sidebar({ activeTab, navigate, user, signOut, isLoggingOut  }: SidebarProps) {
   return (
     <aside className="hidden md:flex flex-col w-64 bg-[#386D59] border-r border-black/10 p-5 shrink-0 justify-between">
       <div className="space-y-6">
@@ -97,11 +99,16 @@ function Sidebar({ activeTab, navigate, user, signOut }: SidebarProps) {
             <button
               type="button"
               onClick={signOut}
-              title="Sign out"
-              aria-label="Sign out"
-              className="p-1.5 shrink-0 text-[#A8CABD] hover:text-[#F6C163] hover:bg-[#285041] rounded-sm transition-colors"
+              disabled={isLoggingOut}
+              title={isLoggingOut ? 'Logging out...' : 'Sign out'}
+              aria-label={isLoggingOut ? 'Logging out' : 'Sign out'}
+              className="p-1.5 shrink-0 text-[#A8CABD] hover:text-[#F6C163] hover:bg-[#285041] rounded-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              <LogOut className="w-3.5 h-3.5" />
+              {isLoggingOut ? (
+                <LoaderCircle className="w-3.5 h-3.5 animate-spin" />
+              ) : (
+                <LogOut className="w-3.5 h-3.5" />
+              )}
             </button>
           </div>
         </div>       

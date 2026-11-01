@@ -2,6 +2,7 @@ import Sidebar from './components/Sidebar'
 import Navbar from './components/Navbar'
 import RecordForm from './pages/RecordForm'
 import AuthPage from './pages/AuthPage'
+import Dashboard from './pages/Dashboard'
 import './index.css'
 
 import { useState, useEffect } from 'react'
@@ -35,7 +36,7 @@ function App() {
     checkSession()
   }, [])
 
-  const [currentScreen, setCurrentScreen] = useState('overview')
+  const [currentScreen, setCurrentScreen] = useState('dashboard')
   const [screenParams, setScreenParams] = useState({})
 
   const [isSignUp, setIsSignUp] = useState(false)
@@ -175,7 +176,8 @@ function App() {
         />
 
         <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-5xl w-full mx-auto pb-24 md:pb-12">
-          <RecordForm />
+          {currentScreen === 'dashboard' && <Dashboard />}
+          {currentScreen === 'add-record' && <RecordForm />}
         </main>
       </div>
     </div>

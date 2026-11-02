@@ -94,7 +94,6 @@ function App() {
         })
 
         alert('Account created successfully! You can now sign in.')
-
         setIsSignUp(false)
         setForm({
           name: '',
@@ -103,15 +102,21 @@ function App() {
           confirm: '',
         })
       } else {
-        await login({
+        const result = await login({
           email: form.email,
           password: form.password,
         })
 
         setUser({
-          name: form.email.split('@')[0],
-          email: form.email,
+          name: result.user.name,
+          email: result.user.email,
         })
+        
+        setCurrentScreen('dashboard')
+        window.history.replaceState(
+          { screen: 'dashboard' },
+          '', window.location.pathname
+        )
         setAuthenticated(true)
       }
     } catch (error) {

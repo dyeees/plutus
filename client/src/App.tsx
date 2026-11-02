@@ -37,7 +37,7 @@ function App() {
   }, [])
 
   const [currentScreen, setCurrentScreen] = useState('dashboard')
-  const [screenParams, setScreenParams] = useState({})
+  const [screenParams, setScreenParams] = useState<{ returnTo?: string }>({})
 
   const [isSignUp, setIsSignUp] = useState(false)
   const [form, setForm] = useState({
@@ -147,13 +147,21 @@ function App() {
     )
   }
 
-  const activeTab = ['add-record', 'edit-record', 'record-detail'].includes(currentScreen)
+  const activeTab = ['edit-record', 'record-detail'].includes(currentScreen)
     ? 'finances'
     : currentScreen
 
-  function navigate(screen: string, params = {}) {
+  function navigate(screen: string, params: { returnTo?: string } = {}) {
+    if (screen === 'add-record') {
+      setScreenParams({
+        returnTo: currentScreen === 'add-record'
+          ? screenParams.returnTo
+          : currentScreen,
+      })
+    } else {
+      setScreenParams(params)
+    }
     setCurrentScreen(screen)
-    setScreenParams(params)
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
@@ -176,8 +184,8 @@ function App() {
         />
 
         <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-5xl w-full mx-auto pb-24 md:pb-12">
-          {currentScreen === 'dashboard' && <Dashboard />}
-          {currentScreen === 'add-record' && <RecordForm />}
+          {currentScreen === 'dashboard' && <Dashboard navigate={navigate} />}
+          {currentScreen === 'add-record' && (<RecordForm onCancel={() => navigate(screenParams.returnTo || 'dashboard')}/>)}
         </main>
       </div>
     </div>

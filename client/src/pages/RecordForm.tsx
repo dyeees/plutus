@@ -19,7 +19,7 @@ const RECURRENCES = [
   { value: 'One-time', label: 'One-time' },
 ]
 
-function RecordForm () {
+function RecordForm({ onCancel }: { onCancel: () => void }) {
   const [name, setName] = useState('')
   const [amount, setAmount] = useState('')
   const [classification, setClassification] = useState('Utilities')
@@ -148,7 +148,7 @@ function RecordForm () {
         <div className="pt-3 border-t border-black/8 flex items-center justify-end gap-3">
           <button
             type="button"
-            onClick={()=>{}}
+            onClick={onCancel}
             className="px-4 py-2 text-xs font-mono text-[#4A6358] hover:text-[#1E2D26] border border-black/10 bg-[#E8E4DA] hover:bg-[#E2DED4] rounded-sm transition-colors"
           >
             Cancel

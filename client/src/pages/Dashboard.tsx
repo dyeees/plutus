@@ -10,7 +10,7 @@ export default function Dashboard({ navigate }: DashboardProps) {
       {/* Page Header */}
       <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 pb-2 border-b border-black/10">
         <h2 className="font-serif text-2xl sm:text-3xl font-medium tracking-tight text-[#1E2D26]">
-          Monthly Commitments &amp; Payments
+          Monthly Overview
         </h2>
 
         <div className="flex flex-col items-end text-right gap-1">

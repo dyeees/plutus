@@ -49,7 +49,7 @@ function Sidebar({ activeTab, navigate, user, signOut, isLoggingOut  }: SidebarP
 
         <div>
           <button
-            onClick={() => navigate('')}
+            onClick={() => navigate('add-record')}
             className="w-full group flex items-center justify-between px-3.5 py-2.5 bg-[#2F5C4A] hover:bg-[#285041] border border-white/15 hover:border-[#F6C163]/60 text-[#FAF8F2] font-medium text-xs tracking-wide rounded-sm transition-all duration-150"
           >
             <span className="flex items-center gap-2">

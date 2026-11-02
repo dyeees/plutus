@@ -13,7 +13,6 @@ function App() {
   const [authenticated, setAuthenticated] = useState(false)
   const [isCheckingSession, setIsCheckingSession] = useState(true)
   const [user, setUser] = useState<{name: string, email: string} | null>(null)
-
   useEffect(() => {
     async function checkSession() {
       try {
@@ -36,7 +35,32 @@ function App() {
     checkSession()
   }, [])
 
-  const [currentScreen, setCurrentScreen] = useState('dashboard')
+  useEffect(() => {
+    function handlePopState(event: PopStateEvent) {
+      const screen = event.state?.screen || 'dashboard'
+      const params = event.state?.params || {}
+      setCurrentScreen(screen)
+      setScreenParams(params)
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    }
+
+    window.addEventListener('popstate', handlePopState)
+    return () => {
+      window.removeEventListener('popstate', handlePopState)
+    }
+  }, [])
+
+  const [currentScreen, setCurrentScreen] = useState(() => {
+    return window.history.state?.screen || 'dashboard'
+  })
+    useEffect(() => {
+    window.history.replaceState(
+      { screen: currentScreen },
+      '',
+      window.location.pathname
+    )
+  }, [])
+
   const [screenParams, setScreenParams] = useState<{ returnTo?: string }>({})
 
   const [isSignUp, setIsSignUp] = useState(false)
@@ -59,7 +83,6 @@ function App() {
       setServerError('Passwords do not match.')
       return
     }
-
     setBusy(true)
 
     try {
@@ -161,6 +184,12 @@ function App() {
     } else {
       setScreenParams(params)
     }
+
+    window.history.pushState(
+      { screen, params },
+      '',
+      window.location.pathname
+    )
     setCurrentScreen(screen)
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }

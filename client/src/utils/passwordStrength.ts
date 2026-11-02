@@ -22,12 +22,12 @@ export function getPasswordStrength(password: string): PasswordStrength {
   }
 
   if (score === 3) {
-    return { level: 2, label: 'Fair', color: '#C8860A' }
+    return { level: 2, label: 'Fair', color: '#C58A62' }
   }
 
   if (score === 4) {
-    return { level: 3, label: 'Good', color: '#4A8B68' }
+    return { level: 3, label: 'Good', color: '#D2B45F' }
   }
 
-  return { level: 3, label: 'Strong', color: '#386D59' }
+  return { level: 4, label: 'Strong', color: '#386D59' }
 }

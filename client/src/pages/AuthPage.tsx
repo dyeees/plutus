@@ -268,7 +268,7 @@ function AuthPage(props: AuthPageProps) {
                   {isSignUp && form.password && passwordStrength && (
                     <div className="flex items-center gap-2 -mt-1">
                       <div className="flex-1 flex gap-1">
-                        {[1, 2, 3].map(step => (
+                        {[1, 2, 3, 4].map(step => (
                           <span
                             key={step}
                             className="h-1 flex-1 rounded-full transition-colors duration-200"

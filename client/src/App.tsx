@@ -8,6 +8,7 @@ import './index.css'
 import { useState, useEffect } from 'react'
 import type { FormEvent } from 'react'
 import { signup, login, getCurrentUser, logout } from './services/auth'
+import { getPasswordStrength } from './utils/passwordStrength'
 
 function App() {
   const [authenticated, setAuthenticated] = useState(false)
@@ -74,6 +75,7 @@ function App() {
   const [busy, setBusy] = useState(false)
   const [isLoggingOut, setIsLoggingOut] = useState(false)
   const [serverError, setServerError] = useState<string | null>(null)
+  const passwordStrength = getPasswordStrength(form.password)
 
   async function handleAuthSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
@@ -167,6 +169,7 @@ function App() {
         onFieldChange={handleFieldChange}
         serverError={serverError}
         busy={busy}
+        passwordStrength={passwordStrength}
         onSwitchMode={mode => {
           setIsSignUp(mode === 'signup')
           setServerError(null)

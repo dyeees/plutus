@@ -8,12 +8,12 @@ export default function Dashboard({ navigate }: DashboardProps) {
   return (
     <div className="space-y-7">
       {/* Page Header */}
-      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 pb-2 border-b border-black/10">
+      <div className="flex flex-col-reverse sm:flex-row sm:items-end justify-between gap-1 sm:gap-3 pb-2 border-b border-black/10">
         <h2 className="font-serif text-2xl sm:text-3xl font-medium tracking-tight text-[#1E2D26]">
           Monthly Overview
         </h2>
 
-        <div className="flex flex-col items-end text-right gap-1">
+        <div className="flex flex-row items-center text-left sm:flex-col sm:items-end sm:text-right gap-2 sm:gap-1">
           <span className="font-mono text-[10px] tracking-[0.2em] uppercase text-[#C8860A] bg-[#C8860A]/10 px-2 py-0.5 rounded-sm border border-[#C8860A]/25">
             Billing Cycle
           </span>
@@ -29,9 +29,9 @@ export default function Dashboard({ navigate }: DashboardProps) {
           <Receipt className="w-6 h-6 stroke-[1.5]" />
         </div>
         <div className="max-w-md mx-auto space-y-1.5">
-          <h3 className="font-serif text-lg text-[#1E2D26]">No commitments registered</h3>
+          <h3 className="font-serif text-lg text-[#1E2D26]">No commitments recorded</h3>
           <p className="font-mono text-xs text-[#4A6358] leading-relaxed">
-            Your ledger is currently clear. Record your monthly obligations (rent, utilities, insurance, subscriptions) to start tracking cashflow and due dates.
+            Your ledger is currently clear. Record your monthly obligations to start tracking due dates.
           </p>
         </div>
         <button

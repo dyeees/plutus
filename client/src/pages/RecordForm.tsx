@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import Dropdown from '../components/Dropdown'
-import { Check } from 'lucide-react'
+import { Check, Receipt, Landmark } from 'lucide-react'
 
 const CLASSIFICATIONS = [
   'Housing',
@@ -20,6 +20,7 @@ const RECURRENCES = [
 ]
 
 function RecordForm({ onCancel }: { onCancel: () => void }) {
+  const [recordType, setRecordType] = useState('bill')
   const [name, setName] = useState('')
   const [amount, setAmount] = useState('')
   const [classification, setClassification] = useState('Utilities')
@@ -41,127 +42,159 @@ function RecordForm({ onCancel }: { onCancel: () => void }) {
         </div>
       </div>
 
-      {/* Form Card */}
-      <form className="border border-black/10 bg-[#EFECE4] rounded-sm p-5 sm:p-6 space-y-5">
-        {/* Obligation Name */}
-        <div className="space-y-1.5">
-          <label htmlFor="record-name" className="text-xs font-mono text-[#4A6358] flex items-center justify-between">
-            <span>Payee or Obligation Name <strong className="text-[#C8860A]">*</strong></span>
-          </label>
-          <input
-            id="record-name"
-            type="text"
-            required
-            placeholder="e.g. Personal Loan — BDO, Car Loan, HDMF"
-            value={name}
-            onChange={e => setName(e.target.value)}
-            className="w-full bg-white border border-black/12 font-mono px-3.5 py-2.5 text-[12px] sm:text-[13px] text-[#1E2D26] placeholder-[#7A9488] focus:outline-none focus:border-[#C8860A] transition-colors shadow-sm"
-          />
+      <div>
+        {/* Record Type Tabs*/}
+        <div className="relative z-10 -mb-px flex items-end gap-1.5 px-3" role="group" aria-label="Record type">
+          <button
+            type="button"
+            aria-pressed={recordType === 'bill'}
+            onClick={() => setRecordType('bill')}
+            className={`flex items-center gap-2 px-4 py-2.5 text-xs font-mono font-medium rounded-t-sm border border-b-0 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#C8860A]/40 ${
+              recordType === 'bill'
+                ? 'bg-[#EFECE4] border-black/10 border-t-2 border-t-[#F6C163] text-[#386D59]'
+                : 'bg-[#E2DED4] border-black/8 border-t-2 border-t-transparent text-[#7A9488] hover:text-[#4A6358] hover:bg-[#E8E4DA]'
+            }`}
+          >
+            <Receipt className={`w-3.5 h-3.5 ${recordType === 'bill' ? 'text-[#C8860A]' : 'text-[#7A9488]'}`} />
+            <span>Regular Bill</span>
+          </button>
+          <button
+            type="button"
+            aria-pressed={recordType === 'loan'}
+            onClick={() => setRecordType('loan')}
+            className={`flex items-center gap-2 px-4 py-2.5 text-xs font-mono font-medium rounded-t-sm border border-b-0 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#C8860A]/40 ${
+              recordType === 'loan'
+                ? 'bg-[#386D59] border-black/10 border-t-2 border-t-[#F6C163] text-[#FAF8F2]'
+                : 'bg-[#E2DED4] border-black/8 border-t-2 border-t-transparent text-[#7A9488] hover:text-[#4A6358] hover:bg-[#E8E4DA]'
+            }`}
+          >
+            <Landmark className={`w-3.5 h-3.5 ${recordType === 'loan' ? 'text-[#F6C163]' : 'text-[#7A9488]'}`} />
+            <span>Installment Loan</span>
+          </button>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          {/* Amount */}
+        {/* Form Card */}
+        <form className="border border-black/10 bg-[#EFECE4] rounded-sm p-5 sm:p-6 space-y-5">
+          {/* Obligation Name */}
           <div className="space-y-1.5">
-            <label htmlFor="record-amount" className="text-xs font-mono text-[#4A6358] flex items-center justify-between">
-              <span>Installment Amount <strong className="text-[#C8860A]">*</strong></span>
-              <span className="text-[10px] text-[#7A9488] font-mono mr-1">PHP</span>
+            <label htmlFor="record-name" className="text-xs font-mono text-[#4A6358] flex items-center justify-between">
+              <span>Payee or Obligation Name <strong className="text-[#C8860A]">*</strong></span>
             </label>
-            <div className="relative">
-              <span className="absolute left-3.5 top-[0.54rem] font-mono text-[#C8860A]">
-                ₱
-              </span>
-              <input
-                id="record-amount"
-                type="number"
-                step="0.01"
-                min="0"
-                required
-                placeholder="0.00"
-                value={amount}
-                onChange={e => setAmount(e.target.value)}
-                className="w-full bg-white border border-black/12 rounded-sm pl-8 pr-3.5 py-2.5 text-[12px] sm:text-[13px] font-mono font-semibold tabular-numbers text-[#1E2D26] placeholder-[#7A9488] focus:outline-none focus:border-[#C8860A] transition-colors shadow-sm"
+            <input
+              id="record-name"
+              type="text"
+              required
+              placeholder="e.g. Personal Loan — BDO, Car Loan, HDMF"
+              value={name}
+              onChange={e => setName(e.target.value)}
+              className="w-full bg-white border border-black/12 font-mono px-3.5 py-2.5 text-[12px] sm:text-[13px] text-[#1E2D26] placeholder-[#7A9488] focus:outline-none focus:border-[#C8860A] transition-colors shadow-sm"
+            />
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {/* Amount */}
+            <div className="space-y-1.5">
+              <label htmlFor="record-amount" className="text-xs font-mono text-[#4A6358] flex items-center justify-between">
+                <span>Installment Amount <strong className="text-[#C8860A]">*</strong></span>
+                <span className="text-[10px] text-[#7A9488] font-mono mr-1">PHP</span>
+              </label>
+              <div className="relative">
+                <span className="absolute left-3.5 top-[0.54rem] font-mono text-[#C8860A]">
+                  ₱
+                </span>
+                <input
+                  id="record-amount"
+                  type="number"
+                  step="0.01"
+                  min="0"
+                  required
+                  placeholder="0.00"
+                  value={amount}
+                  onChange={e => setAmount(e.target.value)}
+                  className="w-full bg-white border border-black/12 rounded-sm pl-8 pr-3.5 py-2.5 text-[12px] sm:text-[13px] font-mono font-semibold tabular-numbers text-[#1E2D26] placeholder-[#7A9488] focus:outline-none focus:border-[#C8860A] transition-colors shadow-sm"
+                />
+              </div>
+            </div>
+
+            {/*Classification */}
+            <div className="space-y-1.5">
+              <label htmlFor="record-classification" className="text-xs font-mono text-[#4A6358] flex items-center justify-between">
+                Expense Classification
+              </label>
+              <Dropdown
+                id="record-classification"
+                value={classification}
+                options={CLASSIFICATIONS}
+                onChange={setClassification}
               />
             </div>
           </div>
 
-          {/*Classification */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {/* Due Date */}
+            <div className="space-y-1.5">
+              <label htmlFor="bill-due-date" className="text-xs font-mono text-[#4A6358] flex items-center justify-between">
+                <span>Due Date <strong className="text-[#C8860A]">*</strong></span>
+              </label>
+              <input
+                id="bill-due-date"
+                type="date"
+                required
+                value={dueDate}
+                onChange={e => setDueDate(e.target.value)}
+                className="w-full bg-white border border-black/12 rounded-sm px-3.5 py-2.5 text-[12px] sm:text-[13px] font-mono text-[#1E2D26] focus:outline-none focus:border-[#C8860A] transition-colors shadow-sm"
+              />
+            </div>
+
+            {/* Recurrence */}
+            <div className="space-y-1.5">
+              <label htmlFor="bill-recurrence" className="text-xs font-mono text-[#4A6358] flex items-center justify-between">
+                Payment Frequency
+              </label>
+              <Dropdown
+                id="bill-recurrence"
+                value={recurrence}
+                options={RECURRENCES.map(r => r.value)}
+                onChange={setRecurrence}
+              />
+            </div>
+          </div>
+
+          {/* Notes */}
           <div className="space-y-1.5">
-            <label htmlFor="record-classification" className="text-xs font-mono text-[#4A6358] flex items-center justify-between">
-              Expense Classification
+            <label htmlFor="bill-notes" className="text-xs font-mono text-[#4A6358] flex items-center justify-between">
+              <span>Payment Notes / Instructions</span>
+              <span className="text-[10px] text-[#7A9488]">Optional</span>
             </label>
-            <Dropdown
-              id="record-classification"
-              value={classification}
-              options={CLASSIFICATIONS}
-              onChange={setClassification}
+            <textarea
+              id="bill-notes"
+              rows={3}
+              placeholder="Account number, portal URL, reference codes, bank details..."
+              value={notes}
+              onChange={e => setNotes(e.target.value)}
+              className="w-full bg-white border border-black/12 rounded-sm px-3.5 py-2.5 text-[12px] sm:text-[13px] font-mono text-[#1E2D26] placeholder-[#7A9488] focus:outline-none focus:border-[#C8860A] transition-colors leading-relaxed shadow-sm"
             />
           </div>
-        </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          {/* Due Date */}
-          <div className="space-y-1.5">
-            <label htmlFor="bill-due-date" className="text-xs font-mono text-[#4A6358] flex items-center justify-between">
-              <span>Due Date <strong className="text-[#C8860A]">*</strong></span>
-            </label>
-            <input
-              id="bill-due-date"
-              type="date"
-              required
-              value={dueDate}
-              onChange={e => setDueDate(e.target.value)}
-              className="w-full bg-white border border-black/12 rounded-sm px-3.5 py-2.5 text-[12px] sm:text-[13px] font-mono text-[#1E2D26] focus:outline-none focus:border-[#C8860A] transition-colors shadow-sm"
-            />
+          {/* Form Actions */}
+          <div className="pt-3 border-t border-black/8 flex items-center justify-end gap-3">
+            <button
+              type="button"
+              onClick={onCancel}
+              className="px-4 py-2 text-xs font-mono text-[#4A6358] hover:text-[#1E2D26] border border-black/10 bg-[#E8E4DA] hover:bg-[#E2DED4] rounded-sm transition-colors"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              className="px-5 py-2 bg-[#386D59] hover:bg-[#2F5C4A] active:bg-[#285041] text-white font-mono text-xs font-semibold rounded-sm transition-colors shadow-sm flex items-center gap-1.5"
+            >
+              <Check className="w-3.5 h-3.5 stroke-[2.5]" />
+              <span>{'Record Entry'}</span>
+            </button>
           </div>
-
-          {/* Recurrence */}
-          <div className="space-y-1.5">
-            <label htmlFor="bill-recurrence" className="text-xs font-mono text-[#4A6358] flex items-center justify-between">
-              Payment Frequency
-            </label>
-            <Dropdown
-              id="bill-recurrence"
-              value={recurrence}
-              options={RECURRENCES.map(r => r.value)}
-              onChange={setRecurrence}
-            />
-          </div>
-        </div>
-
-        {/* Notes */}
-        <div className="space-y-1.5">
-          <label htmlFor="bill-notes" className="text-xs font-mono text-[#4A6358] flex items-center justify-between">
-            <span>Payment Notes / Instructions</span>
-            <span className="text-[10px] text-[#7A9488]">Optional</span>
-          </label>
-          <textarea
-            id="bill-notes"
-            rows={3}
-            placeholder="Account number, portal URL, reference codes, bank details..."
-            value={notes}
-            onChange={e => setNotes(e.target.value)}
-            className="w-full bg-white border border-black/12 rounded-sm px-3.5 py-2.5 text-[12px] sm:text-[13px] font-mono text-[#1E2D26] placeholder-[#7A9488] focus:outline-none focus:border-[#C8860A] transition-colors leading-relaxed shadow-sm"
-          />
-        </div>
-
-        {/* Form Actions */}
-        <div className="pt-3 border-t border-black/8 flex items-center justify-end gap-3">
-          <button
-            type="button"
-            onClick={onCancel}
-            className="px-4 py-2 text-xs font-mono text-[#4A6358] hover:text-[#1E2D26] border border-black/10 bg-[#E8E4DA] hover:bg-[#E2DED4] rounded-sm transition-colors"
-          >
-            Cancel
-          </button>
-          <button
-            type="submit"
-            className="px-5 py-2 bg-[#386D59] hover:bg-[#2F5C4A] active:bg-[#285041] text-white font-mono text-xs font-semibold rounded-sm transition-colors shadow-sm flex items-center gap-1.5"
-          >
-            <Check className="w-3.5 h-3.5 stroke-[2.5]" />
-            <span>{'Record Entry'}</span>
-          </button>
-        </div>
-      </form>
+        </form>
+      </div>
     </div>
   )
 }

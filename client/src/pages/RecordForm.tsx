@@ -64,11 +64,11 @@ function RecordForm({ onCancel }: { onCancel: () => void }) {
             onClick={() => setRecordType('loan')}
             className={`flex items-center gap-2 px-4 py-2.5 text-xs font-mono font-medium rounded-t-sm border border-b-0 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#C8860A]/40 ${
               recordType === 'loan'
-                ? 'bg-[#386D59] border-black/10 border-t-2 border-t-[#F6C163] text-[#FAF8F2]'
+                ? 'bg-[#EFECE4] border-black/10 border-t-2 border-t-[#F6C163] text-[#386D59]'
                 : 'bg-[#E2DED4] border-black/8 border-t-2 border-t-transparent text-[#7A9488] hover:text-[#4A6358] hover:bg-[#E8E4DA]'
             }`}
           >
-            <Landmark className={`w-3.5 h-3.5 ${recordType === 'loan' ? 'text-[#F6C163]' : 'text-[#7A9488]'}`} />
+            <Landmark className={`w-3.5 h-3.5 ${recordType === 'loan' ? 'text-[#C8860A]' : 'text-[#7A9488]'}`} />
             <span>Installment Loan</span>
           </button>
         </div>

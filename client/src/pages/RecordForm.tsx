@@ -44,7 +44,7 @@ function RecordForm({ onCancel }: { onCancel: () => void }) {
 
       <div>
         {/* Record Type Tabs*/}
-        <div className="relative z-10 -mb-px flex items-end gap-1.5 px-3" role="group" aria-label="Record type">
+        <div className="relative z-10 -mb-px flex items-end gap-1.5" role="group" aria-label="Record type">
           <button
             type="button"
             aria-pressed={recordType === 'bill'}

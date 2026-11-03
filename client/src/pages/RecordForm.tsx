@@ -44,15 +44,15 @@ function RecordForm({ onCancel }: { onCancel: () => void }) {
 
       <div>
         {/* Record Type Tabs*/}
-        <div className="relative z-10 -mb-px flex items-end gap-1.5" role="group" aria-label="Record type">
+        <div className="relative z-10 -mb-px flex items-end" role="group" aria-label="Record type">
           <button
             type="button"
             aria-pressed={recordType === 'bill'}
             onClick={() => setRecordType('bill')}
-            className={`flex items-center gap-2 px-4 py-2.5 text-xs font-mono font-medium rounded-t-sm border border-b-0 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#C8860A]/40 ${
+            className={`flex items-center gap-2 px-4 py-2.5 text-xs font-mono rounded-t-sm border border-b-0 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#C8860A]/40 ${
               recordType === 'bill'
-                ? 'bg-[#EFECE4] border-black/10 border-t-2 border-t-[#F6C163] text-[#386D59]'
-                : 'bg-[#E2DED4] border-black/8 border-t-2 border-t-transparent text-[#7A9488] hover:text-[#4A6358] hover:bg-[#E8E4DA]'
+                ? 'font-bold bg-[#EFECE4] border-black/10 border-t-2 border-t-[#F6C163] text-[#386D59]'
+                : 'font-medium bg-[#E2DED4] border-black/8 border-t-2 border-t-transparent text-[#7A9488] hover:text-[#4A6358] hover:bg-[#E8E4DA]'
             }`}
           >
             <Receipt className={`w-3.5 h-3.5 ${recordType === 'bill' ? 'text-[#C8860A]' : 'text-[#7A9488]'}`} />
@@ -62,14 +62,14 @@ function RecordForm({ onCancel }: { onCancel: () => void }) {
             type="button"
             aria-pressed={recordType === 'loan'}
             onClick={() => setRecordType('loan')}
-            className={`flex items-center gap-2 px-4 py-2.5 text-xs font-mono font-medium rounded-t-sm border border-b-0 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#C8860A]/40 ${
+            className={`flex items-center gap-2 px-4 py-2.5 text-xs font-mono rounded-t-sm border border-b-0 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#C8860A]/40 ${
               recordType === 'loan'
-                ? 'bg-[#EFECE4] border-black/10 border-t-2 border-t-[#F6C163] text-[#386D59]'
-                : 'bg-[#E2DED4] border-black/8 border-t-2 border-t-transparent text-[#7A9488] hover:text-[#4A6358] hover:bg-[#E8E4DA]'
+                ? 'font-bold bg-[#EFECE4] border-black/10 border-t-2 border-t-[#F6C163] text-[#386D59]'
+                : 'font-medium bg-[#E2DED4] border-black/8 border-t-2 border-t-transparent text-[#7A9488] hover:text-[#4A6358] hover:bg-[#E8E4DA]'
             }`}
           >
             <Landmark className={`w-3.5 h-3.5 ${recordType === 'loan' ? 'text-[#C8860A]' : 'text-[#7A9488]'}`} />
-            <span>Installment Loan</span>
+            <span>Loan Payment</span>
           </button>
         </div>
 

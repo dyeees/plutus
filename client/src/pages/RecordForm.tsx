@@ -102,7 +102,7 @@ function RecordForm({ onCancel }: { onCancel: () => void }) {
                 {/* Amount */}
                 <div className="space-y-1.5">
                   <label htmlFor="record-amount" className="text-xs font-mono text-[#4A6358] flex items-center justify-between">
-                    <span>Installment Amount <strong className="text-[#C8860A]">*</strong></span>
+                    <span>Total Amount <strong className="text-[#C8860A]">*</strong></span>
                     <span className="text-[10px] text-[#7A9488] font-mono mr-1">PHP</span>
                   </label>
                   <div className="relative">
@@ -181,6 +181,72 @@ function RecordForm({ onCancel }: { onCancel: () => void }) {
                   onChange={e => setNotes(e.target.value)}
                   className="w-full bg-white border border-black/12 rounded-sm px-3.5 py-2.5 text-[12px] sm:text-[13px] font-mono text-[#1E2D26] placeholder-[#7A9488] focus:outline-none focus:border-[#C8860A] transition-colors leading-relaxed shadow-sm"
                 />
+              </div>
+            </div>
+          )}
+
+          {/* ──  Loan Payment Fields ── */}
+          {recordType === 'loan' && (
+            <div className="space-y-4">
+              {/* Loan Name */}
+              <div className="space-y-1.5">
+                <label htmlFor="record-name" className="text-xs font-mono text-[#4A6358] flex items-center justify-between">
+                  <span>Loan Name <strong className="text-[#C8860A]">*</strong></span>
+                </label>
+                <input
+                  id="record-name"
+                  type="text"
+                  required
+                  placeholder="e.g. Personal Loan — BDO, Car Loan, HDMF"
+                  value={name}
+                  onChange={e => setName(e.target.value)}
+                  className="w-full bg-white border border-black/12 font-mono px-3.5 py-2.5 text-[12px] sm:text-[13px] text-[#1E2D26] placeholder-[#7A9488] focus:outline-none focus:border-[#C8860A] transition-colors shadow-sm"
+                />
+              </div>
+
+              {/* Loan Amount & Interest Rate Row */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="space-y-1.5">
+                  <label htmlFor="record-amount" className="text-xs font-mono text-[#4A6358] flex items-center justify-between">
+                    <span>Installment Amount <strong className="text-[#C8860A]">*</strong></span>
+                    <span className="text-[10px] text-[#7A9488] font-mono mr-1">PHP</span>
+                  </label>
+                  <div className="relative">
+                    <span className="absolute left-3.5 top-[0.54rem] font-mono text-[#C8860A]">
+                      ₱
+                    </span>
+                    <input
+                      id="record-amount"
+                      type="number"
+                      step="0.01"
+                      min="0"
+                      required
+                      placeholder="0.00"
+                      value={amount}
+                      onChange={e => setAmount(e.target.value)}
+                      className="w-full bg-white border border-black/12 rounded-sm pl-8 pr-3.5 py-2.5 text-[12px] sm:text-[13px] font-mono font-semibold tabular-numbers text-[#1E2D26] placeholder-[#7A9488] focus:outline-none focus:border-[#C8860A] transition-colors shadow-sm"
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-1.5">
+                  <label htmlFor="record-amount" className="text-xs font-mono text-[#4A6358] flex items-center justify-between">
+                    <span>Interest Rate (%) <strong className="text-[#C8860A]">*</strong></span>
+                  </label>
+                  <div className="relative">
+                    <input
+                      id="loan-interest" 
+                      type="number"
+                      step="0.01"
+                      min="0"
+                      required
+                      placeholder="0.00"
+                      value={amount}
+                      onChange={e => setAmount(e.target.value)}
+                      className="w-full bg-white border border-black/12 rounded-sm pl-8 pr-3.5 py-2.5 text-[12px] sm:text-[13px] font-mono font-semibold tabular-numbers text-[#1E2D26] placeholder-[#7A9488] focus:outline-none focus:border-[#C8860A] transition-colors shadow-sm"
+                    />
+                  </div>
+                </div>
               </div>
             </div>
           )}

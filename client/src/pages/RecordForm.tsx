@@ -24,6 +24,7 @@ function RecordForm({ onCancel }: { onCancel: () => void }) {
   const [recordType, setRecordType] = useState('bill')
   const [name, setName] = useState('')
   const [amount, setAmount] = useState('')
+  const [loanAmount, setLoanAmount] = useState('')
   const [classification, setClassification] = useState('Utilities')
   const [dueDate, setDueDate] = useState(new Date().toISOString().split('T')[0])
   const [recurrence, setRecurrence] = useState('Monthly')
@@ -190,11 +191,11 @@ function RecordForm({ onCancel }: { onCancel: () => void }) {
             <div className="space-y-4">
               {/* Loan Name */}
               <div className="space-y-1.5">
-                <label htmlFor="record-name" className="text-xs font-mono text-[#4A6358] flex items-center justify-between">
+                <label htmlFor="loan-name" className="text-xs font-mono text-[#4A6358] flex items-center justify-between">
                   <span>Loan Name <strong className="text-[#C8860A]">*</strong></span>
                 </label>
                 <input
-                  id="record-name"
+                  id="loan-name"
                   type="text"
                   required
                   placeholder="e.g. Personal Loan — BDO, Car Loan, HDMF"
@@ -207,7 +208,7 @@ function RecordForm({ onCancel }: { onCancel: () => void }) {
               {/* Loan Amount & Interest Rate Row */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-1.5">
-                  <label htmlFor="record-amount" className="text-xs font-mono text-[#4A6358] flex items-center justify-between">
+                  <label htmlFor="loan-amount" className="text-xs font-mono text-[#4A6358] flex items-center justify-between">
                     <span>Installment Amount <strong className="text-[#C8860A]">*</strong></span>
                     <span className="text-[10px] text-[#7A9488] font-mono mr-1">PHP</span>
                   </label>
@@ -216,21 +217,21 @@ function RecordForm({ onCancel }: { onCancel: () => void }) {
                       ₱
                     </span>
                     <input
-                      id="record-amount"
+                      id="loan-amount"
                       type="number"
                       step="0.01"
                       min="0"
                       required
                       placeholder="0.00"
-                      value={amount}
-                      onChange={e => setAmount(e.target.value)}
+                      value={loanAmount}
+                      onChange={e => setLoanAmount(e.target.value)}
                       className="w-full bg-white border border-black/12 rounded-sm pl-8 pr-3.5 py-2.5 text-[12px] sm:text-[13px] font-mono font-semibold tabular-numbers text-[#1E2D26] placeholder-[#7A9488] focus:outline-none focus:border-[#C8860A] transition-colors shadow-sm"
                     />
                   </div>
                 </div>
 
                 <div className="space-y-1.5">
-                  <label htmlFor="record-amount" className="text-xs font-mono text-[#4A6358] flex items-center justify-between">
+                  <label htmlFor="loan-interest" className="text-xs font-mono text-[#4A6358] flex items-center justify-between">
                     <span>Interest Rate (%) <strong className="text-[#C8860A]">*</strong></span>
                   </label>
                   <div className="relative">
@@ -240,14 +241,58 @@ function RecordForm({ onCancel }: { onCancel: () => void }) {
                       step="0.01"
                       min="0"
                       required
-                      placeholder="0.00"
+                      placeholder="e.g. 2.95"
                       value={amount}
                       onChange={e => setAmount(e.target.value)}
-                      className="w-full bg-white border border-black/12 rounded-sm pl-8 pr-3.5 py-2.5 text-[12px] sm:text-[13px] font-mono font-semibold tabular-numbers text-[#1E2D26] placeholder-[#7A9488] focus:outline-none focus:border-[#C8860A] transition-colors shadow-sm"
+                      className="w-full bg-white border border-black/12 rounded-sm pl-3.5 pr-3.5 py-2.5 text-[12px] sm:text-[13px] font-mono tabular-numbers text-[#1E2D26] placeholder-[#7A9488] focus:outline-none focus:border-[#C8860A] transition-colors shadow-sm"
                     />
                   </div>
                 </div>
               </div>
+
+              {/* Loan Duration, Payment Frequency & First Due Date Row */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div className="space-y-1.5">
+                  <label htmlFor="loan-duration" className="text-xs font-mono text-[#4A6358] flex items-center justify-between">
+                    <span>Duration (Months)</span>
+                  </label>
+                  <input
+                    id="loan-duration"
+                    type="number"
+                    min="1"
+                    placeholder="e.g. 3"
+                    className="w-full bg-white border border-black/12 rounded-sm pl-3.5 pr-3.5 py-2.5 text-[12px] sm:text-[13px] font-mono tabular-numbers text-[#1E2D26] placeholder-[#7A9488] focus:outline-none focus:border-[#C8860A] transition-colors shadow-sm"
+                  />
+                </div>
+
+                <div className="space-y-1.5">
+                  <label htmlFor="loan-duration" className="text-xs font-mono text-[#4A6358] flex items-center justify-between">
+                    <span>Frequency</span>
+                  </label>
+                  <Dropdown
+                    id="bill-recurrence"
+                    value={recurrence}
+                    options={RECURRENCES.map(r => r.value)}
+                    onChange={setRecurrence}
+                  />
+                </div>
+
+                <div className="space-y-1.5">
+                  <label htmlFor="bill-due-date" className="text-xs font-mono text-[#4A6358] flex items-center justify-between">
+                    <span>Due Date <strong className="text-[#C8860A]">*</strong></span>
+                  </label>
+                  <input
+                    id="bill-due-date"
+                    type="date"
+                    required
+                    value={dueDate}
+                    onChange={e => setDueDate(e.target.value)}
+                    className="w-full bg-white border border-black/12 rounded-sm px-3.5 py-2.5 text-[12px] sm:text-[13px] font-mono text-[#1E2D26] focus:outline-none focus:border-[#C8860A] transition-colors shadow-sm"
+                  />
+                </div>
+              </div>
+
+              
             </div>
           )}
 

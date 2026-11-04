@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import Dropdown from '../components/Dropdown'
-import { Check, Receipt, Landmark } from 'lucide-react'
+import { Check, Receipt, Landmark, Calculator } from 'lucide-react'
 
 const CLASSIFICATIONS = [
   'Housing',
@@ -292,7 +292,84 @@ function RecordForm({ onCancel }: { onCancel: () => void }) {
                 </div>
               </div>
 
-              
+              {/* —— Visual Summary ——*/}
+              <div className="rounded-sm overflow-hidden border border-[#386D59]">
+                {/* Header strip */}
+                <div className="bg-[#386D59] px-4 py-2.5 flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Calculator className="w-3.5 h-3.5 text-[#F6C163]" />
+                    <span className="text-[10px] font-mono uppercase tracking-[0.18em] text-[#C8E0D6] font-semibold">
+                      Loan Summary Projection
+                    </span>
+                  </div>
+                  <span className="text-[9px] font-mono uppercase tracking-wider text-[#F6C163] opacity-90">
+                    Estimated
+                  </span>
+                </div>
+
+                <div className="bg-[#F5F2EA] divide-y divide-dashed divide-black/15">
+                  {/* Total Interest */}
+                  <div className="flex items-center justify-between px-4 py-3 gap-4">
+                    <span className="text-[11px] font-mono text-[#4A6358] flex-1">
+                      Total Interest
+                    </span>
+                    <div className="flex-1 border-b border-dotted border-black/15 self-end mb-1" />
+                    <span className="font-mono text-sm font-semibold tabular-numbers text-[#1E2D26] shrink-0">
+                      {'—'}
+                    </span>
+                  </div>
+
+                  {/* Total Repayment */}
+                  <div className="flex items-center justify-between px-4 py-3 gap-4">
+                    <span className="text-[11px] font-mono text-[#4A6358] flex-1">
+                      Total Repayment
+                    </span>
+                    <div className="flex-1 border-b border-dotted border-black/15 self-end mb-1" />
+                    <span className="font-mono text-sm font-semibold tabular-numbers text-[#1E2D26] shrink-0">
+                      {'—'}
+                    </span>
+                  </div>
+
+                  {/* Installment Amount */}
+                  <div className="flex items-center justify-between px-4 py-3 gap-4 bg-[#386D59]/8">
+                    <div className="flex-1">
+                      <span className="text-[11px] font-mono text-[#1E2D26] font-medium block">
+                        Per Installment
+                      </span>
+                      <span className="text-[9px] font-mono text-[#7A9488]">
+                        {recurrence} payment
+                      </span>
+                    </div>
+                    <div className="flex-1 border-b border-dotted border-black/15 self-center" />
+                    <span className="font-mono text-base font-bold tabular-numbers text-[#386D59] shrink-0">
+                      {'—'}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Footer note */}
+                <div className="bg-[#386D59]/8 border-t border-black/10 px-4 py-2">
+                  <p className="text-[9px] font-mono text-[#7A9488]">
+                    ※ Figures are estimates based on entered fields.
+                  </p>
+                </div>
+              </div>
+
+              {/* Notes */}
+              <div className="space-y-1.5">
+                <label htmlFor="bill-notes" className="text-xs font-mono text-[#4A6358] flex items-center justify-between">
+                  <span>Payment Notes / Instructions</span>
+                  <span className="text-[10px] text-[#7A9488]">Optional</span>
+                </label>
+                <textarea
+                  id="bill-notes"
+                  rows={3}
+                  placeholder="Account number, portal URL, reference codes, bank details..."
+                  value={notes}
+                  onChange={e => setNotes(e.target.value)}
+                  className="w-full bg-white border border-black/12 rounded-sm px-3.5 py-2.5 text-[12px] sm:text-[13px] font-mono text-[#1E2D26] placeholder-[#7A9488] focus:outline-none focus:border-[#C8860A] transition-colors leading-relaxed shadow-sm"
+                />
+              </div>
             </div>
           )}
 

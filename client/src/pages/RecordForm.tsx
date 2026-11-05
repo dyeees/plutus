@@ -6,7 +6,6 @@ const CLASSIFICATIONS = [
   'Housing',
   'Utilities',
   'Subscriptions',
-  'Loans',
 ]
 
 const RECURRENCES = [
@@ -209,7 +208,7 @@ function RecordForm({ onCancel }: { onCancel: () => void }) {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-1.5">
                   <label htmlFor="loan-amount" className="text-xs font-mono text-[#4A6358] flex items-center justify-between">
-                    <span>Installment Amount <strong className="text-[#C8860A]">*</strong></span>
+                    <span>Total Amount <strong className="text-[#C8860A]">*</strong></span>
                     <span className="text-[10px] text-[#7A9488] font-mono mr-1">PHP</span>
                   </label>
                   <div className="relative">
@@ -254,7 +253,7 @@ function RecordForm({ onCancel }: { onCancel: () => void }) {
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div className="space-y-1.5">
                   <label htmlFor="loan-duration" className="text-xs font-mono text-[#4A6358] flex items-center justify-between">
-                    <span>Duration (Months)</span>
+                    <span>Duration (in Months)</span>
                   </label>
                   <input
                     id="loan-duration"
@@ -267,7 +266,7 @@ function RecordForm({ onCancel }: { onCancel: () => void }) {
 
                 <div className="space-y-1.5">
                   <label htmlFor="loan-duration" className="text-xs font-mono text-[#4A6358] flex items-center justify-between">
-                    <span>Frequency</span>
+                    <span>Payment Frequency</span>
                   </label>
                   <Dropdown
                     id="bill-recurrence"
@@ -279,7 +278,7 @@ function RecordForm({ onCancel }: { onCancel: () => void }) {
 
                 <div className="space-y-1.5">
                   <label htmlFor="bill-due-date" className="text-xs font-mono text-[#4A6358] flex items-center justify-between">
-                    <span>Due Date <strong className="text-[#C8860A]">*</strong></span>
+                    <span>First Due Date <strong className="text-[#C8860A]">*</strong></span>
                   </label>
                   <input
                     id="bill-due-date"

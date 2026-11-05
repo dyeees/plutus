@@ -1,7 +1,7 @@
 import Sidebar from './components/Sidebar'
 import Navbar from './components/Navbar'
 import RecordForm from './pages/RecordForm'
-import AuthPage from './pages/AuthPage'
+import AuthPage, { type AuthForm } from './pages/AuthPage'
 import Dashboard from './pages/Dashboard'
 import Settings from './pages/Settings'
 import './index.css'
@@ -9,7 +9,6 @@ import './index.css'
 import { useState, useEffect } from 'react'
 import type { FormEvent } from 'react'
 import { signup, login, getCurrentUser, logout } from './services/auth'
-import { getPasswordStrength } from './utils/passwordStrength'
 
 function App() {
   const [authenticated, setAuthenticated] = useState(false)
@@ -65,20 +64,11 @@ function App() {
 
   const [screenParams, setScreenParams] = useState<{ returnTo?: string }>({})
 
-  const [isSignUp, setIsSignUp] = useState(false)
-  const [form, setForm] = useState({
-    name: '', 
-    email: '', 
-    password: '', 
-    confirm: '',
-  })
-
   const [busy, setBusy] = useState(false)
   const [isLoggingOut, setIsLoggingOut] = useState(false)
   const [serverError, setServerError] = useState<string | null>(null)
-  const passwordStrength = getPasswordStrength(form.password)
 
-  async function handleAuthSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleAuthSubmit(event: FormEvent<HTMLFormElement>, form: AuthForm, isSignUp: boolean) {
     event.preventDefault()
     setServerError(null)
 
@@ -95,15 +85,7 @@ function App() {
           email: form.email,
           password: form.password,
         })
-
         alert('Account created successfully! You can now sign in.')
-        setIsSignUp(false)
-        setForm({
-          name: '',
-          email: form.email,
-          password: '',
-          confirm: '',
-        })
       } else {
         const result = await login({
           email: form.email,
@@ -131,13 +113,6 @@ function App() {
     }
   }
 
-  function handleFieldChange(field: string, value: string) {
-    setForm(previous => ({
-      ...previous,
-      [field]: value,
-    }))
-  }
-
   const signOut = async () => {
     setIsLoggingOut(true)
     try {
@@ -145,8 +120,6 @@ function App() {
       setAuthenticated(false)
       setUser(null)
       setCurrentScreen('overview')
-      setForm({name: '', email: '', password: '', confirm: '',})
-      setIsSignUp(false)
       setServerError(null)
     } catch (error) {
       console.error('Logout failed:', error)
@@ -164,17 +137,9 @@ function App() {
   if (!authenticated) {
     return (
       <AuthPage
-        isSignUp={isSignUp}
         onSubmit={handleAuthSubmit}
-        form={form}
-        onFieldChange={handleFieldChange}
         serverError={serverError}
         busy={busy}
-        passwordStrength={passwordStrength}
-        onSwitchMode={mode => {
-          setIsSignUp(mode === 'signup')
-          setServerError(null)
-        }}
       />
     )
   }

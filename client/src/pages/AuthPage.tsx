@@ -261,7 +261,7 @@ function AuthPage(props: AuthPageProps) {
                       value={valueOf('password')}
                       onChange={e => changeField('password', e.target.value)}
                       placeholder={isSignUp ? 'At least 8 characters' : '••••••••'}
-                      className="auth-input"
+                      className="auth-input pr-10"
                     />
                   </Field>
 

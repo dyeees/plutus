@@ -16,7 +16,7 @@ import {
 } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 
-type AuthForm = {
+export type AuthForm = {
   name?: string
   email?: string
   password?: string
@@ -29,73 +29,69 @@ type PasswordStrength = {
   color: string
 }
 
+function getPasswordStrength(password: string): PasswordStrength {
+  if (!password) return { level: 0, label: '', color: '#E2DED4' }
+  let score = 0
+  if (password.length >= 8) score++
+  if (/[A-Z]/.test(password)) score++
+  if (/[a-z]/.test(password)) score++
+  if (/[0-9]/.test(password)) score++
+  if (/[^A-Za-z0-9]/.test(password)) score++
+  if (score <= 2) return { level: 1, label: 'Weak', color: '#C0392B' }
+  if (score === 3) return { level: 2, label: 'Fair', color: '#C58A62' }
+  if (score === 4) return { level: 3, label: 'Good', color: '#D2B45F' }
+  return { level: 4, label: 'Strong', color: '#386D59' }
+}
+
 type AuthPageProps = {
-  isSignUp?: boolean
-  onSubmit?: (event: FormEvent<HTMLFormElement>) => void
+  onSubmit?: (event: FormEvent<HTMLFormElement>, form: AuthForm, isSignUp: boolean) => void | Promise<void>
   serverError?: string | null
-  form?: AuthForm
   errors?: Record<string, string | undefined>
-  onFieldChange?: (field: string, value: string) => void
   showPassword?: boolean
   onTogglePassword?: () => void
-  passwordStrength?: PasswordStrength
   onForgotPassword?: () => void
-  onFillDemo?: () => void
-  onSwitchMode?: (mode: 'signin' | 'signup') => void
   busy?: boolean
 }
 
-const DEMO_EMAIL = 'demo@plutus.app'
-const DEMO_PASSWORD = 'demo1234'
+const DEMO_EMAIL = 'test@plutus.com'
+const DEMO_PASSWORD = 'test'
 
 function AuthPage(props: AuthPageProps) {
   const {
-    isSignUp: isSignUpProp,
     onSubmit,
     serverError,
-    form = {},
     errors = {},
-    onFieldChange,
     showPassword,
     onTogglePassword,
-    passwordStrength,
     onForgotPassword,
-    onFillDemo,
-    onSwitchMode,
     busy,
   } = props
 
+  const [isSignUp, setIsSignUp] = useState(false)
+  const [form, setForm] = useState<AuthForm>({})
   const [localShowPassword, setLocalShowPassword] = useState(false)
-  const [localFields, setLocalFields] = useState<Record<string, string>>({})
-  const [localIsSignUp, setLocalIsSignUp] = useState(false)
-
-  const isSignUp = isSignUpProp ?? localIsSignUp
+  const passwordStrength = getPasswordStrength(form.password ?? '')
   const passwordVisible = showPassword ?? localShowPassword
 
+  const switchMode = () => {
+    setIsSignUp(prev => !prev)
+    setForm({})
+  }
+  
   const togglePassword =
     onTogglePassword ?? (() => setLocalShowPassword(v => !v))
 
-  const switchMode =
-    onSwitchMode ??
-    ((mode: 'signin' | 'signup') => setLocalIsSignUp(mode === 'signup'))
+  const valueOf = (key: keyof AuthForm) => form[key] ?? ''
 
-  const valueOf = (key: string) =>
-    form[key as keyof AuthForm] ?? localFields[key] ?? ''
-
-  const changeField = (key: string, value: string) => {
-    setLocalFields(prev => ({ ...prev, [key]: value }))
-    onFieldChange?.(key, value)
+  const changeField = (key: keyof AuthForm, value: string) => {
+    setForm(prev => ({ ...prev, [key]: value }))
   }
 
-  const fillDemo = onFillDemo ?? (() => {
-    setLocalFields(prev => ({
-      ...prev,
+  const fillDemo = () => {
+    setForm(prev => ({ ...prev, 
       email: DEMO_EMAIL,
-      password: DEMO_PASSWORD,
-    }))
-    onFieldChange?.('email', DEMO_EMAIL)
-    onFieldChange?.('password', DEMO_PASSWORD)
-  })
+      password: DEMO_PASSWORD }))
+  }
 
   return (
     <div className={`relative min-h-screen flex flex-col lg:flex-row text-[#1E2D26] font-sans overflow-hidden lg:overflow-visible bg-[#386D59] lg:bg-[#F7F4EE]`}>
@@ -191,7 +187,11 @@ function AuthPage(props: AuthPageProps) {
               <FormHeading isSignUp={isSignUp} className="mb-6 lg:mb-4" />
 
               <div className="lg:border lg:border-black/10 lg:bg-[#FBF9F4] lg:rounded-sm lg:shadow-sm">
-                <form onSubmit={onSubmit} className="space-y-4 lg:space-y-4 lg:p-6" noValidate>
+                <form onSubmit={e => { 
+                  e.preventDefault()
+                  onSubmit?.(e, form, isSignUp) 
+                  }} className="space-y-4 lg:space-y-4 lg:p-6" noValidate
+                >
                   {serverError && (
                     <div
                       role="alert"
@@ -381,7 +381,7 @@ function AuthPage(props: AuthPageProps) {
               {isSignUp ? 'Already have an account?' : 'Don\'t have an account?'}{' '}
               <button
                 type="button"
-                onClick={() => switchMode(isSignUp ? 'signin' : 'signup')}
+                onClick={switchMode}
                 className="font-semibold text-[#386D59] underline underline-offset-2 hover:text-[#C8860A] transition-colors"
               >
                 {isSignUp ? 'Sign In' : 'Sign Up'}

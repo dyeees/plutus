@@ -85,7 +85,7 @@ function RecordForm({ onCancel }: { onCancel: () => void }) {
               {/*Payment or Obligation Name */}
               <div className="space-y-1.5">
                 <label htmlFor="record-name" className="text-xs font-mono text-[#4A6358] flex items-center justify-between">
-                  <span>Payment or Obligation Name <strong className="text-[#C8860A]">*</strong></span>
+                  <span>Payment or Obligation Name </span>
                 </label>
                 <input
                   id="record-name"
@@ -102,7 +102,7 @@ function RecordForm({ onCancel }: { onCancel: () => void }) {
                 {/* Amount */}
                 <div className="space-y-1.5">
                   <label htmlFor="record-amount" className="text-xs font-mono text-[#4A6358] flex items-center justify-between">
-                    <span>Total Amount <strong className="text-[#C8860A]">*</strong></span>
+                    <span>Total Amount </span>
                     <span className="text-[10px] text-[#7A9488] font-mono mr-1">PHP</span>
                   </label>
                   <div className="relative">
@@ -112,7 +112,6 @@ function RecordForm({ onCancel }: { onCancel: () => void }) {
                     <input
                       id="record-amount"
                       type="number"
-                      step="0.01"
                       min="0"
                       required
                       placeholder="0.00"
@@ -141,7 +140,7 @@ function RecordForm({ onCancel }: { onCancel: () => void }) {
                 {/* Due Date */}
                 <div className="space-y-1.5">
                   <label htmlFor="bill-due-date" className="text-xs font-mono text-[#4A6358] flex items-center justify-between">
-                    <span>Due Date <strong className="text-[#C8860A]">*</strong></span>
+                    <span>Due Date </span>
                   </label>
                   <input
                     id="bill-due-date"
@@ -191,7 +190,7 @@ function RecordForm({ onCancel }: { onCancel: () => void }) {
               {/* Loan Name */}
               <div className="space-y-1.5">
                 <label htmlFor="loan-name" className="text-xs font-mono text-[#4A6358] flex items-center justify-between">
-                  <span>Loan Name <strong className="text-[#C8860A]">*</strong></span>
+                  <span>Loan Name </span>
                 </label>
                 <input
                   id="loan-name"
@@ -204,11 +203,11 @@ function RecordForm({ onCancel }: { onCancel: () => void }) {
                 />
               </div>
 
-              {/* Loan Amount & Interest Rate Row */}
+              {/* Loan Amount, Interest Rate, Duration*/}
               <div className="grid grid-cols-1 sm:grid-cols-[2.2fr_1fr_1fr] gap-4">
                 <div className="space-y-1.5">
                   <label htmlFor="loan-amount" className="text-xs font-mono text-[#4A6358] flex items-center justify-between">
-                    <span>Total Amount <strong className="text-[#C8860A]">*</strong></span>
+                    <span>Total Amount </span>
                     <span className="text-[10px] text-[#7A9488] font-mono mr-1">PHP</span>
                   </label>
                   <div className="relative">
@@ -218,7 +217,6 @@ function RecordForm({ onCancel }: { onCancel: () => void }) {
                     <input
                       id="loan-amount"
                       type="number"
-                      step="0.01"
                       min="0"
                       required
                       placeholder="0.00"
@@ -231,7 +229,7 @@ function RecordForm({ onCancel }: { onCancel: () => void }) {
 
                 <div className="space-y-1.5">
                   <label htmlFor="loan-interest" className="text-xs font-mono text-[#4A6358] flex items-center justify-between">
-                    <span>Interest Rate<strong className="text-[#C8860A]">*</strong></span>
+                    <span>Interest Rate</span>
                   </label>
                   <div className="relative">
                     <input
@@ -240,12 +238,12 @@ function RecordForm({ onCancel }: { onCancel: () => void }) {
                       step="0.01"
                       min="0"
                       required
-                      placeholder="e.g. 2.95"
+                      placeholder="0.00"
                       value={amount}
                       onChange={e => setAmount(e.target.value)}
                       className="w-full bg-white border border-black/12 rounded-sm pl-3.5 pr-3.5 py-2.5 text-[12px] sm:text-[13px] font-mono tabular-numbers text-[#1E2D26] placeholder-[#7A9488] focus:outline-none focus:border-[#C8860A] transition-colors shadow-sm"
                     />
-                    <span className="absolute right-3.5 top-2.5 font-mono text-xs text-[#7A9488]">
+                    <span className="absolute right-3.5 top-3 font-mono text-xs text-[#7A9488]">
                       %
                     </span>
                   </div>
@@ -255,13 +253,18 @@ function RecordForm({ onCancel }: { onCancel: () => void }) {
                   <label htmlFor="loan-duration" className="text-xs font-mono text-[#4A6358] flex items-center justify-between">
                     <span>Duration</span>
                   </label>
-                  <input
-                    id="loan-duration"
-                    type="number"
-                    min="1"
-                    placeholder="e.g. 3"
-                    className="w-full bg-white border border-black/12 rounded-sm pl-3.5 pr-3.5 py-2.5 text-[12px] sm:text-[13px] font-mono tabular-numbers text-[#1E2D26] placeholder-[#7A9488] focus:outline-none focus:border-[#C8860A] transition-colors shadow-sm"
-                  />
+                  <div className="relative">
+                    <input
+                      id="loan-duration"
+                      type="number"
+                      min="1"
+                      placeholder="1"
+                      className="w-full bg-white border border-black/12 rounded-sm pl-3.5 pr-3.5 py-2.5 text-[12px] sm:text-[13px] font-mono tabular-numbers text-[#1E2D26] placeholder-[#7A9488] focus:outline-none focus:border-[#C8860A] transition-colors shadow-sm"
+                    />
+                    <span className="absolute right-3.5 top-3 font-mono text-xs text-[#7A9488]">
+                      Month(s)
+                    </span>
+                  </div>
                 </div>
               </div>
 
@@ -269,7 +272,7 @@ function RecordForm({ onCancel }: { onCancel: () => void }) {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-1.5">
                   <label htmlFor="bill-due-date" className="text-xs font-mono text-[#4A6358] flex items-center justify-between">
-                    <span>First Due Date <strong className="text-[#C8860A]">*</strong></span>
+                    <span>First Due Date </span>
                   </label>
                   <input
                     id="bill-due-date"

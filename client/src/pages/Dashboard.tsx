@@ -97,7 +97,23 @@ export default function Dashboard({ navigate }: DashboardProps) {
             <p className="text-[11px] text-[#7A9488] font-mono">Full monthly obligation</p>
           </div>
 
-          
+          {/* Column 2: Settled to Date */}
+          <div className="p-4 sm:p-5 space-y-2">
+            <div className="flex items-center justify-between text-[11px] font-mono tracking-wider uppercase text-[#4A6358]">
+              <span className="text-[#2E7D52] flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#2E7D52]" />
+                Settled
+              </span>
+              <span className="text-[#2E7D52] font-mono">{/*{percentSettled}*/}0%</span>
+            </div>
+            <div className="font-mono text-2xl sm:text-3xl font-medium tabular-numbers text-[#2E7D52]">
+              {"00.00"}
+            </div>
+            <div className="flex items-center justify-between text-[11px] text-[#7A9488] font-mono">
+              <span>{/*{paidBills.length} of {safeBills.length}*/}0 cleared</span>
+              <span>{/*{safeBills.length - paidBills.length}*/}0 pending</span>
+            </div>
+          </div>
         </div>
       )}
     </div>

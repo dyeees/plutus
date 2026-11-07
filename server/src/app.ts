@@ -7,6 +7,7 @@ import MySQLStoreFactory from 'express-mysql-session'
 import { config } from './config.js'
 import { pool } from './db.js'
 import { authRouter } from './routes/auth.js'
+import { billsRouter } from './routes/bills.js'
 
 const MySQLStore = MySQLStoreFactory(session)
 const sessionStore = new MySQLStore({}, pool as any)
@@ -43,6 +44,8 @@ app.get('/', (_req, res) => {
     message: 'Plutus API is running!',
   })
 })
+
+app.use('/api/bills', billsRouter)
 
 app.get('/health', (_req, res) => {
   res.json({ status: 'ok' })

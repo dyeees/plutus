@@ -214,7 +214,7 @@ function AuthPage(props: AuthPageProps) {
                         value={valueOf('name')}
                         onChange={e => changeField('name', e.target.value)}
                         placeholder="Ada Lovelace"
-                        className="auth-input"
+                        className={inputField}
                       />
                     </Field>
                   )}
@@ -229,7 +229,7 @@ function AuthPage(props: AuthPageProps) {
                       value={valueOf('email')}
                       onChange={e => changeField('email', e.target.value)}
                       placeholder="you@example.com"
-                      className="auth-input"
+                      className={inputField}
                     />
                   </Field>
 
@@ -261,7 +261,7 @@ function AuthPage(props: AuthPageProps) {
                       value={valueOf('password')}
                       onChange={e => changeField('password', e.target.value)}
                       placeholder={isSignUp ? 'At least 8 characters' : '••••••••'}
-                      className="auth-input pr-10"
+                      className={`${inputField} pr-10`}
                     />
                   </Field>
 
@@ -303,7 +303,7 @@ function AuthPage(props: AuthPageProps) {
                         value={valueOf('confirm')}
                         onChange={e => changeField('confirm', e.target.value)}
                         placeholder="Repeat password"
-                        className="auth-input"
+                        className={inputField}
                       />
                     </Field>
                   )}
@@ -471,5 +471,7 @@ function Feature({ icon: Icon, title, note }: { icon: LucideIcon; title: string;
     </div>
   )
 }
+
+const inputField = "flex-1 min-w-0 h-10 lg:h-auto bg-white border border-black/12 rounded-sm px-3.5 py-2.5 text-xs lg:text-sm text-[#1E2D26] placeholder-[#7A9488] focus:outline-none focus:border-[#C8860A] transition-colors shadow-sm lg:border-0 lg:bg-transparent lg:rounded-none lg:px-0 lg:py-3 lg:shadow-none lg:focus:border-0"
 
 export default AuthPage

@@ -22,19 +22,6 @@ body {
   }
 }
 
-@layer components {
-  .auth-input {
-    @apply flex-1 min-w-0 h-10 lg:h-auto 
-    bg-white border border-black/12 rounded-sm 
-    px-3.5 py-2.5 text-xs lg:text-sm 
-    text-[#1E2D26] placeholder-[#7A9488] 
-    focus:outline-none focus:border-[#C8860A] 
-    transition-colors shadow-sm 
-    lg:border-0 lg:bg-transparent lg:rounded-none 
-    lg:px-0 lg:py-3 lg:shadow-none lg:focus:border-0
-  }
-}
-
 input[type='number']::-webkit-inner-spin-button,
 input[type='number']::-webkit-outer-spin-button {
   -webkit-appearance: none;

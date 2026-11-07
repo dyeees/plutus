@@ -8,6 +8,7 @@ export const pool = config.db.url
       uri: config.db.url,
       waitForConnections: true,
       connectionLimit: 10,
+      multipleStatements: true,
       timezone: 'Z',
       ...(config.db.ssl ? { ssl: config.db.ssl } : {})
     })
@@ -19,6 +20,7 @@ export const pool = config.db.url
       database: config.db.database,
       waitForConnections: true,
       connectionLimit: 10,
+      multipleStatements: true,
       timezone: 'Z',
       ...(config.db.ssl ? { ssl: config.db.ssl } : {})
     })

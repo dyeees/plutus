@@ -2,6 +2,8 @@ import { useState } from 'react'
 import Dropdown from '../components/Dropdown'
 import { Check, Receipt, Landmark, Calculator } from 'lucide-react'
 
+import { saveBill } from '../services/bills'
+
 const CLASSIFICATIONS = [
   'Housing',
   'Utilities',
@@ -28,6 +30,31 @@ function RecordForm({ onCancel }: { onCancel: () => void }) {
   const [dueDate, setDueDate] = useState(new Date().toISOString().split('T')[0])
   const [recurrence, setRecurrence] = useState('Monthly')
   const [notes, setNotes] = useState('')
+  const [error, setError] = useState('')
+  const [isSaving, setIsSaving] = useState(false)
+
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault()
+    if (recordType === 'bill') {
+      try {
+        setIsSaving(true)
+        setError('')
+        await saveBill({
+          name,
+          amount: Number(amount),
+          classification,
+          dueDate,
+          recurrence,
+          notes,
+        })
+        onCancel()
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Unable to save bill.')
+      } finally {
+        setIsSaving(false)
+      }
+    }
+  }
 
   return (
     <div className="max-w-xl mx-auto space-y-6">
@@ -76,9 +103,10 @@ function RecordForm({ onCancel }: { onCancel: () => void }) {
 
         {/* Form Card */}
         <form
-          onSubmit={e => e.preventDefault()}
+          onSubmit={handleSubmit}
           className="relative border border-black/10 bg-[#EFECE4] rounded-sm p-5 sm:p-6 space-y-6 shadow-sm"
         >
+          {error && (<p className="text-xs text-red-600 font-mono">{error}</p>)}
           {/* ── Regular Bill Fields ── */}
           {recordType === 'bill' && (
             <div className="space-y-4">
@@ -112,6 +140,7 @@ function RecordForm({ onCancel }: { onCancel: () => void }) {
                     <input
                       id="record-amount"
                       type="number"
+                      step="0.01"
                       min="0"
                       required
                       placeholder="0.00"
@@ -235,8 +264,6 @@ function RecordForm({ onCancel }: { onCancel: () => void }) {
                     <input
                       id="loan-interest" 
                       type="number"
-                      step="0.01"
-                      min="0"
                       required
                       placeholder="0.00"
                       value={amount}
@@ -389,10 +416,11 @@ function RecordForm({ onCancel }: { onCancel: () => void }) {
             </button>
             <button
               type="submit"
+              disabled={isSaving || recordType === 'loan'}
               className="px-5 py-2 bg-[#386D59] hover:bg-[#2F5C4A] active:bg-[#285041] text-white font-mono text-xs font-semibold rounded-sm transition-colors shadow-sm flex items-center gap-1.5"
             >
               <Check className="w-3.5 h-3.5 stroke-[2.5]" />
-              <span>{'Record Entry'}</span>
+              <span>{isSaving ? 'Saving...' : 'Record Entry'}</span>
             </button>
           </div>
         </form>

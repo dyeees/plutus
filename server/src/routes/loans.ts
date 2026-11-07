@@ -3,6 +3,35 @@ import { pool } from '../db.js'
 
 export const loansRouter = Router()
 
+loansRouter.get('/', async (req, res) => {
+  try {
+    if (!req.session.user) {
+      res.status(401).json({
+        error: 'Not authenticated.',
+      })
+      return
+    }
+
+    const [rows] = await pool.execute(
+      `SELECT id, name, loan_amount AS loanAmount,
+              interest_rate AS interestRate,
+              duration_months AS durationMonths,
+              due_date AS dueDate, recurrence, notes
+       FROM loans
+       WHERE user_id = ?
+       ORDER BY id DESC`,
+      [req.session.user.id],
+    )
+
+    res.json(rows)
+  } catch (error) {
+    console.error(error)
+    res.status(500).json({
+      error: 'Internal server error',
+    })
+  }
+})
+
 loansRouter.post('/', async (req, res) => {
   try {
     if (!req.session.user) {

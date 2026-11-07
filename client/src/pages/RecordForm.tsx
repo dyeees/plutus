@@ -3,6 +3,7 @@ import Dropdown from '../components/Dropdown'
 import { Check, Receipt, Landmark, Calculator } from 'lucide-react'
 
 import { saveBill } from '../services/bills'
+import { saveLoan } from '../services/loans'
 
 const CLASSIFICATIONS = [
   'Housing',
@@ -32,13 +33,15 @@ function RecordForm({ onCancel }: { onCancel: () => void }) {
   const [notes, setNotes] = useState('')
   const [error, setError] = useState('')
   const [isSaving, setIsSaving] = useState(false)
+  const [interestRate, setInterestRate] = useState('')
+  const [durationMonths, setDurationMonths] = useState('')
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
-    if (recordType === 'bill') {
-      try {
-        setIsSaving(true)
-        setError('')
+    try {
+      setIsSaving(true)
+      setError('')
+      if (recordType === 'bill') {
         await saveBill({
           name,
           amount: Number(amount),
@@ -47,12 +50,22 @@ function RecordForm({ onCancel }: { onCancel: () => void }) {
           recurrence,
           notes,
         })
-        onCancel()
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Unable to save bill.')
-      } finally {
-        setIsSaving(false)
+      } else {
+        await saveLoan({
+          name,
+          loanAmount: Number(loanAmount),
+          interestRate: Number(interestRate),
+          durationMonths: Number(durationMonths),
+          dueDate,
+          recurrence,
+          notes,
+        })
       }
+      onCancel()
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Unable to save bill.')
+    } finally {
+      setIsSaving(false)
     }
   }
 
@@ -246,6 +259,7 @@ function RecordForm({ onCancel }: { onCancel: () => void }) {
                     <input
                       id="loan-amount"
                       type="number"
+                      step="0.01"
                       min="0"
                       required
                       placeholder="0.00"
@@ -266,8 +280,8 @@ function RecordForm({ onCancel }: { onCancel: () => void }) {
                       type="number"
                       required
                       placeholder="0.00"
-                      value={amount}
-                      onChange={e => setAmount(e.target.value)}
+                      value={interestRate}
+                      onChange={e => setInterestRate(e.target.value)}
                       className="w-full bg-white border border-black/12 rounded-sm pl-3.5 pr-3.5 py-2.5 text-[12px] sm:text-[13px] font-mono tabular-numbers text-[#1E2D26] placeholder-[#7A9488] focus:outline-none focus:border-[#C8860A] transition-colors shadow-sm"
                     />
                     <span className="absolute right-3.5 top-3 font-mono text-xs text-[#7A9488]">
@@ -286,6 +300,8 @@ function RecordForm({ onCancel }: { onCancel: () => void }) {
                       type="number"
                       min="1"
                       placeholder="1"
+                      value={durationMonths}
+                      onChange={e => setDurationMonths(e.target.value)}
                       className="w-full bg-white border border-black/12 rounded-sm pl-3.5 pr-3.5 py-2.5 text-[12px] sm:text-[13px] font-mono tabular-numbers text-[#1E2D26] placeholder-[#7A9488] focus:outline-none focus:border-[#C8860A] transition-colors shadow-sm"
                     />
                     <span className="absolute right-3.5 top-3 font-mono text-xs text-[#7A9488]">
@@ -416,7 +432,7 @@ function RecordForm({ onCancel }: { onCancel: () => void }) {
             </button>
             <button
               type="submit"
-              disabled={isSaving || recordType === 'loan'}
+              disabled={isSaving}
               className="px-5 py-2 bg-[#386D59] hover:bg-[#2F5C4A] active:bg-[#285041] text-white font-mono text-xs font-semibold rounded-sm transition-colors shadow-sm flex items-center gap-1.5"
             >
               <Check className="w-3.5 h-3.5 stroke-[2.5]" />

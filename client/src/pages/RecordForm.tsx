@@ -36,6 +36,32 @@ function RecordForm({ onCancel }: { onCancel: () => void }) {
   const [interestRate, setInterestRate] = useState('')
   const [durationMonths, setDurationMonths] = useState('')
 
+  const principal = Number(loanAmount) || 0
+  const rate = Number(interestRate) || 0
+  const months = Number(durationMonths) || 0
+  const totalInterest = principal * (rate / 100) * months
+  const totalRepayment = principal + totalInterest
+
+  const installmentCount = {
+    'One-time': 1,
+    Monthly: months,
+    'Bi-weekly': Math.ceil(months * 2),
+    Weekly: Math.ceil(months * 4),
+    Quarterly: Math.ceil(months / 3),
+    Semiannual: Math.ceil(months / 6),
+    Annually: Math.ceil(months / 12),
+  }[recurrence] ?? 0
+
+  const installmentAmount = installmentCount > 0 ? totalRepayment / installmentCount : 0
+
+  const formatPHP = (value: number) =>
+  new Intl.NumberFormat('en-PH', {
+    style: 'currency',
+    currency: 'PHP',
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(value)
+
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
     try {
@@ -278,6 +304,8 @@ function RecordForm({ onCancel }: { onCancel: () => void }) {
                     <input
                       id="loan-interest" 
                       type="number"
+                      step="0.01"
+                      min="0"
                       required
                       placeholder="0.00"
                       value={interestRate}
@@ -363,7 +391,7 @@ function RecordForm({ onCancel }: { onCancel: () => void }) {
                     </span>
                     <div className="flex-1 border-b border-dotted border-black/15 self-end mb-1" />
                     <span className="font-mono text-sm font-semibold tabular-numbers text-[#1E2D26] shrink-0">
-                      {'—'}
+                      {formatPHP(totalInterest)}
                     </span>
                   </div>
 
@@ -374,7 +402,7 @@ function RecordForm({ onCancel }: { onCancel: () => void }) {
                     </span>
                     <div className="flex-1 border-b border-dotted border-black/15 self-end mb-1" />
                     <span className="font-mono text-sm font-semibold tabular-numbers text-[#1E2D26] shrink-0">
-                      {'—'}
+                      {formatPHP(totalRepayment)}
                     </span>
                   </div>
 
@@ -384,13 +412,13 @@ function RecordForm({ onCancel }: { onCancel: () => void }) {
                       <span className="text-[11px] font-mono text-[#1E2D26] font-medium block">
                         Per Installment
                       </span>
-                      <span className="text-[9px] font-mono text-[#7A9488]">
+                      {/*<span className="text-[9px] font-mono text-[#7A9488]">
                         {recurrence} payment
-                      </span>
+                      </span>*/}
                     </div>
                     <div className="flex-1 border-b border-dotted border-black/15 self-center" />
                     <span className="font-mono text-base font-bold tabular-numbers text-[#386D59] shrink-0">
-                      {'—'}
+                      {formatPHP(installmentAmount)}
                     </span>
                   </div>
                 </div>

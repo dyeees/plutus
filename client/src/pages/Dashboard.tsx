@@ -82,7 +82,24 @@ export default function Dashboard({ navigate }: DashboardProps) {
         </div>
       )}
 
-      
+      {/* Records exist */}
+      {!isLoading && !error && hasRecords && (
+        <div className="border border-black/10 bg-[#EFECE4] rounded-sm divide-y sm:divide-y-0 sm:divide-x divide-black/8 grid grid-cols-1 sm:grid-cols-3">
+          {/* Column 1: Total Committed */}
+          <div className="p-4 sm:p-5 space-y-2">
+            <div className="flex items-center justify-between text-[11px] font-mono tracking-wider uppercase text-[#4A6358]">
+              <span>Total Commitment</span>
+              <span className="text-[#7A9488]">{bills.length + loans.length} bills</span>
+            </div>
+            <div className="font-mono text-2xl sm:text-3xl font-medium tabular-numbers text-[#1E2D26]">
+              {"00.00"}
+            </div>
+            <p className="text-[11px] text-[#7A9488] font-mono">Full monthly obligation</p>
+          </div>
+
+          
+        </div>
+      )}
     </div>
   );
 }

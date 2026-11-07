@@ -28,3 +28,17 @@ export async function saveLoan(data: LoanData) {
 
   return result
 }
+
+export async function getLoans() {
+  const response = await fetch(`${API_URL}/loans`, {
+    credentials: 'include',
+  })
+
+  const result = await response.json()
+
+  if (!response.ok) {
+    throw new Error(result.error || 'Failed to fetch loans.')
+  }
+
+  return result
+}

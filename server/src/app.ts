@@ -8,6 +8,7 @@ import { config } from './config.js'
 import { pool } from './db.js'
 import { authRouter } from './routes/auth.js'
 import { billsRouter } from './routes/bills.js'
+import { loansRouter } from './routes/loans.js'
 
 const MySQLStore = MySQLStoreFactory(session)
 const sessionStore = new MySQLStore({}, pool as any)
@@ -38,14 +39,15 @@ app.use(
 )
 
 app.use('/api/auth', authRouter)
+app.use('/api/bills', billsRouter)
+app.use('/api/loans', loansRouter)
+
 
 app.get('/', (_req, res) => {
   res.json({
     message: 'Plutus API is running!',
   })
 })
-
-app.use('/api/bills', billsRouter)
 
 app.get('/health', (_req, res) => {
   res.json({ status: 'ok' })

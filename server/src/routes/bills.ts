@@ -4,6 +4,33 @@ import { pool } from '../db.js'
 
 export const billsRouter = Router()
 
+billsRouter.get('/', async (req, res) => {
+  try {
+    if (!req.session.user) {
+      res.status(401).json({
+        error: 'Not authenticated.',
+      })
+      return
+    }
+
+    const [rows] = await pool.execute(
+      `SELECT id, name, amount, classification, due_date AS dueDate,
+              recurrence, notes
+       FROM bills
+       WHERE user_id = ?
+       ORDER BY id DESC`,
+      [req.session.user.id],
+    )
+
+    res.json(rows)
+  } catch (error) {
+    console.error(error)
+    res.status(500).json({
+      error: 'Internal server error',
+    })
+  }
+})
+
 billsRouter.post('/', async (req, res) => {
   try {
     if (!req.session.user) {

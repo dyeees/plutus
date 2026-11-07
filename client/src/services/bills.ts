@@ -27,3 +27,17 @@ export async function saveBill(data: BillData) {
 
   return result
 }
+
+export async function getBills() {
+  const response = await fetch(`${API_URL}/bills`, {
+    credentials: 'include',
+  })
+
+  const result = await response.json()
+
+  if (!response.ok) {
+    throw new Error(result.error || 'Failed to fetch bills.')
+  }
+
+  return result
+}

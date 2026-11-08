@@ -1,5 +1,6 @@
 import { Router } from 'express'
 import { pool } from '../db.js'
+import { calculateLoan } from '../utils/loanCalculations.js'
 
 export const loansRouter = Router()
 
@@ -13,13 +14,18 @@ loansRouter.get('/', async (req, res) => {
     }
 
     const [rows] = await pool.execute(
-      `SELECT id, name, loan_amount AS loanAmount,
+      `SELECT id, name,
+              principal_amount AS principalAmount,
               interest_rate AS interestRate,
               duration_months AS durationMonths,
-              due_date AS dueDate, recurrence, notes
-       FROM loans
-       WHERE user_id = ?
-       ORDER BY id DESC`,
+              total_interest AS totalInterest,
+              total_repayment AS totalRepayment,
+              installment_count AS installmentCount,
+              first_due_date AS firstDueDate,
+              recurrence, notes
+      FROM loans
+      WHERE user_id = ?
+      ORDER BY id DESC`,
       [req.session.user.id],
     )
 
@@ -69,18 +75,46 @@ loansRouter.post('/', async (req, res) => {
       return
     }
 
+    const calculations = calculateLoan({
+      principalAmount: Number(loanAmount),
+      interestRate: Number(interestRate),
+      durationMonths: Number(durationMonths),
+      recurrence,
+    })
+
+    if (calculations.installmentCount <= 0) {
+      res.status(400).json({
+        error: 'Invalid payment frequency.',
+      })
+      return
+    }
+
     await pool.execute(
-      `INSERT INTO loans
-        (user_id, name, loan_amount, interest_rate, duration_months, due_date, recurrence, notes)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+      `INSERT INTO loans (
+        user_id,
+        name,
+        principal_amount,
+        interest_rate,
+        duration_months,
+        total_interest,
+        total_repayment,
+        installment_count,
+        recurrence,
+        first_due_date,
+        notes
+      )
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         req.session.user.id,
         name.trim(),
         Number(loanAmount),
         Number(interestRate),
         Number(durationMonths),
-        dueDate,
+        calculations.totalInterest,
+        calculations.totalRepayment,
+        calculations.installmentCount,
         recurrence,
+        dueDate,
         notes || null,
       ],
     )

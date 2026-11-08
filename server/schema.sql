@@ -41,3 +41,16 @@ CREATE TABLE IF NOT EXISTS loans (
     FOREIGN KEY (user_id) REFERENCES users(id)
     ON DELETE CASCADE
 );
+
+CREATE TABLE IF NOT EXISTS loan_installments (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  loan_id INT NOT NULL,
+  installment_number INT NOT NULL,
+  due_date DATE NOT NULL,
+  amount_due DECIMAL(12, 2) NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT fk_installments_loan
+    FOREIGN KEY (loan_id) REFERENCES loans(id)
+    ON DELETE CASCADE,
+  UNIQUE (loan_id, installment_number)
+);

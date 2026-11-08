@@ -21,7 +21,6 @@ export async function saveLoan(data: LoanData) {
   })
 
   const result = await response.json()
-
   if (!response.ok) {
     throw new Error(result.error || 'Something went wrong.')
   }
@@ -35,9 +34,24 @@ export async function getLoans() {
   })
 
   const result = await response.json()
-
   if (!response.ok) {
     throw new Error(result.error || 'Failed to fetch loans.')
+  }
+
+  return result
+}
+
+export async function getLoanInstallments(loanId: number) {
+  const response = await fetch(
+    `${API_URL}/loans/${loanId}/installments`,
+    {
+      credentials: 'include',
+    },
+  )
+
+  const result = await response.json()
+  if (!response.ok) {
+    throw new Error(result.error || 'Failed to fetch loan installments.')
   }
 
   return result

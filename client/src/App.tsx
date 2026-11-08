@@ -3,6 +3,7 @@ import Navbar from './components/Navbar'
 import RecordForm from './pages/RecordForm'
 import AuthPage, { type AuthForm } from './pages/AuthPage'
 import Dashboard from './pages/Dashboard'
+import Finances from './pages/Finances'
 import Settings from './pages/Settings'
 import './index.css'
 
@@ -188,6 +189,7 @@ function App() {
 
         <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-5xl w-full mx-auto pb-24 md:pb-12">
           {currentScreen === 'dashboard' && <Dashboard navigate={navigate} />}
+          {currentScreen === 'finances' && <Finances navigate={navigate} />}
           {currentScreen === 'settings' && (
             <Settings
               user={user}

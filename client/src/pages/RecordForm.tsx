@@ -19,7 +19,6 @@ const RECURRENCES = [
   { value: 'Quarterly', label: 'Quarterly' },
   { value: 'Semiannual', label: 'Semiannual' },
   { value: 'Annually', label: 'Annually' },
-  { value: 'One-time', label: 'One-time' },
 ]
 
 function RecordForm({ onCancel }: { onCancel: () => void }) {
@@ -36,12 +35,7 @@ function RecordForm({ onCancel }: { onCancel: () => void }) {
   const [interestRate, setInterestRate] = useState('')
   const [durationMonths, setDurationMonths] = useState('')
 
-  const principal = Number(loanAmount) || 0
-  const rate = Number(interestRate) || 0
   const months = Number(durationMonths) || 0
-  const totalInterest = principal * (rate / 100) * months
-  const totalRepayment = principal + totalInterest
-
   const installmentCount = {
     'One-time': 1,
     Monthly: months,
@@ -52,7 +46,9 @@ function RecordForm({ onCancel }: { onCancel: () => void }) {
     Annually: Math.ceil(months / 12),
   }[recurrence] ?? 0
 
-  const installmentAmount = installmentCount > 0 ? totalRepayment / installmentCount : 0
+  const installmentAmount = installmentCount > 0
+    ? ((Number(loanAmount) * (Number(interestRate) / 100)) * months + Number(loanAmount)) / installmentCount
+    : 0
 
   const formatPHP = (value: number) =>
   new Intl.NumberFormat('en-PH', {
@@ -327,6 +323,8 @@ function RecordForm({ onCancel }: { onCancel: () => void }) {
                       id="loan-duration"
                       type="number"
                       min="1"
+                      step="1"
+                      required  
                       placeholder="1"
                       value={durationMonths}
                       onChange={e => setDurationMonths(e.target.value)}
@@ -342,11 +340,11 @@ function RecordForm({ onCancel }: { onCancel: () => void }) {
               {/* Loan Duration, Payment Frequency & First Due Date Row */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-1.5">
-                  <label htmlFor="bill-due-date" className="text-xs font-mono text-[#4A6358] flex items-center justify-between">
+                  <label htmlFor="loan-due-date" className="text-xs font-mono text-[#4A6358] flex items-center justify-between">
                     <span>First Due Date </span>
                   </label>
                   <input
-                    id="bill-due-date"
+                    id="loan-due-date"
                     type="date"
                     required
                     value={dueDate}
@@ -356,11 +354,11 @@ function RecordForm({ onCancel }: { onCancel: () => void }) {
                 </div>
 
                 <div className="space-y-1.5">
-                  <label htmlFor="loan-duration" className="text-xs font-mono text-[#4A6358] flex items-center justify-between">
+                  <label htmlFor="loan-recurrence" className="text-xs font-mono text-[#4A6358] flex items-center justify-between">
                     <span>Payment Frequency</span>
                   </label>
                   <Dropdown
-                    id="bill-recurrence"
+                    id="loan-recurrence"
                     value={recurrence}
                     options={RECURRENCES.map(r => r.value)}
                     onChange={setRecurrence}
@@ -391,7 +389,7 @@ function RecordForm({ onCancel }: { onCancel: () => void }) {
                     </span>
                     <div className="flex-1 border-b border-dotted border-black/15 self-end mb-1" />
                     <span className="font-mono text-sm font-semibold tabular-numbers text-[#1E2D26] shrink-0">
-                      {formatPHP(totalInterest)}
+                      {formatPHP((Number(loanAmount) * (Number(interestRate) / 100)) * months)}
                     </span>
                   </div>
 
@@ -402,7 +400,7 @@ function RecordForm({ onCancel }: { onCancel: () => void }) {
                     </span>
                     <div className="flex-1 border-b border-dotted border-black/15 self-end mb-1" />
                     <span className="font-mono text-sm font-semibold tabular-numbers text-[#1E2D26] shrink-0">
-                      {formatPHP(totalRepayment)}
+                      {formatPHP(Number(loanAmount) + ((Number(loanAmount) * (Number(interestRate) / 100)) * months))}
                     </span>
                   </div>
 

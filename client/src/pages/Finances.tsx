@@ -1,12 +1,16 @@
 import { useState, useRef } from 'react'
 import { Search, X } from "lucide-react";
 
+import { CLASSIFICATIONS } from './RecordForm'
+
 type FinancesProps = {
   navigate: (screen: string, params?: { returnTo?: string }) => void;
 };
 
 export default function Finances({ navigate }: FinancesProps) {
   const [search, setSearch] = useState('')
+  const [categoryFilter, setCategoryFilter] = useState('all')
+
   const searchInputRef = useRef(null)
 
   return (
@@ -41,7 +45,24 @@ export default function Finances({ navigate }: FinancesProps) {
             )}
           </div>
 
-          
+          {/* Category Dropdown */}
+          <div className="flex items-center gap-2">
+            <select
+              value={categoryFilter}
+              onChange={e => setCategoryFilter(e.target.value)}
+              className="bg-white border border-black/10 rounded-sm px-3 py-2 text-xs font-mono text-[#1E2D26] focus:outline-none focus:border-[#C8860A] shadow-sm"
+            >
+              <option value="all">All Categories</option>
+
+              {CLASSIFICATIONS.map(category => (
+                <option key={category} value={category}>
+                  {category}
+                </option>
+              ))}
+
+              <option value="Loans">Loans</option>
+            </select>
+          </div>
         </div>
       </div>
     </div>

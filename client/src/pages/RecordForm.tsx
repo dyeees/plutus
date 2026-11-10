@@ -5,7 +5,7 @@ import { Check, Receipt, Landmark, Calculator } from 'lucide-react'
 import { saveBill } from '../services/bills'
 import { saveLoan } from '../services/loans'
 
-const CLASSIFICATIONS = [
+export const CLASSIFICATIONS = [
   'Housing',
   'Utilities',
   'Subscriptions',

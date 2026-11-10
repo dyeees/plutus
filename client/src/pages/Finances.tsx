@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react'
-import { Search } from "lucide-react";
+import { Search, X } from "lucide-react";
 
 type FinancesProps = {
   navigate: (screen: string, params?: { returnTo?: string }) => void;
@@ -31,7 +31,17 @@ export default function Finances({ navigate }: FinancesProps) {
               onChange={e => setSearch(e.target.value)}
               className="w-full bg-white border border-black/10 rounded-sm pl-9 pr-8 py-2 text-xs font-mono text-[#1E2D26] placeholder-[#7A9488] focus:outline-none focus:border-[#C8860A] transition-colors shadow-sm"
             />
+            {search && (
+              <button
+                onClick={() => setSearch('')}
+                className="absolute right-2.5 top-2.5 text-[#7A9488] hover:text-[#1E2D26]"
+              >
+                <X className="w-3.5 h-3.5" />
+              </button>
+            )}
           </div>
+
+          
         </div>
       </div>
     </div>

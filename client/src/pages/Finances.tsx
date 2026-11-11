@@ -21,6 +21,7 @@ const SORT_LABELS = SORT_OPTIONS.map(o => o.label)
 export default function Finances({ navigate }: FinancesProps) {
   const [search, setSearch] = useState('')
   const [categoryFilter, setCategoryFilter] = useState('all')
+  const [sortBy, setSortBy] = useState('due_asc')
   const searchInputRef = useRef(null)
   
   const sortLabel = (v: string) => 
@@ -73,7 +74,13 @@ export default function Finances({ navigate }: FinancesProps) {
               className="w-40 [&>button]:gap-2 [&>button]:px-3 [&>button]:py-2 [&>button]:text-xs [&>ul>li]:px-3 [&>ul>li]:py-1.5 [&>ul>li]:text-xs"
             />
 
-            
+            <Dropdown
+              id="sort-by"
+              value={sortLabel(sortBy)}
+              options={SORT_LABELS}
+              onChange={label => setSortBy(sortValue(label))}
+              className="w-48 [&>button]:gap-2 [&>button]:px-3 [&>button]:py-2 [&>button]:text-xs [&>ul>li]:px-3 [&>ul>li]:py-1.5 [&>ul>li]:text-xs"
+            />
           </div>
         </div>
       </div>

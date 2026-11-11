@@ -2,6 +2,9 @@ import { useState, useRef } from 'react'
 import { Search, X } from "lucide-react";
 
 import { CLASSIFICATIONS } from './RecordForm'
+import Dropdown from '../components/Dropdown';
+
+const CATEGORY_OPTIONS = ['All Categories', ...CLASSIFICATIONS, 'Loans']
 
 type FinancesProps = {
   navigate: (screen: string, params?: { returnTo?: string }) => void;
@@ -47,21 +50,15 @@ export default function Finances({ navigate }: FinancesProps) {
 
           {/* Category Dropdown */}
           <div className="flex items-center gap-2">
-            <select
-              value={categoryFilter}
-              onChange={e => setCategoryFilter(e.target.value)}
-              className="bg-white border border-black/10 rounded-sm px-3 py-2 text-xs font-mono text-[#1E2D26] focus:outline-none focus:border-[#C8860A] shadow-sm"
-            >
-              <option value="all">All Categories</option>
-
-              {CLASSIFICATIONS.map(category => (
-                <option key={category} value={category}>
-                  {category}
-                </option>
-              ))}
-
-              <option value="Loans">Loans</option>
-            </select>
+            <Dropdown
+              id="category-filter"
+              value={categoryFilter === 'all' ? 'All Categories' : categoryFilter}
+              options={CATEGORY_OPTIONS}
+              onChange={value =>
+                setCategoryFilter(value === 'All Categories' ? 'all' : value)
+              }
+              className="w-40 [&>button]:gap-2 [&>button]:px-3 [&>button]:py-2 [&>button]:text-xs [&>ul>li]:px-3 [&>ul>li]:py-1.5 [&>ul>li]:text-xs"
+            />
           </div>
         </div>
       </div>

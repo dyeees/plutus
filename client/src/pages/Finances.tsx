@@ -71,7 +71,7 @@ export default function Finances({ navigate }: FinancesProps) {
               onChange={value =>
                 setCategoryFilter(value === 'All Categories' ? 'all' : value)
               }
-              className="w-40 [&>button]:gap-2 [&>button]:px-3 [&>button]:py-2 [&>button]:text-xs [&>ul>li]:px-3 [&>ul>li]:py-1.5 [&>ul>li]:text-xs"
+              className="flex-1 min-w-0 sm:flex-none sm:w-48 [&>button]:gap-2 [&>button]:px-3 [&>button]:py-2 [&>button]:text-xs [&>button>svg]:size-3.5 [&>button>span]:min-w-0 [&>button>span]:truncate [&>ul>li]:px-3 [&>ul>li]:py-1.5 [&>ul>li]:text-xs"
             />
 
             <Dropdown
@@ -79,7 +79,7 @@ export default function Finances({ navigate }: FinancesProps) {
               value={sortLabel(sortBy)}
               options={SORT_LABELS}
               onChange={label => setSortBy(sortValue(label))}
-              className="w-48 [&>button]:gap-2 [&>button]:px-3 [&>button]:py-2 [&>button]:text-xs [&>ul>li]:px-3 [&>ul>li]:py-1.5 [&>ul>li]:text-xs"
+              className="flex-1 min-w-0 sm:flex-none sm:w-48 [&>button]:gap-2 [&>button]:px-3 [&>button]:py-2 [&>button]:text-xs [&>button>svg]:size-3.5 [&>button>span]:min-w-0 [&>button>span]:truncate [&>ul>li]:px-3 [&>ul>li]:py-1.5 [&>ul>li]:text-xs"
             />
           </div>
         </div>

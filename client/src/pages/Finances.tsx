@@ -4,17 +4,30 @@ import { Search, X } from "lucide-react";
 import { CLASSIFICATIONS } from './RecordForm'
 import Dropdown from '../components/Dropdown';
 
-const CATEGORY_OPTIONS = ['All Categories', ...CLASSIFICATIONS, 'Loans']
-
 type FinancesProps = {
   navigate: (screen: string, params?: { returnTo?: string }) => void;
 };
 
+const CATEGORY_OPTIONS = ['All Categories', ...CLASSIFICATIONS, 'Loans']
+const SORT_OPTIONS = [
+  { value: 'due_asc', label: 'Due Date (Earliest)' },
+  { value: 'due_desc', label: 'Due Date (Latest)' },
+  { value: 'amount_desc', label: 'Amount (Highest)' },
+  { value: 'amount_asc', label: 'Amount (Lowest)' },
+  { value: 'name_asc', label: 'Payee Name (A-Z)' },
+] as const
+const SORT_LABELS = SORT_OPTIONS.map(o => o.label)
+
 export default function Finances({ navigate }: FinancesProps) {
   const [search, setSearch] = useState('')
   const [categoryFilter, setCategoryFilter] = useState('all')
-
   const searchInputRef = useRef(null)
+  
+  const sortLabel = (v: string) => 
+    SORT_OPTIONS.find(o => o.value === v)?.label ?? SORT_OPTIONS[0].label
+
+  const sortValue = (label: string) =>
+    SORT_OPTIONS.find(o => o.label === label)?.value ?? SORT_OPTIONS[0].value
 
   return (
     <div className="space-y-6">
@@ -59,6 +72,8 @@ export default function Finances({ navigate }: FinancesProps) {
               }
               className="w-40 [&>button]:gap-2 [&>button]:px-3 [&>button]:py-2 [&>button]:text-xs [&>ul>li]:px-3 [&>ul>li]:py-1.5 [&>ul>li]:text-xs"
             />
+
+            
           </div>
         </div>
       </div>

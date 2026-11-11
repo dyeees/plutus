@@ -22,6 +22,7 @@ export default function Finances({ navigate }: FinancesProps) {
   const [search, setSearch] = useState('')
   const [categoryFilter, setCategoryFilter] = useState('all')
   const [sortBy, setSortBy] = useState('due_asc')
+  const [statusFilter, setStatusFilter] = useState('all')
   const searchInputRef = useRef(null)
   
   const sortLabel = (v: string) => 
@@ -82,6 +83,35 @@ export default function Finances({ navigate }: FinancesProps) {
               className="flex-1 min-w-0 sm:flex-none sm:w-48 [&>button]:gap-2 [&>button]:px-3 [&>button]:py-2 [&>button]:text-xs [&>button>svg]:size-3.5 [&>button>span]:min-w-0 [&>button>span]:truncate [&>ul>li]:px-3 [&>ul>li]:py-1.5 [&>ul>li]:text-xs"
             />
           </div>
+        </div>
+
+        {/* Status Filter Tabs & Summary */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 pt-2 border-t border-black/8 text-xs">
+          <div className="flex items-center gap-1.5 flex-wrap">
+            <span className="font-mono text-[10px] text-[#4A6358] uppercase tracking-wider mr-1">
+              Filter:
+            </span>
+
+            {[
+              { id: 'all', label: 'All(0)' },
+              { id: 'unpaid', label: 'Pending(0)' },
+              { id: 'paid', label: 'Settled(0)' },
+            ].map(tab => (
+              <button
+                key={tab.id}
+                onClick={() => setStatusFilter(tab.id)}
+                className={`font-mono text-xs px-2.5 py-1 rounded-sm transition-colors ${
+                  statusFilter === tab.id
+                    ? 'bg-[#386D59] text-white font-medium'
+                    : 'bg-[#E8E4DA] text-[#4A6358] hover:text-[#1E2D26] border border-black/8'
+                }`}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
+
+          
         </div>
       </div>
     </div>

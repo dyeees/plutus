@@ -111,7 +111,12 @@ export default function Finances({ navigate }: FinancesProps) {
             ))}
           </div>
 
-          
+          <div className="font-mono text-xs text-[#4A6358] flex items-center gap-1.5">
+            <span>Filtered Total:</span>
+            <span className="text-[#1E2D26] font-semibold tabular-numbers">
+              00.00
+            </span>
+          </div>
         </div>
       </div>
     </div>

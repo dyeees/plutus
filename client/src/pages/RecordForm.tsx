@@ -4,6 +4,7 @@ import { Check, Receipt, Landmark, Calculator } from 'lucide-react'
 
 import { saveBill } from '../services/bills'
 import { saveLoan } from '../services/loans'
+import { formatMoney } from '../lib/format'
 
 export const CLASSIFICATIONS = [
   'Housing',
@@ -49,14 +50,6 @@ function RecordForm({ onCancel }: { onCancel: () => void }) {
   const installmentAmount = installmentCount > 0
     ? ((Number(loanAmount) * (Number(interestRate) / 100)) * months + Number(loanAmount)) / installmentCount
     : 0
-
-  const formatPHP = (value: number) =>
-  new Intl.NumberFormat('en-PH', {
-    style: 'currency',
-    currency: 'PHP',
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  }).format(value)
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -389,7 +382,7 @@ function RecordForm({ onCancel }: { onCancel: () => void }) {
                     </span>
                     <div className="flex-1 border-b border-dotted border-black/15 self-end mb-1" />
                     <span className="font-mono text-sm font-semibold tabular-numbers text-[#1E2D26] shrink-0">
-                      {formatPHP((Number(loanAmount) * (Number(interestRate) / 100)) * months)}
+                      {formatMoney((Number(loanAmount) * (Number(interestRate) / 100)) * months)}
                     </span>
                   </div>
 
@@ -400,7 +393,7 @@ function RecordForm({ onCancel }: { onCancel: () => void }) {
                     </span>
                     <div className="flex-1 border-b border-dotted border-black/15 self-end mb-1" />
                     <span className="font-mono text-sm font-semibold tabular-numbers text-[#1E2D26] shrink-0">
-                      {formatPHP(Number(loanAmount) + ((Number(loanAmount) * (Number(interestRate) / 100)) * months))}
+                      {formatMoney(Number(loanAmount) + ((Number(loanAmount) * (Number(interestRate) / 100)) * months))}
                     </span>
                   </div>
 
@@ -416,7 +409,7 @@ function RecordForm({ onCancel }: { onCancel: () => void }) {
                     </div>
                     <div className="flex-1 border-b border-dotted border-black/15 self-center" />
                     <span className="font-mono text-base font-bold tabular-numbers text-[#386D59] shrink-0">
-                      {formatPHP(installmentAmount)}
+                      {formatMoney(installmentAmount)}
                     </span>
                   </div>
                 </div>

@@ -6,6 +6,7 @@ import Dropdown from '../components/Dropdown';
 
 import { getBills } from '../services/bills'
 import { getLoans } from '../services/loans'
+import { formatMoney } from '../lib/format'
 
 type FinancesProps = {
   navigate: (screen: string, params?: { returnTo?: string }) => void;

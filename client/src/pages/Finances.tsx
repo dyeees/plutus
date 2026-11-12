@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
-import { Search, X } from "lucide-react";
+import { Search, X, ChevronRight } from "lucide-react";
 
 import { CLASSIFICATIONS } from './RecordForm'
 import Dropdown from '../components/Dropdown';
@@ -175,13 +175,65 @@ export default function Finances({ navigate }: FinancesProps) {
           <div className="font-mono text-xs text-[#4A6358] flex items-center gap-1.5">
             <span>Filtered Total:</span>
             <span className="text-[#1E2D26] font-semibold tabular-numbers">
-              00.00
+              {formatMoney(sortedRecords.reduce((total, record) => total + Number(record.amount), 0))}
             </span>
           </div>
         </div>
       </div>
 
       {/* Table */}
+      <div className="border border-black/10 bg-[#EFECE4] rounded-sm overflow-x-auto">
+        <table className="w-full text-left border-collapse text-xs">
+          <thead>
+            <tr className="border-b border-black/10 bg-[#E2DED4] text-[#4A6358] font-mono uppercase tracking-[0.15em] text-[10px]">
+              <th className="py-3 px-4">Due Date</th>
+              <th className="py-3 px-4">Payee / Obligation</th>
+              <th className="py-3 px-4">Category</th>
+              <th className="py-3 px-4">Recurrence</th>
+              <th className="py-3 px-4 text-right">Amount</th>
+              <th className="py-3 px-4 text-center">Audit</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            {sortedRecords.map(record => (
+              <tr
+                key={`${record.type}-${record.id}`}
+                className="border-b border-black/5 hover:bg-[#E8E4DA] transition-colors group cursor-pointer"
+              >
+                <td className="py-3.5 px-4 font-mono text-[#4A6358] whitespace-nowrap">
+                  {record.dueDate}
+                </td>
+
+                <td className="py-3.5 px-4">
+                  <div className="font-medium text-[#1E2D26]">
+                    {record.name}
+                  </div>
+                  {record.notes && (
+                    <div className="text-[11px] text-[#7A9488] font-mono truncate max-w-xs mt-0.5">
+                      {record.notes}
+                    </div>
+                  )}
+                </td>
+
+                <td className="py-3.5 px-4">{record.classification}</td>
+
+                <td className="py-3.5 px-4 font-mono text-[#4A6358] whitespace-nowrap">
+                  {record.recurrence}
+                </td>
+
+                <td className="py-3.5 px-4 text-right font-mono font-semibold text-[#1E2D26]">
+                  {formatMoney(Number(record.amount))}
+                </td>
+
+                <td className="py-3.5 px-4 text-center">
+                  <ChevronRight className="w-4 h-4 text-[#7A9488] mx-auto" />
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   )
 }

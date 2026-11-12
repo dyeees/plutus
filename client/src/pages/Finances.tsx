@@ -46,15 +46,40 @@ export default function Finances({ navigate }: FinancesProps) {
         ])
         setBills(billsData)
         setLoans(loansData)
-        console.log('Bills:', billsData)
-        console.log('Loans:', loansData)
       } catch (error) {
         console.error('Failed to fetch records:', error)
       }
     }
     fetchRecords()
   }, [])
+
+  const records = [
+    ...bills.map(bill => ({ ...bill, type: 'bill', dueDate: bill.dueDate, amount: bill.amount, })),
+    ...loans.map(loan => ({ ...loan, type: 'loan', dueDate: loan.firstDueDate, amount: loan.totalRepayment, classification: 'Loans', })),
+  ]
   
+  const filteredRecords = records.filter(record => {
+    if (categoryFilter === 'all') return true
+    if (categoryFilter === 'Loans') return record.type === 'loan'
+    return record.type === 'bill' &&
+      record.classification === categoryFilter
+  })
+
+  const searchedRecords = filteredRecords.filter(record =>
+    record.name.toLowerCase().includes(search.toLowerCase()) ||
+    (record.notes || '').toLowerCase().includes(search.toLowerCase()) ||
+    (record.classification || 'Loans').toLowerCase().includes(search.toLowerCase())
+  )
+
+  const sortedRecords = [...searchedRecords].sort((a, b) => {
+    if (sortBy === 'due_asc') return a.dueDate.localeCompare(b.dueDate)
+    if (sortBy === 'due_desc') return b.dueDate.localeCompare(a.dueDate)
+    if (sortBy === 'amount_desc') return b.amount - a.amount
+    if (sortBy === 'amount_asc') return a.amount - b.amount
+    if (sortBy === 'name_asc') return a.name.localeCompare(b.name)
+    return 0
+  })
+
   return (
     <div className="space-y-6">
       {/* Header */}

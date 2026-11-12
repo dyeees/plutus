@@ -1,8 +1,11 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { Search, X } from "lucide-react";
 
 import { CLASSIFICATIONS } from './RecordForm'
 import Dropdown from '../components/Dropdown';
+
+import { getBills } from '../services/bills'
+import { getLoans } from '../services/loans'
 
 type FinancesProps = {
   navigate: (screen: string, params?: { returnTo?: string }) => void;
@@ -31,6 +34,27 @@ export default function Finances({ navigate }: FinancesProps) {
   const sortValue = (label: string) =>
     SORT_OPTIONS.find(o => o.label === label)?.value ?? SORT_OPTIONS[0].value
 
+  const [bills, setBills] = useState<any[]>([])
+  const [loans, setLoans] = useState<any[]>([])
+
+  useEffect(() => {
+    async function fetchRecords() {
+      try {
+        const [billsData, loansData] = await Promise.all([
+          getBills(),
+          getLoans(),
+        ])
+        setBills(billsData)
+        setLoans(loansData)
+        console.log('Bills:', billsData)
+        console.log('Loans:', loansData)
+      } catch (error) {
+        console.error('Failed to fetch records:', error)
+      }
+    }
+    fetchRecords()
+  }, [])
+  
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -41,7 +65,7 @@ export default function Finances({ navigate }: FinancesProps) {
               General Register
             </span>
             <span className="font-mono text-xs text-[#4A6358]">
-              # Total Commitments
+              {bills.length + loans.length} Total Commitments
             </span>
           </div>
           <h2 className="font-serif text-2xl sm:text-3xl font-medium tracking-tight text-[#1E2D26]">
@@ -130,6 +154,8 @@ export default function Finances({ navigate }: FinancesProps) {
           </div>
         </div>
       </div>
+
+      {/* Table */}
     </div>
   )
 }

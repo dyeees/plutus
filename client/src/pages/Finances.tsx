@@ -33,15 +33,26 @@ export default function Finances({ navigate }: FinancesProps) {
 
   return (
     <div className="space-y-6">
+      {/* Header */}
       <div className="flex flex-col-reverse sm:flex-row sm:items-end justify-between gap-1 sm:gap-3 pb-2 border-b border-black/10">
-        <h2 className="font-serif text-2xl sm:text-3xl font-medium tracking-tight text-[#1E2D26]">
-          Commitments
-        </h2>
+        <div>
+          <div className="flex items-center gap-2 mb-1">
+            <span className="font-mono text-[10px] tracking-[0.2em] uppercase text-[#C8860A]">
+              General Register
+            </span>
+            <span className="font-mono text-xs text-[#4A6358]">
+              # Total Commitments
+            </span>
+          </div>
+          <h2 className="font-serif text-2xl sm:text-3xl font-medium tracking-tight text-[#1E2D26]">
+            Commitments
+          </h2>
+        </div>
       </div>
 
       {/* Search & Filter */}
       <div className="border border-black/10 bg-[#EFECE4] rounded-sm p-3 sm:p-4 space-y-3">
-        <div className="flex flex-col sm:flex-row gap-3">
+        <div className="flex flex-col sm:flex-row gap-3 mb-3.5">
           {/* Search box */}
           <div className="relative flex-1">
             <Search className="absolute left-3 top-2.5 w-4 h-4 text-[#7A9488]" />

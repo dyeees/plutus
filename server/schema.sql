@@ -6,12 +6,23 @@ CREATE TABLE IF NOT EXISTS users (
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE TABLE IF NOT EXISTS categories (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(100) NOT NULL UNIQUE,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+INSERT IGNORE INTO categories (name) VALUES
+  ('Housing'),
+  ('Utilities'),
+  ('Subscriptions');
+
 CREATE TABLE IF NOT EXISTS bills (
   id INT AUTO_INCREMENT PRIMARY KEY,
   user_id INT NOT NULL,
   name VARCHAR(150) NOT NULL,
-  amount DECIMAL(12,2) NOT NULL,
-  classification VARCHAR(50) NOT NULL,
+  amount DECIMAL(12,2) NULL,
+  category_id INT NULL,
   due_date DATE NOT NULL,
   recurrence VARCHAR(30) NOT NULL,
   notes TEXT,

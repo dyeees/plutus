@@ -1,5 +1,5 @@
-import { useState, useRef, useEffect } from 'react'
-import { Search, X, ChevronRight } from "lucide-react";
+import { useState, useRef, useEffect, useCallback } from 'react'
+import { Search, X, ChevronRight, Check } from "lucide-react";
 
 import { CLASSIFICATIONS } from './RecordForm'
 import Dropdown from '../components/Dropdown';
@@ -9,7 +9,7 @@ import { getLoans } from '../services/loans'
 import { formatMoney } from '../lib/format'
 
 type FinancesProps = {
-  navigate: (screen: string, params?: { returnTo?: string }) => void;
+  navigate: (screen: string, params?: { returnTo?: string; record?: any }) => void;
 };
 
 const CATEGORY_OPTIONS = ['All Categories', ...CLASSIFICATIONS, 'Loans']
@@ -27,7 +27,7 @@ export default function Finances({ navigate }: FinancesProps) {
   const [categoryFilter, setCategoryFilter] = useState('all')
   const [sortBy, setSortBy] = useState('due_asc')
   const [statusFilter, setStatusFilter] = useState('all')
-  const searchInputRef = useRef(null)
+  const searchInputRef = useRef<HTMLInputElement>(null)
   
   const sortLabel = (v: string) => 
     SORT_OPTIONS.find(o => o.value === v)?.label ?? SORT_OPTIONS[0].label
@@ -38,21 +38,22 @@ export default function Finances({ navigate }: FinancesProps) {
   const [bills, setBills] = useState<any[]>([])
   const [loans, setLoans] = useState<any[]>([])
 
-  useEffect(() => {
-    async function fetchRecords() {
-      try {
-        const [billsData, loansData] = await Promise.all([
-          getBills(),
-          getLoans(),
-        ])
-        setBills(billsData)
-        setLoans(loansData)
-      } catch (error) {
-        console.error('Failed to fetch records:', error)
-      }
+  const fetchRecords = useCallback(async () => {
+    try {
+      const [billsData, loansData] = await Promise.all([
+        getBills(),
+        getLoans(),
+      ])
+      setBills(billsData)
+      setLoans(loansData)
+    } catch (error) {
+      console.error('Failed to fetch records:', error)
     }
-    fetchRecords()
   }, [])
+
+  useEffect(() => {
+    fetchRecords()
+  }, [fetchRecords])
 
   const records = [
     ...bills.map(bill => ({ ...bill, type: 'bill', dueDate: bill.dueDate, amount: bill.amount, })),
@@ -186,6 +187,7 @@ export default function Finances({ navigate }: FinancesProps) {
         <table className="w-full text-left border-collapse text-xs">
           <thead>
             <tr className="border-b border-black/10 bg-[#E2DED4] text-[#4A6358] font-mono uppercase tracking-[0.15em] text-[10px]">
+              <th className="py-3 px-4">Status</th>
               <th className="py-3 px-4">Due Date</th>
               <th className="py-3 px-4">Payee / Obligation</th>
               <th className="py-3 px-4">Category</th>
@@ -198,9 +200,26 @@ export default function Finances({ navigate }: FinancesProps) {
           <tbody>
             {sortedRecords.map(record => (
               <tr
+                onClick={() => navigate('record-detail', { record, returnTo: 'finances' })}
                 key={`${record.type}-${record.id}`}
                 className="border-b border-black/5 hover:bg-[#E8E4DA] transition-colors group cursor-pointer"
               >
+                <td className="py-3.5 px-4 text-center" onClick={e => e.stopPropagation()}>
+                  <button
+                    type="button"
+                    disabled
+                    title={record.status === 'paid' ? 'Settled' : 'Pending'}
+                    aria-label={record.status === 'paid' ? 'Settled' : 'Pending'}
+                    className={`w-4 h-4 mx-auto rounded-xs border flex items-center justify-center transition-colors ${
+                      record.status === 'paid'
+                        ? 'bg-[#2E7D52] border-[#2E7D52] text-white'
+                        : 'border-black/20 bg-white text-transparent'
+                    }`}
+                  >
+                    <Check className="w-3 h-3 stroke-3" />
+                  </button>
+                </td>
+
                 <td className="py-3.5 px-4 font-mono text-[#4A6358] whitespace-nowrap">
                   {record.dueDate}
                 </td>

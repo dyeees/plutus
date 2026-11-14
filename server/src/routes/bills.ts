@@ -25,6 +25,7 @@ billsRouter.get('/', async (req, res) => {
         COALESCE(bo.due_date, b.due_date) AS dueDate,
         bo.status,
         bo.paid_at AS paidAt,
+        bo.id AS occurrenceId,
         bo.occurrence_number AS occurrenceNumber
       FROM bills b
       LEFT JOIN bill_occurrences bo

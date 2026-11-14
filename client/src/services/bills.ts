@@ -67,3 +67,24 @@ export async function setBillOccurrenceAmount(
 
   return result
 }
+
+export async function payBillOccurrence(
+  billId: number,
+  occurrenceId: number,
+) {
+  const response = await fetch(
+    `/api/bills/${billId}/occurrences/${occurrenceId}/pay`,
+    {
+      method: 'POST',
+      credentials: 'include',
+    },
+  )
+
+  const result = await response.json()
+
+  if (!response.ok) {
+    throw new Error(result.error || 'Failed to pay occurrence.')
+  }
+
+  return result
+}

@@ -56,3 +56,24 @@ export async function getLoanInstallments(loanId: number) {
 
   return result
 }
+
+export async function payLoanInstallment(
+  loanId: number,
+  installmentId: number,
+) {
+  const response = await fetch(
+    `/api/loans/${loanId}/installments/${installmentId}/pay`,
+    {
+      method: 'POST',
+      credentials: 'include',
+    },
+  )
+
+  const result = await response.json()
+
+  if (!response.ok) {
+    throw new Error(result.error || 'Failed to pay installment.')
+  }
+
+  return result
+}

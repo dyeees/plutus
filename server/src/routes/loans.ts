@@ -210,3 +210,48 @@ loansRouter.post('/', async (req, res) => {
     })
   }
 })
+
+loansRouter.post('/:loanId/installments/:installmentId/pay', async (req, res) => {
+  try {
+    if (!req.session.user) {
+      res.status(401).json({ error: 'Not authenticated.' })
+      return
+    }
+
+    const loanId = Number(req.params.loanId)
+    const installmentId = Number(req.params.installmentId)
+
+    if (!Number.isInteger(loanId) || loanId <= 0 ||
+        !Number.isInteger(installmentId) || installmentId <= 0) {
+      res.status(400).json({ error: 'Invalid loan or installment ID.' })
+      return
+    }
+
+    const [result] = await pool.execute<ResultSetHeader>(
+      `UPDATE loan_installments li
+       INNER JOIN loans l ON l.id = li.loan_id
+       SET li.status = 'paid', li.paid_at = NOW()
+       WHERE li.id = ?
+         AND li.loan_id = ?
+         AND l.user_id = ?
+         AND li.status = 'pending'`,
+      [installmentId, loanId, req.session.user.id],
+    )
+
+    if (result.affectedRows === 0) {
+      res.status(409).json({
+        error: 'Installment not found, not yours, or already paid.',
+      })
+      return
+    }
+
+    res.json({
+      message: 'Installment paid.',
+      installmentId,
+      status: 'paid',
+    })
+  } catch (error) {
+    console.error(error)
+    res.status(500).json({ error: 'Internal server error' })
+  }
+})

@@ -1,5 +1,6 @@
 
 import { Router } from 'express'
+import type { ResultSetHeader } from 'mysql2'
 import { pool } from '../db.js'
 
 export const billsRouter = Router()
@@ -65,24 +66,44 @@ billsRouter.post('/', async (req, res) => {
       return
     }
 
-    const [result] = await pool.execute(
-      `INSERT INTO bills
-        (user_id, name, amount, classification, due_date, recurrence, notes)
-       VALUES (?, ?, ?, ?, ?, ?, ?)`,
-      [
-        req.session.user.id,
-        name.trim(),
-        Number(amount),
-        classification,
-        dueDate,
-        recurrence,
-        notes || null,
-      ],
-    )
+    const connection = await pool.getConnection()
+    try {
+      await connection.beginTransaction()
 
-    res.status(201).json({
-      message: 'Bill saved successfully!',
-    })
+      const [result] = await connection.execute<ResultSetHeader>(
+        `INSERT INTO bills
+          (user_id, name, amount, classification, due_date, recurrence, notes)
+         VALUES (?, ?, ?, ?, ?, ?, ?)`,
+        [
+          req.session.user.id,
+          name.trim(),
+          Number(amount),
+          classification,
+          dueDate,
+          recurrence,
+          notes || null,
+        ],
+      )
+
+      await connection.execute(
+        `INSERT INTO bill_occurrences
+          (bill_id, occurrence_number, due_date, amount_due, status)
+         VALUES (?, 1, ?, ?, 'upcoming')`,
+        [result.insertId, dueDate, Number(amount)],
+      )
+
+      await connection.commit()
+
+      res.status(201).json({
+        message: 'Bill and occurrence saved successfully!',
+        billId: result.insertId,
+      })
+    } catch (error) {
+      await connection.rollback()
+      throw error
+    } finally {
+      connection.release()
+    }
   } catch (error) {
     console.error(error)
     res.status(500).json({

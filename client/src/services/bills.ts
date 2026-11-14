@@ -58,7 +58,6 @@ export async function setBillOccurrenceAmount(
       body: JSON.stringify({ amount }),
     },
   )
-
   const result = await response.json()
 
   if (!response.ok) {
@@ -79,12 +78,21 @@ export async function payBillOccurrence(
       credentials: 'include',
     },
   )
-
   const result = await response.json()
 
   if (!response.ok) {
     throw new Error(result.error || 'Failed to pay occurrence.')
   }
 
+  return result
+}
+
+export async function unpayBillOccurrence(billId: number, occurrenceId: number) {
+  const response = await fetch(`${API_URL}/bills/${billId}/occurrences/${occurrenceId}/unpay`, {
+    method: 'POST',
+    credentials: 'include',
+  })
+  const result = await response.json()
+  if (!response.ok) throw new Error(result.error || 'Failed to unpay bill.')
   return result
 }

@@ -23,21 +23,14 @@ billsRouter.get('/', async (req, res) => {
         b.recurrence,
         b.notes,
         COALESCE(bo.due_date, b.due_date) AS dueDate,
-        bo.status,
+        COALESCE(bo.status, 'pending') AS status,
         bo.paid_at AS paidAt,
         bo.id AS occurrenceId,
         bo.occurrence_number AS occurrenceNumber
       FROM bills b
-      LEFT JOIN bill_occurrences bo
-        ON bo.bill_id = b.id
-        AND bo.occurrence_number = (
-          SELECT MIN(o.occurrence_number)
-          FROM bill_occurrences o
-          WHERE o.bill_id = b.id
-            AND o.status <> 'paid'
-        )
+      LEFT JOIN bill_occurrences bo ON bo.bill_id = b.id
       WHERE b.user_id = ?
-      ORDER BY b.id DESC`,
+      ORDER BY COALESCE(bo.due_date, b.due_date) DESC, b.id DESC`,
       [req.session.user.id],
     )
 
@@ -222,7 +215,7 @@ billsRouter.post('/:billId/occurrences/:occurrenceId/pay', async (req, res) => {
     await connection.beginTransaction()
 
     const [rows] = await connection.execute(
-      `SELECT bo.status, b.recurrence
+      `SELECT bo.status, bo.occurrence_number, b.recurrence
        FROM bill_occurrences bo
        INNER JOIN bills b ON b.id = bo.bill_id
        WHERE bo.id = ? AND bo.bill_id = ? AND b.user_id = ?
@@ -238,38 +231,110 @@ billsRouter.post('/:billId/occurrences/:occurrenceId/pay', async (req, res) => {
       return
     }
 
-    if (occurrence.status !== 'pending') {
+    if (occurrence.status === 'paid') {
+      await connection.execute(
+        `UPDATE bill_occurrences SET status = 'pending', paid_at = NULL WHERE id = ?`,
+        [occurrenceId],
+      )
+
+      await connection.execute(
+        `DELETE FROM bill_occurrences
+         WHERE bill_id = ? AND occurrence_number = ? + 1 AND status = 'upcoming'`,
+        [billId, occurrence.occurrence_number],
+      )
+
+      await connection.commit()
+      res.json({ action: 'unpaid', occurrenceId, nextOccurrenceNumber: occurrence.occurrence_number + 1 })
+    } else {
+      await connection.execute(
+        `UPDATE bill_occurrences SET status = 'paid', paid_at = NOW() WHERE id = ?`,
+        [occurrenceId],
+      )
+
+      let newOccurrence: any = null
+      if (occurrence.recurrence !== 'One-time') {
+        const [insertRes]: any = await connection.execute(
+          `INSERT INTO bill_occurrences
+             (bill_id, occurrence_number, due_date, amount_due, status)
+           SELECT ?, COALESCE(MAX(occurrence_number), 0) + 1,
+             CASE ?
+               WHEN 'Weekly'     THEN DATE_ADD(MAX(due_date), INTERVAL 7 DAY)
+               WHEN 'Bi-weekly'  THEN DATE_ADD(MAX(due_date), INTERVAL 14 DAY)
+               WHEN 'Monthly'    THEN DATE_ADD(MAX(due_date), INTERVAL 1 MONTH)
+               WHEN 'Quarterly'  THEN DATE_ADD(MAX(due_date), INTERVAL 3 MONTH)
+               WHEN 'Semiannual' THEN DATE_ADD(MAX(due_date), INTERVAL 6 MONTH)
+               WHEN 'Annually'   THEN DATE_ADD(MAX(due_date), INTERVAL 1 YEAR)
+             END,
+             NULL, 'upcoming'
+           FROM bill_occurrences
+           WHERE bill_id = ?`,
+          [billId, occurrence.recurrence, billId],
+        )
+
+        const [createdRows]: any = await connection.execute(
+          `SELECT id AS occurrenceId, occurrence_number AS occurrenceNumber, due_date AS dueDate, amount_due AS amount, status
+           FROM bill_occurrences WHERE id = ?`,
+          [insertRes.insertId],
+        )
+        newOccurrence = createdRows[0]
+      }
+
+      await connection.commit()
+      res.json({ action: 'paid', occurrenceId, newOccurrence })
+    }
+  } catch (error) {
+    await connection.rollback()
+    console.error(error)
+    res.status(500).json({ error: 'Internal server error' })
+  } finally {
+    connection.release()
+  }
+})
+
+billsRouter.post('/:billId/occurrences/:occurrenceId/unpay', async (req, res) => {
+  if (!req.session.user) {
+    res.status(401).json({ error: 'Not authenticated.' })
+    return
+  }
+
+  const billId = Number(req.params.billId)
+  const occurrenceId = Number(req.params.occurrenceId)
+
+  const connection = await pool.getConnection()
+  try {
+    await connection.beginTransaction()
+
+    const [rows] = await connection.execute(
+      `SELECT bo.occurrence_number
+       FROM bill_occurrences bo
+       INNER JOIN bills b ON b.id = bo.bill_id
+       WHERE bo.id = ? AND bo.bill_id = ? AND b.user_id = ? AND bo.status = 'paid'
+       FOR UPDATE`,
+      [occurrenceId, billId, req.session.user.id],
+    )
+
+    const occurrence = (rows as any[])[0]
+    if (!occurrence) {
       await connection.rollback()
-      res.status(409).json({ error: 'Only pending occurrences can be paid.' })
+      res.status(404).json({ error: 'Paid occurrence not found.' })
       return
     }
 
     await connection.execute(
-      `UPDATE bill_occurrences SET status = 'paid', paid_at = NOW() WHERE id = ?`,
+      `UPDATE bill_occurrences SET status = 'pending', paid_at = NULL WHERE id = ?`,
       [occurrenceId],
     )
 
     await connection.execute(
-      `INSERT INTO bill_occurrences
-         (bill_id, occurrence_number, due_date, amount_due, status)
-       SELECT ?, COALESCE(MAX(occurrence_number), 0) + 1,
-         CASE ?
-           WHEN 'Weekly'     THEN DATE_ADD(MAX(due_date), INTERVAL 7 DAY)
-           WHEN 'Bi-weekly'  THEN DATE_ADD(MAX(due_date), INTERVAL 14 DAY)
-           WHEN 'Monthly'    THEN DATE_ADD(MAX(due_date), INTERVAL 1 MONTH)
-           WHEN 'Quarterly'  THEN DATE_ADD(MAX(due_date), INTERVAL 3 MONTH)
-           WHEN 'Semiannual' THEN DATE_ADD(MAX(due_date), INTERVAL 6 MONTH)
-           WHEN 'Annually'   THEN DATE_ADD(MAX(due_date), INTERVAL 1 YEAR)
-         END,
-         NULL, 'upcoming'
-       FROM bill_occurrences
+      `DELETE FROM bill_occurrences
        WHERE bill_id = ?
-       HAVING ? <> 'One-time'`,
-      [billId, occurrence.recurrence, billId, occurrence.recurrence],
+         AND occurrence_number = ? + 1
+         AND status = 'upcoming'`,
+      [billId, occurrence.occurrence_number],
     )
 
     await connection.commit()
-    res.json({ message: 'Occurrence paid.', occurrenceId, status: 'paid' })
+    res.json({ message: 'Occurrence marked as unpaid.', occurrenceId, status: 'pending' })
   } catch (error) {
     await connection.rollback()
     console.error(error)

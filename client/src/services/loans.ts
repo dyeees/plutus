@@ -77,3 +77,13 @@ export async function payLoanInstallment(
 
   return result
 }
+
+export async function unpayLoanInstallment(loanId: number, installmentId: number) {
+  const response = await fetch(`${API_URL}/loans/${loanId}/installments/${installmentId}/unpay`, {
+    method: 'POST',
+    credentials: 'include',
+  })
+  const result = await response.json()
+  if (!response.ok) throw new Error(result.error || 'Failed to unpay installment.')
+  return result
+}

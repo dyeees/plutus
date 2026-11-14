@@ -16,18 +16,30 @@ loansRouter.get('/', async (req, res) => {
     }
 
     const [rows] = await pool.execute(
-      `SELECT id, name,
-              principal_amount AS principalAmount,
-              interest_rate AS interestRate,
-              duration_months AS durationMonths,
-              total_interest AS totalInterest,
-              total_repayment AS totalRepayment,
-              installment_count AS installmentCount,
-              first_due_date AS firstDueDate,
-              recurrence, notes
-      FROM loans
-      WHERE user_id = ?
-      ORDER BY id DESC`,
+      `SELECT l.id, l.name,
+        l.principal_amount AS principalAmount,
+        l.interest_rate AS interestRate,
+        l.duration_months AS durationMonths,
+        l.total_interest AS totalInterest,
+        l.total_repayment AS totalRepayment,
+        l.installment_count AS installmentCount,
+        l.first_due_date AS firstDueDate,
+        l.recurrence, l.notes,
+        li.id AS installmentId,
+        li.status AS status,
+        li.due_date AS dueDate,
+        li.amount_due AS amountDue
+      FROM loans l
+      LEFT JOIN loan_installments li
+        ON li.loan_id = l.id
+      AND li.installment_number = (
+        SELECT MIN(x.installment_number)
+        FROM loan_installments x
+        WHERE x.loan_id = l.id
+          AND x.status <> 'paid'
+      )
+      WHERE l.user_id = ?
+      ORDER BY l.id DESC`,
       [req.session.user.id],
     )
 
@@ -250,6 +262,39 @@ loansRouter.post('/:loanId/installments/:installmentId/pay', async (req, res) =>
       installmentId,
       status: 'paid',
     })
+  } catch (error) {
+    console.error(error)
+    res.status(500).json({ error: 'Internal server error' })
+  }
+})
+
+loansRouter.post('/:loanId/installments/:installmentId/unpay', async (req, res) => {
+  try {
+    if (!req.session.user) {
+      res.status(401).json({ error: 'Not authenticated.' })
+      return
+    }
+
+    const loanId = Number(req.params.loanId)
+    const installmentId = Number(req.params.installmentId)
+
+    const [result] = await pool.execute<ResultSetHeader>(
+      `UPDATE loan_installments li
+       INNER JOIN loans l ON l.id = li.loan_id
+       SET li.status = 'pending', li.paid_at = NULL
+       WHERE li.id = ?
+         AND li.loan_id = ?
+         AND l.user_id = ?
+         AND li.status = 'paid'`,
+      [installmentId, loanId, req.session.user.id],
+    )
+
+    if (result.affectedRows === 0) {
+      res.status(409).json({ error: 'Installment not found or already unpaid.' })
+      return
+    }
+
+    res.json({ message: 'Installment marked as unpaid.', installmentId, status: 'pending' })
   } catch (error) {
     console.error(error)
     res.status(500).json({ error: 'Internal server error' })

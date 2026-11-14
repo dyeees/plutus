@@ -4,8 +4,8 @@ import { Search, X, ChevronRight, Check } from "lucide-react";
 import { CLASSIFICATIONS } from './RecordForm'
 import Dropdown from '../components/Dropdown';
 
-import { getBills } from '../services/bills'
-import { getLoans } from '../services/loans'
+import { getBills, payBillOccurrence, unpayBillOccurrence } from '../services/bills'
+import { getLoans, payLoanInstallment, unpayLoanInstallment } from '../services/loans'
 import { formatMoney } from '../lib/format'
 
 type FinancesProps = {
@@ -55,9 +55,70 @@ export default function Finances({ navigate }: FinancesProps) {
     fetchRecords()
   }, [fetchRecords])
 
+  const [payingId, setPayingId] = useState<number | null>(null)
+
+    async function handlePay(record: any) {
+    const targetId = record.type === 'bill' ? record.occurrenceId : record.installmentId
+    if (!targetId) return
+
+    const isCurrentlyPaid = record.status === 'paid'
+    if (record.type === 'bill') {
+      setBills(prev =>
+        prev.map(b => b.occurrenceId === record.occurrenceId
+          ? { ...b, status: isCurrentlyPaid ? 'pending' : 'paid' }
+          : b
+        )
+      )
+    }
+
+    try {
+      if (record.type === 'bill') {
+        const res = await payBillOccurrence(record.id, record.occurrenceId)
+
+        if (res.action === 'paid' && res.newOccurrence) {
+          // Instantly append the spawned occurrence to the table
+          const spawned = {
+            ...record,
+            ...res.newOccurrence,
+            id: record.id,
+            occurrenceId: res.newOccurrence.occurrenceId,
+            dueDate: res.newOccurrence.dueDate.slice(0, 10),
+            amount: res.newOccurrence.amount,
+            status: 'upcoming',
+          }
+          setBills(prev => [spawned, ...prev])
+        } else if (res.action === 'unpaid') {
+          // Instantly remove the spawned upcoming occurrence from the table
+          setBills(prev =>
+            prev.filter(b => !(b.id === record.id && b.occurrenceNumber === res.nextOccurrenceNumber))
+          )
+        }
+      } else {
+        await payLoanInstallment(record.id, record.installmentId)
+        fetchRecords()
+      }
+    } catch (error) {
+      console.error(error)
+      fetchRecords() // fallback sync on error
+    }
+  }
+
   const records = [
-    ...bills.map(bill => ({ ...bill, type: 'bill', dueDate: bill.dueDate, amount: bill.amount, })),
-    ...loans.map(loan => ({ ...loan, type: 'loan', dueDate: loan.firstDueDate, amount: loan.totalRepayment, classification: 'Loans', })),
+    ...bills.map(bill => ({
+      ...bill,
+      type: 'bill',
+      dueDate: bill.dueDate,
+      amount: bill.amount,
+      status: bill.status || 'pending',
+    })),
+    ...loans.map(loan => ({
+      ...loan,
+      type: 'loan',
+      dueDate: loan.dueDate || loan.firstDueDate,
+      amount: loan.amountDue || loan.totalRepayment,
+      classification: 'Loans',
+      status: loan.status || 'pending',
+    })),
   ]
   
   const filteredRecords = records.filter(record => {
@@ -74,8 +135,8 @@ export default function Finances({ navigate }: FinancesProps) {
   )
 
   const sortedRecords = [...searchedRecords].sort((a, b) => {
-    if (sortBy === 'due_asc') return a.dueDate.localeCompare(b.dueDate)
-    if (sortBy === 'due_desc') return b.dueDate.localeCompare(a.dueDate)
+    if (sortBy === 'due_asc') return String(a.dueDate || '').localeCompare(String(b.dueDate || ''))
+    if (sortBy === 'due_desc') return String(b.dueDate || '').localeCompare(String(a.dueDate || ''))
     if (sortBy === 'amount_desc') return b.amount - a.amount
     if (sortBy === 'amount_asc') return a.amount - b.amount
     if (sortBy === 'name_asc') return a.name.localeCompare(b.name)
@@ -201,23 +262,21 @@ export default function Finances({ navigate }: FinancesProps) {
             {sortedRecords.map(record => (
               <tr
                 onClick={() => navigate('record-detail', { record, returnTo: 'finances' })}
-                key={`${record.type}-${record.id}`}
+                key={`${record.type}-${record.id}-${record.occurrenceId ?? record.installmentId ?? 0}`}
                 className="border-b border-black/5 hover:bg-[#E8E4DA] transition-colors group cursor-pointer"
               >
                 <td className="py-3.5 px-4 text-center" onClick={e => e.stopPropagation()}>
-                  <button
-                    type="button"
-                    disabled
+                  <div
                     title={record.status === 'paid' ? 'Settled' : 'Pending'}
                     aria-label={record.status === 'paid' ? 'Settled' : 'Pending'}
-                    className={`w-4 h-4 mx-auto rounded-xs border flex items-center justify-center transition-colors ${
+                    className={`w-4 h-4 mx-auto rounded-xs border flex items-center justify-center ${
                       record.status === 'paid'
                         ? 'bg-[#2E7D52] border-[#2E7D52] text-white'
-                        : 'border-black/20 bg-white text-transparent'
+                        : 'border-black/20 bg-white/50 text-transparent'
                     }`}
                   >
                     <Check className="w-3 h-3 stroke-3" />
-                  </button>
+                  </div>
                 </td>
 
                 <td className="py-3.5 px-4 font-mono text-[#4A6358] whitespace-nowrap">

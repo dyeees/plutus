@@ -205,3 +205,75 @@ billsRouter.patch('/:billId/occurrences/:occurrenceId', async (req, res) => {
     })
   }
 })
+
+billsRouter.post('/:billId/occurrences/:occurrenceId/pay', async (req, res) => {
+  if (!req.session.user) {
+    res.status(401).json({ error: 'Not authenticated.' })
+    return
+  }
+
+  const billId = Number(req.params.billId)
+  const occurrenceId = Number(req.params.occurrenceId)
+
+  const connection = await pool.getConnection()
+
+  try {
+    await connection.beginTransaction()
+
+    const [rows] = await connection.execute(
+      `SELECT bo.status, b.recurrence
+       FROM bill_occurrences bo
+       INNER JOIN bills b ON b.id = bo.bill_id
+       WHERE bo.id = ? AND bo.bill_id = ? AND b.user_id = ?
+       FOR UPDATE`,
+      [occurrenceId, billId, req.session.user.id],
+    )
+
+    const occurrence = (rows as any[])[0]
+
+    if (!occurrence) {
+      await connection.rollback()
+      res.status(404).json({ error: 'Occurrence not found.' })
+      return
+    }
+
+    if (occurrence.status !== 'pending') {
+      await connection.rollback()
+      res.status(409).json({ error: 'Only pending occurrences can be paid.' })
+      return
+    }
+
+    await connection.execute(
+      `UPDATE bill_occurrences SET status = 'paid', paid_at = NOW() WHERE id = ?`,
+      [occurrenceId],
+    )
+
+    await connection.execute(
+      `INSERT INTO bill_occurrences
+         (bill_id, occurrence_number, due_date, amount_due, status)
+       SELECT ?, COALESCE(MAX(occurrence_number), 0) + 1,
+         CASE ?
+           WHEN 'Weekly'     THEN DATE_ADD(MAX(due_date), INTERVAL 7 DAY)
+           WHEN 'Bi-weekly'  THEN DATE_ADD(MAX(due_date), INTERVAL 14 DAY)
+           WHEN 'Monthly'    THEN DATE_ADD(MAX(due_date), INTERVAL 1 MONTH)
+           WHEN 'Quarterly'  THEN DATE_ADD(MAX(due_date), INTERVAL 3 MONTH)
+           WHEN 'Semiannual' THEN DATE_ADD(MAX(due_date), INTERVAL 6 MONTH)
+           WHEN 'Annually'   THEN DATE_ADD(MAX(due_date), INTERVAL 1 YEAR)
+         END,
+         NULL, 'upcoming'
+       FROM bill_occurrences
+       WHERE bill_id = ?
+       HAVING ? <> 'One-time'`,
+      [billId, occurrence.recurrence, billId, occurrence.recurrence],
+    )
+
+    await connection.commit()
+    res.json({ message: 'Occurrence paid.', occurrenceId, status: 'paid' })
+  } catch (error) {
+    await connection.rollback()
+    console.error(error)
+    res.status(500).json({ error: 'Internal server error' })
+  } finally {
+    connection.release()
+  }
+})

@@ -41,3 +41,29 @@ export async function getBills() {
 
   return result
 }
+
+export async function setBillOccurrenceAmount(
+  billId: number,
+  occurrenceId: number,
+  amount: number,
+) {
+  const response = await fetch(
+    `/api/bills/${billId}/occurrences/${occurrenceId}`,
+    {
+      method: 'PATCH',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ amount }),
+    },
+  )
+
+  const result = await response.json()
+
+  if (!response.ok) {
+    throw new Error(result.error || 'Failed to save amount.')
+  }
+
+  return result
+}

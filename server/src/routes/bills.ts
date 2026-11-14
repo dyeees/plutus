@@ -128,3 +128,80 @@ billsRouter.post('/', async (req, res) => {
     })
   }
 })
+
+billsRouter.patch('/:billId/occurrences/:occurrenceId', async (req, res) => {
+  try {
+    if (!req.session.user) {
+      res.status(401).json({
+        error: 'Not authenticated.',
+      })
+      return
+    }
+
+    const billId = Number(req.params.billId)
+    const occurrenceId = Number(req.params.occurrenceId)
+    const { amount } = req.body
+
+    if (!Number.isInteger(billId) || billId <= 0 ||
+        !Number.isInteger(occurrenceId) || occurrenceId <= 0) {
+      res.status(400).json({
+        error: 'Invalid bill or occurrence ID.',
+      })
+      return
+    }
+
+    if (amount === undefined ||
+        !Number.isFinite(Number(amount)) ||
+        Number(amount) < 0) {
+      res.status(400).json({
+        error: 'A valid amount is required.',
+      })
+      return
+    }
+
+    const [occurrenceRows] = await pool.execute(
+      `SELECT bo.id, bo.status
+       FROM bill_occurrences bo
+       INNER JOIN bills b ON b.id = bo.bill_id
+       WHERE bo.id = ?
+         AND bo.bill_id = ?
+         AND b.user_id = ?`,
+      [occurrenceId, billId, req.session.user.id],
+    )
+
+    const occurrence = (occurrenceRows as any[])[0]
+
+    if (!occurrence) {
+      res.status(404).json({
+        error: 'Occurrence not found.',
+      })
+      return
+    }
+
+    if (occurrence.status !== 'upcoming') {
+      res.status(409).json({
+        error: 'Only upcoming occurrences can receive an amount.',
+      })
+      return
+    }
+
+    await pool.execute(
+      `UPDATE bill_occurrences
+       SET amount_due = ?, status = 'pending'
+       WHERE id = ?`,
+      [Number(amount), occurrenceId],
+    )
+
+    res.json({
+      message: 'Amount saved.',
+      occurrenceId,
+      amount: Number(amount),
+      status: 'pending',
+    })
+  } catch (error) {
+    console.error(error)
+    res.status(500).json({
+      error: 'Internal server error',
+    })
+  }
+})

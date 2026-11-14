@@ -5,6 +5,7 @@ import AuthPage, { type AuthForm } from './pages/AuthPage'
 import Dashboard from './pages/Dashboard'
 import Finances from './pages/Finances'
 import Settings from './pages/Settings'
+import RecordDetail from './pages/RecordDetail'
 import './index.css'
 
 import { useState, useEffect } from 'react'
@@ -63,7 +64,7 @@ function App() {
     )
   }, [])
 
-  const [screenParams, setScreenParams] = useState<{ returnTo?: string }>({})
+  const [screenParams, setScreenParams] = useState<{ returnTo?: string; record?: any }>({})
 
   const [busy, setBusy] = useState(false)
   const [isLoggingOut, setIsLoggingOut] = useState(false)
@@ -190,6 +191,11 @@ function App() {
         <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-5xl w-full mx-auto pb-24 md:pb-12">
           {currentScreen === 'dashboard' && <Dashboard navigate={navigate} />}
           {currentScreen === 'finances' && <Finances navigate={navigate} />}
+          
+          {currentScreen === 'record-detail' && (
+            <RecordDetail record={screenParams.record} navigate={navigate} />
+          )}
+
           {currentScreen === 'settings' && (
             <Settings
               user={user}

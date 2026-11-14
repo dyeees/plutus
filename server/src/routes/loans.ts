@@ -43,41 +43,44 @@ loansRouter.get('/', async (req, res) => {
 loansRouter.get('/:id/installments', async (req, res) => {
   try {
     if (!req.session.user) {
-      res.status(401).json({
-        error: 'Not authenticated.',
-      })
+      res.status(401).json({ error: 'Not authenticated.' })
       return
     }
 
     const loanId = Number(req.params.id)
 
     if (!Number.isInteger(loanId) || loanId <= 0) {
-      res.status(400).json({
-        error: 'Invalid loan ID.',
-      })
+      res.status(400).json({ error: 'Invalid loan ID.' })
       return
     }
 
     const [rows] = await pool.execute(
       `SELECT
-        li.id,
-        li.installment_number AS installmentNumber,
-        li.due_date AS dueDate,
-        li.amount_due AS amountDue
-      FROM loan_installments li
-      INNER JOIN loans l ON li.loan_id = l.id
-      WHERE li.loan_id = ?
-        AND l.user_id = ?
-      ORDER BY li.installment_number ASC`,
+         li.id,
+         li.installment_number AS installmentNumber,
+         li.due_date AS dueDate,
+         li.amount_due AS amountDue,
+         li.status,
+         li.paid_at AS paidAt,
+         CASE WHEN li.due_date < CURDATE() AND li.status <> 'paid'
+              THEN 1 ELSE 0 END AS overdue
+       FROM loan_installments li
+       INNER JOIN loans l ON l.id = li.loan_id
+       WHERE li.loan_id = ?
+         AND l.user_id = ?
+       ORDER BY li.installment_number ASC`,
       [loanId, req.session.user.id],
     )
 
-    res.json(rows)
+    res.json(
+      (rows as any[]).map(row => ({
+        ...row,
+        overdue: Boolean(row.overdue),
+      })),
+    )
   } catch (error) {
     console.error(error)
-    res.status(500).json({
-      error: 'Internal server error',
-    })
+    res.status(500).json({ error: 'Internal server error' })
   }
 })
 

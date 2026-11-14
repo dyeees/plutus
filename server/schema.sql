@@ -75,7 +75,10 @@ CREATE TABLE IF NOT EXISTS loan_installments (
   installment_number INT NOT NULL,
   due_date DATE NOT NULL,
   amount_due DECIMAL(12, 2) NOT NULL,
+  status ENUM('pending', 'paid') NOT NULL DEFAULT 'pending',
+  paid_at TIMESTAMP NULL,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   CONSTRAINT fk_installments_loan
     FOREIGN KEY (loan_id) REFERENCES loans(id)
     ON DELETE CASCADE,

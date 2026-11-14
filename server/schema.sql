@@ -33,6 +33,22 @@ CREATE TABLE IF NOT EXISTS bills (
     ON DELETE CASCADE
 );
 
+CREATE TABLE IF NOT EXISTS bill_occurrences (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  bill_id INT NOT NULL,
+  occurrence_number INT NOT NULL,
+  due_date DATE NOT NULL,
+  amount_due DECIMAL(12,2) NULL,
+  status ENUM('upcoming', 'pending', 'paid') NOT NULL DEFAULT 'upcoming',
+  paid_at TIMESTAMP NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  CONSTRAINT fk_occurrences_bill
+    FOREIGN KEY (bill_id) REFERENCES bills(id)
+    ON DELETE CASCADE,
+  UNIQUE (bill_id, occurrence_number)
+);
+
 CREATE TABLE IF NOT EXISTS loans (
   id INT AUTO_INCREMENT PRIMARY KEY,
   user_id INT NOT NULL,

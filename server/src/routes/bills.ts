@@ -15,11 +15,28 @@ billsRouter.get('/', async (req, res) => {
     }
 
     const [rows] = await pool.execute(
-      `SELECT id, name, amount, classification, due_date AS dueDate,
-              recurrence, notes
-       FROM bills
-       WHERE user_id = ?
-       ORDER BY id DESC`,
+      `SELECT
+        b.id,
+        b.name,
+        COALESCE(bo.amount_due, b.amount) AS amount,
+        b.classification,
+        b.recurrence,
+        b.notes,
+        COALESCE(bo.due_date, b.due_date) AS dueDate,
+        bo.status,
+        bo.paid_at AS paidAt,
+        bo.occurrence_number AS occurrenceNumber
+      FROM bills b
+      LEFT JOIN bill_occurrences bo
+        ON bo.bill_id = b.id
+        AND bo.occurrence_number = (
+          SELECT MIN(o.occurrence_number)
+          FROM bill_occurrences o
+          WHERE o.bill_id = b.id
+            AND o.status <> 'paid'
+        )
+      WHERE b.user_id = ?
+      ORDER BY b.id DESC`,
       [req.session.user.id],
     )
 

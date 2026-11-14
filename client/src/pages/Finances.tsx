@@ -4,9 +4,9 @@ import { Search, X, ChevronRight, Check } from "lucide-react";
 import { CLASSIFICATIONS } from './RecordForm'
 import Dropdown from '../components/Dropdown';
 
-import { getBills, payBillOccurrence, unpayBillOccurrence } from '../services/bills'
-import { getLoans, payLoanInstallment, unpayLoanInstallment } from '../services/loans'
-import { formatMoney } from '../lib/format'
+import { getBills } from '../services/bills'
+import { getLoans } from '../services/loans'
+import { formatMoney, formatDate } from '../lib/format'
 
 type FinancesProps = {
   navigate: (screen: string, params?: { returnTo?: string; record?: any }) => void;
@@ -54,54 +54,6 @@ export default function Finances({ navigate }: FinancesProps) {
   useEffect(() => {
     fetchRecords()
   }, [fetchRecords])
-
-  const [payingId, setPayingId] = useState<number | null>(null)
-
-    async function handlePay(record: any) {
-    const targetId = record.type === 'bill' ? record.occurrenceId : record.installmentId
-    if (!targetId) return
-
-    const isCurrentlyPaid = record.status === 'paid'
-    if (record.type === 'bill') {
-      setBills(prev =>
-        prev.map(b => b.occurrenceId === record.occurrenceId
-          ? { ...b, status: isCurrentlyPaid ? 'pending' : 'paid' }
-          : b
-        )
-      )
-    }
-
-    try {
-      if (record.type === 'bill') {
-        const res = await payBillOccurrence(record.id, record.occurrenceId)
-
-        if (res.action === 'paid' && res.newOccurrence) {
-          // Instantly append the spawned occurrence to the table
-          const spawned = {
-            ...record,
-            ...res.newOccurrence,
-            id: record.id,
-            occurrenceId: res.newOccurrence.occurrenceId,
-            dueDate: res.newOccurrence.dueDate.slice(0, 10),
-            amount: res.newOccurrence.amount,
-            status: 'upcoming',
-          }
-          setBills(prev => [spawned, ...prev])
-        } else if (res.action === 'unpaid') {
-          // Instantly remove the spawned upcoming occurrence from the table
-          setBills(prev =>
-            prev.filter(b => !(b.id === record.id && b.occurrenceNumber === res.nextOccurrenceNumber))
-          )
-        }
-      } else {
-        await payLoanInstallment(record.id, record.installmentId)
-        fetchRecords()
-      }
-    } catch (error) {
-      console.error(error)
-      fetchRecords() // fallback sync on error
-    }
-  }
 
   const records = [
     ...bills.map(bill => ({
@@ -280,7 +232,7 @@ export default function Finances({ navigate }: FinancesProps) {
                 </td>
 
                 <td className="py-3.5 px-4 font-mono text-[#4A6358] whitespace-nowrap">
-                  {record.dueDate}
+                  {formatDate(record.dueDate)}
                 </td>
 
                 <td className="py-3.5 px-4">

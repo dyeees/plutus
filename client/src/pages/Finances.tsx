@@ -6,7 +6,7 @@ import Dropdown from '../components/Dropdown';
 
 import { getBills } from '../services/bills'
 import { getLoans } from '../services/loans'
-import { formatMoney, formatDate } from '../lib/format'
+import { formatMoney, formatDate, formatCategory } from '../lib/format'
 
 type FinancesProps = {
   navigate: (screen: string, params?: { returnTo?: string; record?: any }) => void;
@@ -246,7 +246,21 @@ export default function Finances({ navigate }: FinancesProps) {
                   )}
                 </td>
 
-                <td className="py-3.5 px-4">{record.classification}</td>
+                <td className="py-3.5 px-4">
+                  {(() => {
+                    const cat = formatCategory[record.classification as keyof typeof formatCategory]
+                    return cat ? (
+                      <span
+                        style={{ color: cat.color, backgroundColor: cat.bg, borderColor: cat.border }}
+                        className="inline-block px-2 py-0.5 text-[11px] font-mono font-medium rounded-xs border"
+                      >
+                        {cat.label}
+                      </span>
+                    ) : (
+                      <span className="text-[#4A6358]">{record.classification}</span>
+                    )
+                  })()}
+                </td>
 
                 <td className="py-3.5 px-4 font-mono text-[#4A6358] whitespace-nowrap">
                   {record.recurrence}

@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { ArrowLeft, Edit3, Trash2, Repeat, Check, Clock, AlertCircle, Calendar } from "lucide-react"
+import { ArrowLeft, Edit3, Trash2, Repeat, Check, Clock, AlertCircle, Calendar, Layers } from "lucide-react"
 
 import { formatMoney, formatCategory, formatLongDate } from '../lib/format'
 import { payBillOccurrence } from '../services/bills'
@@ -169,6 +169,16 @@ export default function RecordDetail({ record, navigate }: any) {
             <p className="text-[11px] text-[#7A9488]">Re-occurs on day {record.dueDay || '1'} of cycle</p>
           </div>
           
+          <div className="p-3 bg-white border border-black/10 rounded-xs space-y-1 shadow-sm">
+            <span className="text-[#7A9488] block uppercase tracking-wider text-[10px]">
+              Classification
+            </span>
+            <div className="text-sm font-semibold text-[#1E2D26] flex items-center gap-2">
+              <Layers className="w-3.5 h-3.5 text-[#C8860A]" />
+              <span>{record.classification}</span>
+            </div>
+            <p className="text-[11px] text-[#7A9488]">Recurrence: {record.recurrence}</p>
+          </div>
         </div>
       </div>
     </div>

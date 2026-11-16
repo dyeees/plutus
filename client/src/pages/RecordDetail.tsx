@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { ArrowLeft, Edit3, Trash2, Repeat, Check, Clock } from "lucide-react"
+import { ArrowLeft, Edit3, Trash2, Repeat, Check, Clock, AlertCircle } from "lucide-react"
 
 import { formatMoney, formatCategory, formatLongDate } from '../lib/format'
 import { payBillOccurrence } from '../services/bills'
@@ -11,6 +11,7 @@ export default function RecordDetail({ record, navigate }: any) {
   
   const [isPaid, setIsPaid] = useState(record?.status === 'paid' || Boolean(record?.isPaid))
   const [isUpdating, setIsUpdating] = useState(false)
+  const isOverdue = !isPaid && record?.dueDate && new Date(record.dueDate) < new Date(new Date().setHours(0, 0, 0, 0))
 
   async function togglePaid() {
     try {
@@ -109,18 +110,30 @@ export default function RecordDetail({ record, navigate }: any) {
               className={`w-9 h-9 rounded-sm border flex items-center justify-center shrink-0 ${
               isPaid 
                 ? 'bg-[#2E7D52]/12 text-[#2E7D52] border-[#2E7D52]/30' 
-                : 'bg-[#C8860A]/12 text-[#C8860A] border-[#C8860A]/30'
-            }`}>
-              {isPaid ? <Check className="w-5 h-5 stroke-[2.5]" /> : <Clock className="w-5 h-5 stroke-2" />}
+                : isOverdue
+                  ? 'bg-[#C0392B]/12 text-[#C0392B] border-[#C0392B]/30'  
+                  : 'bg-[#C8860A]/12 text-[#C8860A] border-[#C8860A]/30'
+              }`}
+            >
+              {isPaid ? (
+                <Check className="w-5 h-5 stroke-[2.5]" />
+              ) : isOverdue ? (
+                <AlertCircle className="w-5 h-5 stroke-2" />
+              ) : (
+                <Clock className="w-5 h-5 stroke-2" />
+              )}
             </div>
+
             <div>
               <div className="font-serif text-base text-[#1E2D26]">
-                {isPaid ? 'Settled & Cleared' : 'Outstanding Amount'}
+                {isPaid ? 'Settled & Cleared' : isOverdue ? 'Overdue Payment' : 'Outstanding Amount'}
               </div>
               <p className="font-mono text-xs text-[#4A6358]">
                 {isPaid
                   ? `Marked paid on ${formatLongDate(record?.paidAt || record?.dueDate)}`
-                  : `Payment scheduled for ${formatLongDate(record?.dueDate)}`
+                  : isOverdue
+                    ? `Not paid since ${formatLongDate(record?.dueDate)}`
+                    : `Payment scheduled for ${formatLongDate(record?.dueDate)}`
                 }
               </p>
             </div>

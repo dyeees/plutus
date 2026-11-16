@@ -1,11 +1,36 @@
-import { ArrowLeft, Edit3, Trash2, Repeat } from "lucide-react"
+import { useState } from 'react'
+import { ArrowLeft, Edit3, Trash2, Repeat, Check, Clock } from "lucide-react"
 
 import { formatMoney, formatCategory } from '../lib/format'
+import { payBillOccurrence } from '../services/bills'
+import { payLoanInstallment } from '../services/loans'
 
 export default function RecordDetail({ record, navigate }: any) {
   const categoryKey = (record?.classification || 'Housing') as keyof typeof formatCategory
   const catConfig = formatCategory[categoryKey] ?? formatCategory.Housing
   
+  const [isPaid, setIsPaid] = useState(record?.status === 'paid' || Boolean(record?.isPaid))
+  const [isUpdating, setIsUpdating] = useState(false)
+
+  async function togglePaid() {
+    try {
+      setIsUpdating(true)
+      const nextStatus = !isPaid
+
+      if (record?.type === 'bill') {
+        await payBillOccurrence(record.id, record.occurrenceId)
+      } else {
+        await payLoanInstallment(record.id, record.installmentId)
+      }
+
+      setIsPaid(nextStatus)
+    } catch (error) {
+      console.error('Failed to toggle status:', error)
+    } finally {
+      setIsUpdating(false)
+    }
+  }
+
   return (
     <div className="max-w-2xl mx-auto space-y-6">
       <div className="flex items-center justify-between border-b border-black/10 pb-3">
@@ -36,6 +61,7 @@ export default function RecordDetail({ record, navigate }: any) {
       </div>
 
       <div className="border border-black/10 bg-[#EFECE4] rounded-sm divide-y divide-black/8 shadow-sm">
+        {/* Header Strip */}
         <div className="p-5 sm:p-6 space-y-4">
           <div className="flex items-center justify-between text-[10px] font-mono uppercase tracking-[0.2em] text-[#7A9488]">
             <span>STATEMENT ID: {record?.type === 'loan' ? 'LN' : 'BL'}-{String(record?.id || 0).padStart(4, '0')}</span>
@@ -74,6 +100,46 @@ export default function RecordDetail({ record, navigate }: any) {
               </span>
             </div>
           </div>
+        </div>
+
+        {/* Settlement Status Banner */}
+        <div className="p-4 sm:p-5 bg-[#E8E4DA] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <div 
+              className={`w-9 h-9 rounded-sm border flex items-center justify-center shrink-0 ${
+              isPaid 
+                ? 'bg-[#2E7D52]/12 text-[#2E7D52] border-[#2E7D52]/30' 
+                : 'bg-[#C8860A]/12 text-[#C8860A] border-[#C8860A]/30'
+            }`}>
+              {isPaid ? <Check className="w-5 h-5 stroke-[2.5]" /> : <Clock className="w-5 h-5 stroke-2" />}
+            </div>
+            <div>
+              <div className="font-serif text-base text-[#1E2D26]">
+                {isPaid ? 'Settled & Cleared' : 'Outstanding Amount'}
+              </div>
+              <p className="font-mono text-xs text-[#4A6358]">
+                {isPaid
+                  ? `Marked paid on ${record?.paidAt || record?.dueDate}`
+                  : `Payment scheduled for ${record?.dueDate}`}
+              </p>
+            </div>
+          </div>
+
+          <button
+            type="button"
+            disabled={isUpdating}
+            onClick={togglePaid}
+            className={`font-mono text-xs font-semibold px-4 py-2.5 rounded-sm border transition-all duration-150 flex items-center justify-center gap-1.5 shrink-0 ${
+              isPaid
+                ? 'border-black/15 bg-white text-[#4A6358] hover:text-[#1E2D26] hover:border-black/25'
+                : 'border-[#2E7D52] bg-[#2E7D52] text-white hover:bg-[#256645]'
+            }`}
+          >
+            <Check className="w-3.5 h-3.5 stroke-[2.5]" />
+            <span>
+              {isUpdating ? 'Updating...' : isPaid ? 'Reopen as Unpaid' : 'Settle This Bill'}
+            </span>
+          </button>
         </div>
       </div>
     </div>

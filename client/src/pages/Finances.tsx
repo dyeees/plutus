@@ -67,9 +67,8 @@ export default function Finances({ navigate }: FinancesProps) {
       ...loan,
       type: 'loan',
       dueDate: loan.dueDate || loan.firstDueDate,
-      amount: loan.amountDue || loan.totalRepayment,
+      amount: loan.amountDue || (loan.totalRepayment / (loan.installmentCount || 1)),
       classification: 'Loans',
-      status: loan.status || 'pending',
     })),
   ]
   

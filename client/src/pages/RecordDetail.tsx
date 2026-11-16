@@ -166,7 +166,16 @@ export default function RecordDetail({ record, navigate }: any) {
               <Calendar className="w-3.5 h-3.5 text-[#C8860A]" />
               <span>{formatLongDate(record.dueDate)}</span>
             </div>
-            <p className="text-[11px] text-[#7A9488]">Re-occurs on day {record.dueDay || '1'} of cycle</p>
+            <p className="text-[11px] text-[#7A9488]">
+              {isPaid 
+                ? 'Payment completed' 
+                : (() => {
+                    const diffDays = Math.ceil((new Date(record.dueDate).getTime() - new Date().setHours(0,0,0,0)) / (1000 * 60 * 60 * 24))
+                    if (diffDays < 0) return `${Math.abs(diffDays)} day${Math.abs(diffDays) === 1 ? '' : 's'} past due`
+                    if (diffDays === 0) return 'Due today'
+                    return `Due in ${diffDays} day${diffDays === 1 ? '' : 's'}`
+                  })()}
+            </p>
           </div>
           
           <div className="p-3 bg-white border border-black/10 rounded-xs space-y-1 shadow-sm">

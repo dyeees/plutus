@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { ArrowLeft, Edit3, Trash2, Repeat, Check, Clock } from "lucide-react"
 
-import { formatMoney, formatCategory } from '../lib/format'
+import { formatMoney, formatCategory, formatLongDate } from '../lib/format'
 import { payBillOccurrence } from '../services/bills'
 import { payLoanInstallment } from '../services/loans'
 
@@ -119,8 +119,9 @@ export default function RecordDetail({ record, navigate }: any) {
               </div>
               <p className="font-mono text-xs text-[#4A6358]">
                 {isPaid
-                  ? `Marked paid on ${record?.paidAt || record?.dueDate}`
-                  : `Payment scheduled for ${record?.dueDate}`}
+                  ? `Marked paid on ${formatLongDate(record?.paidAt || record?.dueDate)}`
+                  : `Payment scheduled for ${formatLongDate(record?.dueDate)}`
+                }
               </p>
             </div>
           </div>

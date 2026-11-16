@@ -22,6 +22,26 @@ export function formatDate(value: unknown): string {
   return `${month}-${day}-${year}`
 }
 
+export function formatLongDate(value: unknown): string {
+  if (!value) return '—'
+
+  const iso =
+    typeof value === 'string'
+      ? value.slice(0, 10)
+      : (value as Date).toISOString().slice(0, 10)
+
+  const [year, month, day] = iso.split('-').map(Number)
+  if (!year || !month || !day) return String(value)
+
+  const date = new Date(Date.UTC(year, month - 1, day))
+  return date.toLocaleDateString('en-US', {
+    month: 'long',
+    day: 'numeric',
+    year: 'numeric',
+    timeZone: 'UTC',
+  })
+}
+
 export const formatCategory = {
   Housing: { label: 'Housing', color: '#C8860A', bg: 'rgba(200, 134, 10, 0.10)', border: 'rgba(200, 134, 10, 0.25)' },
   Utilities: { label: 'Utilities', color: '#0284C7', bg: 'rgba(2, 132, 199, 0.10)', border: 'rgba(2, 132, 199, 0.25)' },

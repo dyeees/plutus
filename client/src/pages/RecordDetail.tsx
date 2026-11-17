@@ -268,7 +268,17 @@ export default function RecordDetail({ record, navigate }: any) {
               </div>
             </div>
 
-            
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 font-mono text-xs">
+              <div className="p-3 bg-[#E8E4DA] border border-black/8 rounded-xs space-y-1">
+                <span className="text-[#7A9488] flex uppercase tracking-wider text-[10px] items-center gap-1">
+                  <Hash className="w-3 h-3" />
+                  Per Installment
+                </span>
+                <div className="font-semibold tabular-numbers text-[#1E2D26]">
+                  {formatMoney(loan.amount)}
+                </div>
+              </div>
+            </div>
           </div>
         )}
 

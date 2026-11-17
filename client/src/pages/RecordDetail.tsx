@@ -230,6 +230,44 @@ export default function RecordDetail({ record, navigate }: any) {
               </span>
             </div>
 
+            <div className="bg-white border border-[#0F766E]/20 rounded-xs p-4 space-y-3 shadow-sm">
+              <div className="flex items-end justify-between gap-3">
+                <div>
+                  <div className="font-mono text-[10px] uppercase tracking-wider text-[#7A9488]">
+                    Installments Cleared
+                  </div>
+                  <div className="font-mono text-2xl font-semibold tabular-numbers text-[#0F766E]">
+                    {loan.paid}
+                    <span className="text-sm font-normal text-[#7A9488]"> / {loan.total}</span>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <div className="font-mono text-[10px] uppercase tracking-wider text-[#7A9488]">
+                    Remaining Balance
+                  </div>
+                  <div className="font-mono text-base font-semibold tabular-numbers text-[#1E2D26]">
+                    {formatMoney(loan.totalRepayment - (loan.paid * loan.amount))}
+                  </div>
+                </div>
+              </div>
+              <div className="h-2.5 bg-[#E2DED4] rounded-full overflow-hidden border border-black/5">
+                <div
+                  className={`h-full rounded-full transition-all duration-300 ${
+                    loan.total - loan.paid === 0 ? 'bg-[#2E7D52]' : 'bg-[#0F766E]'
+                  }`}
+                  style={{ width: `${(loan.paid / loan.total) * 100}%` }}
+                />
+              </div>
+              <div className="flex items-center justify-between text-[10px] font-mono text-[#7A9488]">
+                <span>{((loan.paid / loan.total) * 100).toFixed(0)}% complete</span>
+                <span>
+                  {loan.total - loan.paid === 0
+                    ? 'All installments cleared'
+                    : `${loan.total - loan.paid} installment(s) of ${formatMoney(loan.amount)} left`}
+                </span>
+              </div>
+            </div>
+
             
           </div>
         )}

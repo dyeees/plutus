@@ -1,5 +1,8 @@
 import { useState } from 'react'
-import { ArrowLeft, Edit3, Trash2, Repeat, Check, Clock, AlertCircle, Calendar, Layers, FileText } from "lucide-react"
+import { 
+  ArrowLeft, Edit3, Trash2, Repeat, Check, Clock, AlertCircle, 
+  Calendar, Layers, FileText, TrendingDown, ShieldCheck, Hash 
+} from "lucide-react"
 
 import { formatMoney, formatCategory, formatLongDate } from '../lib/format'
 import { payBillOccurrence } from '../services/bills'
@@ -12,6 +15,13 @@ export default function RecordDetail({ record, navigate }: any) {
   const [isPaid, setIsPaid] = useState(record?.status === 'paid' || Boolean(record?.isPaid))
   const [isUpdating, setIsUpdating] = useState(false)
   const isOverdue = !isPaid && record?.dueDate && new Date(record.dueDate) < new Date(new Date().setHours(0, 0, 0, 0))
+  
+  const loan = record?.type === 'loan' ? {
+    total: record.installmentCount || 1,
+    paid: isPaid ? 1 : 0,
+    amount: Number(record.amount || 0),
+    totalRepayment: Number(record.totalRepayment || 0),
+  } : null
 
   async function togglePaid() {
     try {
@@ -32,6 +42,7 @@ export default function RecordDetail({ record, navigate }: any) {
     }
   }
 
+  if (!record) return null
   return (
     <div className="max-w-2xl mx-auto space-y-6">
       <div className="flex items-center justify-between border-b border-black/10 pb-3">
@@ -189,6 +200,39 @@ export default function RecordDetail({ record, navigate }: any) {
             <p className="text-[11px] text-[#7A9488]">Recurrence: {record.recurrence}</p>
           </div>
         </div>
+
+        {/* Loan Installment Progress */}
+        {loan && (
+          <div className="p-5 sm:p-6 space-y-4">
+            <div className="flex items-center justify-between gap-3">
+              <span className="font-mono text-[10px] tracking-wider uppercase text-[#7A9488] flex items-center gap-1.5">
+                <TrendingDown className="w-3.5 h-3.5 text-[#0F766E]" />
+                Loan Installment Tracker
+              </span>
+              <span
+                className={`font-mono text-[10px] px-2 py-0.5 rounded-xs border flex items-center gap-1 ${
+                  loan.total - loan.paid === 0
+                    ? 'text-[#2E7D52] bg-[#2E7D52]/10 border-[#2E7D52]/25'
+                    : 'text-[#C8860A] bg-[#C8860A]/10 border-[#C8860A]/25'
+                }`}
+              >
+                {loan.total - loan.paid === 0 ? (
+                  <>
+                    <ShieldCheck className="w-3 h-3" />
+                    Fully Settled
+                  </>
+                ) : (
+                  <>
+                    <AlertCircle className="w-3 h-3" />
+                    {loan.total - loan.paid} Remaining
+                  </>
+                )}
+              </span>
+            </div>
+
+            
+          </div>
+        )}
 
         {/* Optional Notes & Instructions */}
         {record.notes && (

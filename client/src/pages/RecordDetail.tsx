@@ -291,7 +291,15 @@ export default function RecordDetail({ record, navigate }: any) {
                 </div>
               </div>
 
-
+              <div className="p-3 bg-[#E8E4DA] border border-black/8 rounded-xs space-y-1">
+                <span className="text-[#7A9488] flex uppercase tracking-wider text-[10px] items-center gap-1">
+                  <Layers className="w-3 h-3" />
+                  Total Commitment
+                </span>
+                <div className="font-semibold tabular-numbers text-[#1E2D26]">
+                  {formatMoney(loan.totalRepayment)}
+                </div>
+              </div>
             </div>
           </div>
         )}

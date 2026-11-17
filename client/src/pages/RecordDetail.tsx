@@ -250,6 +250,7 @@ export default function RecordDetail({ record, navigate }: any) {
                   </div>
                 </div>
               </div>
+
               <div className="h-2.5 bg-[#E2DED4] rounded-full overflow-hidden border border-black/5">
                 <div
                   className={`h-full rounded-full transition-all duration-300 ${
@@ -258,6 +259,7 @@ export default function RecordDetail({ record, navigate }: any) {
                   style={{ width: `${(loan.paid / loan.total) * 100}%` }}
                 />
               </div>
+
               <div className="flex items-center justify-between text-[10px] font-mono text-[#7A9488]">
                 <span>{((loan.paid / loan.total) * 100).toFixed(0)}% complete</span>
                 <span>
@@ -278,6 +280,18 @@ export default function RecordDetail({ record, navigate }: any) {
                   {formatMoney(loan.amount)}
                 </div>
               </div>
+
+              <div className="p-3 bg-[#E8E4DA] border border-black/8 rounded-xs space-y-1">
+                <span className="text-[#7A9488] flex uppercase tracking-wider text-[10px] items-center gap-1">
+                  <Check className="w-3 h-3" />
+                  Paid to Date
+                </span>
+                <div className="font-semibold tabular-numbers text-[#2E7D52]">
+                  {formatMoney(loan.paid * loan.amount)}
+                </div>
+              </div>
+
+
             </div>
           </div>
         )}

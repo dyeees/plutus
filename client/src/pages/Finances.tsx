@@ -210,7 +210,7 @@ export default function Finances({ navigate }: FinancesProps) {
         <table className="w-full text-left border-collapse text-xs">
           <thead>
             <tr className="border-b border-black/10 bg-[#E2DED4] text-[#4A6358] font-mono uppercase tracking-[0.15em] text-[10px]">
-              <th className="py-3 px-4">Status</th>
+              <th className="py-3 px-4 w-14">Status</th>
               <th className="py-3 px-4">Due Date</th>
               <th className="py-3 px-4">Payee / Obligation</th>
               <th className="py-3 px-4">Category</th>

@@ -299,6 +299,17 @@ export default function Finances({ navigate }: FinancesProps) {
               </tr>
             ))}
           </tbody>
+          <tfoot>
+            <tr className="border-t-2 border-black/12 bg-[#E2DED4] font-mono text-xs">
+              <td colSpan={5} className="py-3 px-4 text-[#4A6358] uppercase tracking-wider">
+                Summary Total ({sortedRecords.length} records)
+              </td>
+              <td className="py-3 px-4 text-right font-mono font-semibold tabular-numbers text-sm text-[#1E2D26]">
+                {formatMoney(sortedRecords.reduce((total, record) => total + Number(record.amount || 0), 0))}
+              </td>
+              <td></td>
+            </tr>
+          </tfoot>
         </table>
       </div>
     </div>

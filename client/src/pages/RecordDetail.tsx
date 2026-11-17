@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { ArrowLeft, Edit3, Trash2, Repeat, Check, Clock, AlertCircle, Calendar, Layers } from "lucide-react"
+import { ArrowLeft, Edit3, Trash2, Repeat, Check, Clock, AlertCircle, Calendar, Layers, FileText } from "lucide-react"
 
 import { formatMoney, formatCategory, formatLongDate } from '../lib/format'
 import { payBillOccurrence } from '../services/bills'
@@ -189,6 +189,19 @@ export default function RecordDetail({ record, navigate }: any) {
             <p className="text-[11px] text-[#7A9488]">Recurrence: {record.recurrence}</p>
           </div>
         </div>
+
+        {/* Optional Notes & Instructions */}
+        {record.notes && (
+          <div className="p-5 sm:p-6 space-y-2">
+            <span className="font-mono text-[10px] tracking-wider uppercase text-[#7A9488] flex items-center gap-1.5">
+              <FileText className="w-3.5 h-3.5 text-[#C8860A]" />
+              Payment Notes &amp; Instructions
+            </span>
+            <p className="font-mono text-xs text-[#1E2D26] bg-white border border-black/10 p-3.5 rounded-xs whitespace-pre-line leading-relaxed shadow-sm">
+              {record.notes}
+            </p>
+          </div>
+        )}
       </div>
     </div>
   )

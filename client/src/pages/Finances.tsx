@@ -55,21 +55,32 @@ export default function Finances({ navigate }: FinancesProps) {
     fetchRecords()
   }, [fetchRecords])
 
+  const today = new Date().setHours(0, 0, 0, 0)
   const records = [
-    ...bills.map(bill => ({
-      ...bill,
-      type: 'bill',
-      dueDate: bill.dueDate,
-      amount: bill.amount,
-      status: bill.status || 'pending',
-    })),
-    ...loans.map(loan => ({
-      ...loan,
-      type: 'loan',
-      dueDate: loan.dueDate || loan.firstDueDate,
-      amount: loan.amountDue || (loan.totalRepayment / (loan.installmentCount || 1)),
-      classification: 'Loans',
-    })),
+    ...bills.map(bill => {
+      const isPaid = bill.status === 'paid'
+      const isOverdue = !isPaid && bill.dueDate && new Date(bill.dueDate).getTime() < today
+      return {
+        ...bill,
+        type: 'bill',
+        isPaid,
+        isOverdue,
+      }
+    }),
+    ...loans.map(loan => {
+      const dueDate = loan.dueDate || loan.firstDueDate
+      const isPaid = loan.status === 'paid'
+      const isOverdue = !isPaid && dueDate && new Date(dueDate).getTime() < today
+      return {
+        ...loan,
+        type: 'loan',
+        dueDate,
+        amount: loan.amountDue || (loan.totalRepayment / (loan.installmentCount || 1)),
+        classification: 'Loans',
+        isPaid,
+        isOverdue,
+      }
+    }),
   ]
   
   const filteredRecords = records.filter(record => {
@@ -265,8 +276,21 @@ export default function Finances({ navigate }: FinancesProps) {
                   {record.recurrence}
                 </td>
 
-                <td className="py-3.5 px-4 text-right font-mono font-semibold text-[#1E2D26]">
+                <td className="py-3.5 px-4 text-right font-mono font-semibold tabular-numbers text-sm text-[#1E2D26] whitespace-nowrap">
                   {formatMoney(Number(record.amount))}
+                  <div
+                    className={`text-[9px] font-mono uppercase tracking-wider mt-0.5 ${
+                      record.isPaid ? 'text-[#2E7D52]' :
+                      record.isOverdue ? 'text-[#C0392B]' :
+                      record.status === 'upcoming' ? 'text-[#0284C7]' :
+                      'text-[#C8860A]'
+                    }`}
+                  >
+                    {record.isPaid ? 'Settled' :
+                    record.isOverdue ? 'Overdue' :
+                    record.status === 'upcoming' ? 'Upcoming' :
+                    'Pending'}
+                  </div>
                 </td>
 
                 <td className="py-3.5 px-4 text-center">

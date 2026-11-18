@@ -75,11 +75,6 @@ export default function RecordDetail({ record, navigate }: any) {
       <div className="border border-black/10 bg-[#EFECE4] rounded-sm divide-y divide-black/8 shadow-sm">
         {/* Header Strip */}
         <div className="p-5 sm:p-6 space-y-4">
-          <div className="flex items-center justify-between text-[10px] font-mono uppercase tracking-[0.2em] text-[#7A9488]">
-            <span>STATEMENT ID: {record?.type === 'loan' ? 'LN' : 'BL'}-{String(record?.id || 0).padStart(4, '0')}</span>
-            <span>CYCLE: OCTOBER 2026</span>
-          </div>
-
           <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
             <div className="space-y-1.5">
               <div className="flex items-center gap-2">

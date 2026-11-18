@@ -56,7 +56,7 @@ export default function RecordDetail({ record, navigate }: any) {
 
         <div className="flex items-center gap-2">
           <button
-            /*onClick={}*/
+            onClick={() => navigate('edit-record', { record, returnTo: 'record-detail' })}
             className="text-xs font-mono text-[#1E2D26] hover:text-[#C8860A] px-3 py-1.5 rounded-sm border border-black/10 bg-[#EFECE4] hover:bg-[#E8E4DA] flex items-center gap-1.5 transition-colors"
           >
             <Edit3 className="w-3.5 h-3.5" />

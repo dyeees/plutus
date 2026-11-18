@@ -6,6 +6,7 @@ import Dashboard from './pages/Dashboard'
 import Finances from './pages/Finances'
 import Settings from './pages/Settings'
 import RecordDetail from './pages/RecordDetail'
+import EditRecord from './pages/EditRecord'
 import './index.css'
 
 import { useState, useEffect } from 'react'
@@ -150,7 +151,7 @@ function App() {
     ? 'finances'
     : currentScreen
 
-  function navigate(screen: string, params: { returnTo?: string } = {}) {
+  function navigate(screen: string, params: { returnTo?: string; record?: any } = {}) {
     if (screen === 'add-record') {
       setScreenParams({
         returnTo: currentScreen === 'add-record'
@@ -203,7 +204,17 @@ function App() {
               isLoggingOut={isLoggingOut}
             />
           )}
-          {currentScreen === 'add-record' && (<RecordForm onCancel={() => navigate(screenParams.returnTo || 'dashboard')}/>)}
+
+          {currentScreen === 'add-record' && (
+            <RecordForm onCancel={() => navigate(screenParams.returnTo || 'dashboard')}/>
+          )}
+
+          {currentScreen === 'edit-record' && (
+            <EditRecord 
+            record={screenParams.record}
+            onCancel={() => navigate('record-detail', { record: screenParams.record })}
+            />
+          )}
         </main>
       </div>
     </div>

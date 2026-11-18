@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import Dropdown from '../components/Dropdown'
-import { Check, Receipt, Landmark, Calculator } from 'lucide-react'
+import { Receipt, Landmark, Calculator } from 'lucide-react'
 
 import { saveBill } from '../services/bills'
 import { saveLoan } from '../services/loans'
@@ -454,7 +454,6 @@ function RecordForm({ onCancel }: { onCancel: () => void }) {
               disabled={isSaving}
               className="px-5 py-2 bg-[#386D59] hover:bg-[#2F5C4A] active:bg-[#285041] text-white font-mono text-xs font-semibold rounded-sm transition-colors shadow-sm flex items-center gap-1.5"
             >
-              <Check className="w-3.5 h-3.5 stroke-[2.5]" />
               <span>{isSaving ? 'Saving...' : 'Record Entry'}</span>
             </button>
           </div>

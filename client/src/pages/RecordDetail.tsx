@@ -317,6 +317,27 @@ export default function RecordDetail({ record, navigate }: any) {
           </div>
         )}
       </div>
+
+      {/* Payment Audit History Trail */}
+      <div className="border border-black/10 bg-[#EFECE4] rounded-sm divide-y divide-black/8">
+        <div className="p-4 sm:p-5 flex items-center justify-between">
+          <div>
+            <h3 className="font-serif text-lg font-medium text-[#1E2D26]">
+              Payment Audit History
+            </h3>
+            <p className="font-mono text-xs text-[#4A6358]">
+              Chronological log of past settlements
+            </p>
+          </div>
+          <span className="font-mono text-[10px] uppercase text-[#7A9488]">
+            0 Records
+          </span>
+        </div>
+
+        <div className="p-8 text-center text-xs font-mono text-[#4A6358]">
+          No historical settlements recorded yet. When marked as paid, transactions will appear here.
+        </div>
+      </div>
     </div>
   )
 }

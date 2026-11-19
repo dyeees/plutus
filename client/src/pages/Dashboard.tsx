@@ -3,6 +3,7 @@ import { Receipt, Plus } from "lucide-react";
 
 import { getBills } from '../services/bills'
 import { getLoans } from '../services/loans'
+import { formatMoney } from '../lib/format'
 
 type DashboardProps = {
   navigate: (screen: string, params?: { returnTo?: string }) => void;
@@ -39,6 +40,24 @@ export default function Dashboard({ navigate }: DashboardProps) {
   }, [])
 
   const hasRecords = bills.length > 0 || loans.length > 0
+
+  const records = [
+    ...bills.map(b => ({
+      amount: Number(b.amount || 0),
+      isPaid: b.status === 'paid',
+    })),
+    ...loans.map(l => ({
+      amount: Number(l.amountDue || (l.totalRepayment / (l.installmentCount || 1)) || 0),
+      isPaid: l.status === 'paid',
+    })),
+  ]
+
+  const totalCommitted = records.reduce((sum, r) => sum + r.amount, 0)
+  const settledRecords = records.filter(r => r.isPaid)
+  const pendingRecords = records.filter(r => !r.isPaid)
+  const settledAmount = settledRecords.reduce((sum, r) => sum + r.amount, 0)
+  const outstandingAmount = pendingRecords.reduce((sum, r) => sum + r.amount, 0)
+  const percentSettled = totalCommitted > 0 ? Math.round((settledAmount / totalCommitted) * 100) : 0
 
   return (
     <div className="space-y-7">
@@ -91,9 +110,9 @@ export default function Dashboard({ navigate }: DashboardProps) {
               <span>Total Commitment</span>
               <span className="text-[#7A9488]">{bills.length + loans.length} bills</span>
             </div>
-            <div className="font-mono text-2xl sm:text-3xl font-medium tabular-numbers text-[#1E2D26]">
-              {"00.00"}
-            </div>
+              <div className="font-mono text-2xl sm:text-3xl font-medium tabular-numbers text-[#1E2D26]">
+                {formatMoney(totalCommitted)}
+              </div>
             <p className="text-[11px] text-[#7A9488] font-mono">Full monthly obligation</p>
           </div>
 

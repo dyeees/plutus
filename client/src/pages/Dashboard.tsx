@@ -6,7 +6,7 @@ import { getLoans } from '../services/loans'
 import { formatMoney } from '../lib/format'
 
 type DashboardProps = {
-  navigate: (screen: string, params?: { returnTo?: string }) => void;
+  navigate: (screen: string, params?: { returnTo?: string; record?: any }) => void;
 };
 
 export default function Dashboard({ navigate }: DashboardProps) {
@@ -204,6 +204,15 @@ export default function Dashboard({ navigate }: DashboardProps) {
                     <span className="font-mono text-xs text-[#7A9488]">
                       Due {nextBill.dueDate}
                     </span>
+                  </div>
+
+                  <div>
+                    <h3
+                      onClick={() => navigate('record-detail', { record: nextBill, returnTo: 'dashboard' })}
+                      className="font-serif text-xl sm:text-2xl text-[#1E2D26] hover:text-[#C8860A] transition-colors cursor-pointer"
+                    >
+                      {nextBill.name}     
+                    </h3>
                   </div>
                 </div>
               </div>

@@ -76,7 +76,13 @@ export default function Dashboard({ navigate }: DashboardProps) {
   ].sort((a, b) => String(a.dueDate || '').localeCompare(String(b.dueDate || '')))
   const nextBill = allUnpaid[0]
 
-  
+  const nextBillStatus = nextBill ? (() => {
+    const diffDays = Math.ceil((new Date(nextBill.dueDate).getTime() - new Date().setHours(0, 0, 0, 0)) / (1000 * 60 * 60 * 24))
+    if (diffDays < 0) return { label: `${Math.abs(diffDays)}d Overdue`, isUrgent: true }
+    if (diffDays === 0) return { label: 'Due Today', isUrgent: true }
+    if (diffDays <= 3) return { label: `Due in ${diffDays}d`, isUrgent: true }
+    return { label: `Due in ${diffDays}d`, isUrgent: false }
+  })() : null
 
   return (
     <div className="space-y-7">

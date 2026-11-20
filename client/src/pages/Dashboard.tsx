@@ -213,7 +213,13 @@ export default function Dashboard({ navigate }: DashboardProps) {
                     >
                       {nextBill.name}     
                     </h3>
+                    <p className="text-xs text-[#4A6358] mt-0.5 font-mono">
+                      Category: <span className="text-[#1E2D26]">{nextBill.category}</span> · Recurrence: {nextBill.recurrence}
+                      {nextBill.notes && <span className="text-[#7A9488]"> — {nextBill.notes}</span>}
+                    </p>
                   </div>
+
+                  
                 </div>
               </div>
             </div>

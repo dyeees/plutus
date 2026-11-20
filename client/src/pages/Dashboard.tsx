@@ -128,6 +128,7 @@ export default function Dashboard({ navigate }: DashboardProps) {
 
       {/* Records exist */}
       {!isLoading && !error && hasRecords && (
+        <>
         <div className="border border-black/10 bg-[#EFECE4] rounded-sm divide-y sm:divide-y-0 sm:divide-x divide-black/8 grid grid-cols-1 sm:grid-cols-3">
           {/* Column 1: Total Committed */}
           <div className="p-4 sm:p-5 space-y-2">
@@ -175,7 +176,20 @@ export default function Dashboard({ navigate }: DashboardProps) {
           </div>
         </div>
         
-
+          {nextBill ? (
+            <div className="relative border border-[#C8860A]/30 bg-gradient-to-r from-[#FDF8F0] to-[#FAF5E8] rounded-sm p-5 sm:p-6 shadow-sm overflow-hidden">
+              <div className="absolute top-0 right-0 w-24 h-24 pointer-events-none overflow-hidden opacity-10">
+                <div className="rotate-45 transform origin-bottom-left translate-x-8 -translate-y-4 font-mono text-[10px] tracking-widest text-[#C8860A] uppercase border-b border-[#C8860A] py-1 text-center">
+                  PAYMENT SLIP
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className="border border-[#2E7D52]/30 bg-[#2E7D52]/10 rounded-sm p-4 sm:p-5 flex items-center gap-3.5 text-[#2E7D52]">
+              
+            </div>
+          )}
+        </>
       )}
     </div>
   );

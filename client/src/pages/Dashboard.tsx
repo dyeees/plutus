@@ -141,10 +141,10 @@ export default function Dashboard({ navigate }: DashboardProps) {
                 <span className="w-1.5 h-1.5 rounded-full bg-[#C8860A]" />
                 Outstanding
               </span>
-              <span className="text-[#C8860A] font-mono">{/*{unpaidBills.length}*/} due</span>
+                <span className="text-[#C8860A] font-mono">{pendingRecords.length} due</span>
             </div>
             <div className="font-mono text-2xl sm:text-3xl font-medium tabular-numbers text-[#1E2D26]">
-              {"00.00"}
+              {formatMoney(outstandingAmount)}
             </div>
             <p className="text-[11px] text-[#7A9488] font-mono">Remaining to clear this cycle</p>
           </div>

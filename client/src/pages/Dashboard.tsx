@@ -218,8 +218,17 @@ export default function Dashboard({ navigate }: DashboardProps) {
                       {nextBill.notes && <span className="text-[#7A9488]"> — {nextBill.notes}</span>}
                     </p>
                   </div>
+                </div>
 
-                  
+                <div className="flex items-center justify-between sm:justify-end gap-5 border-t sm:border-t-0 pt-4 sm:pt-0 border-black/10">
+                  <div className="text-left sm:text-right">
+                    <span className="font-mono text-[10px] uppercase tracking-wider text-[#7A9488] block">
+                      Amount Due
+                    </span>
+                    <span className="font-mono text-2xl sm:text-3xl font-semibold tabular-numbers text-[#1E2D26]">
+                      {formatMoney(nextBill.amount)}
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>

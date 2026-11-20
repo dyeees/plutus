@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
-import { Receipt, Plus } from "lucide-react";
+import { Receipt, Plus, Check, ShieldCheck } from "lucide-react";
 
-import { getBills } from '../services/bills'
-import { getLoans } from '../services/loans'
+import { getBills, payBillOccurrence } from '../services/bills'
+import { getLoans, payLoanInstallment } from '../services/loans'
 import { formatMoney, formatLongDate } from '../lib/format'
 
 type DashboardProps = {
@@ -51,6 +51,26 @@ export default function Dashboard({ navigate }: DashboardProps) {
       isPaid: l.status === 'paid',
     })),
   ]
+
+  const [isSettling, setIsSettling] = useState(false)
+
+  async function handleSettle(item: any) {
+    try {
+      setIsSettling(true)
+      if (item.type === 'bill') {
+        await payBillOccurrence(item.id, item.occurrenceId)
+      } else {
+        await payLoanInstallment(item.id, item.installmentId)
+      }
+      const [billData, loanData] = await Promise.all([getBills(), getLoans()])
+      setBills(billData)
+      setLoans(loanData)
+    } catch (err) {
+      console.error('Failed to settle bill:', err)
+    } finally {
+      setIsSettling(false)
+    }
+  }
 
   const totalCommitted = records.reduce((sum, r) => sum + r.amount, 0)
   const settledRecords = records.filter(r => r.isPaid)
@@ -229,6 +249,15 @@ export default function Dashboard({ navigate }: DashboardProps) {
                       {formatMoney(nextBill.amount)}
                     </span>
                   </div>
+
+                  <button
+                    disabled={isSettling}
+                    onClick={() => handleSettle(nextBill)}
+                    className="bg-[#386D59] hover:bg-[#2F5C4A] active:bg-[#285041] disabled:opacity-50 text-white font-semibold text-xs tracking-wide px-4 py-2.5 rounded-sm flex items-center gap-1.5 shadow-sm transition-all duration-150 shrink-0"
+                  >
+                    <Check className="w-4 h-4 stroke-[2.5]" />
+                    <span>{isSettling ? 'Settling...' : 'Settle Bill'}</span>
+                  </button>
                 </div>
               </div>
             </div>

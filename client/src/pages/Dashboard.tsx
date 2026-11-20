@@ -123,14 +123,14 @@ export default function Dashboard({ navigate }: DashboardProps) {
                 <span className="w-1.5 h-1.5 rounded-full bg-[#2E7D52]" />
                 Settled
               </span>
-              <span className="text-[#2E7D52] font-mono">{/*{percentSettled}*/}0%</span>
+                <span className="text-[#2E7D52] font-mono">{percentSettled}%</span>
             </div>
             <div className="font-mono text-2xl sm:text-3xl font-medium tabular-numbers text-[#2E7D52]">
-              {"00.00"}
+              {formatMoney(settledAmount)}
             </div>
             <div className="flex items-center justify-between text-[11px] text-[#7A9488] font-mono">
-              <span>{/*{paidBills.length} of {safeBills.length}*/}0 cleared</span>
-              <span>{/*{safeBills.length - paidBills.length}*/}0 pending</span>
+              <span>{settledRecords.length} cleared</span>
+              <span>{pendingRecords.length} pending</span>
             </div>
           </div>
 

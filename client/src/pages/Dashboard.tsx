@@ -183,6 +183,30 @@ export default function Dashboard({ navigate }: DashboardProps) {
                   PAYMENT SLIP
                 </div>
               </div>
+
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-5">
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2.5 flex-wrap">
+                    <span className="font-mono text-[10px] tracking-wider uppercase px-2 py-0.5 rounded-xs bg-[#C8860A]/12 text-[#C8860A] border border-[#C8860A]/30 font-medium">
+                      Next Due Obligation
+                    </span>
+                    {nextBillStatus && (
+                      <span
+                        className={`font-mono text-xs px-2 py-0.5 rounded-xs ${
+                          nextBillStatus.isUrgent
+                            ? 'bg-[#C0392B]/10 text-[#C0392B] border border-[#C0392B]/30'
+                            : 'bg-[#EFECE4] text-[#4A6358] border border-black/10'
+                        }`}
+                      >
+                        {nextBillStatus.label}
+                      </span>
+                    )}
+                    <span className="font-mono text-xs text-[#7A9488]">
+                      Due {nextBill.dueDate}
+                    </span>
+                  </div>
+                </div>
+              </div>
             </div>
           ) : (
             <div className="border border-[#2E7D52]/30 bg-[#2E7D52]/10 rounded-sm p-4 sm:p-5 flex items-center gap-3.5 text-[#2E7D52]">

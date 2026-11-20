@@ -3,7 +3,7 @@ import { Receipt, Plus } from "lucide-react";
 
 import { getBills } from '../services/bills'
 import { getLoans } from '../services/loans'
-import { formatMoney } from '../lib/format'
+import { formatMoney, formatLongDate } from '../lib/format'
 
 type DashboardProps = {
   navigate: (screen: string, params?: { returnTo?: string; record?: any }) => void;
@@ -202,7 +202,7 @@ export default function Dashboard({ navigate }: DashboardProps) {
                       </span>
                     )}
                     <span className="font-mono text-xs text-[#7A9488]">
-                      Due {nextBill.dueDate}
+                      Due {formatLongDate(nextBill.dueDate)}
                     </span>
                   </div>
 

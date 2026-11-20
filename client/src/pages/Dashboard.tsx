@@ -59,6 +59,25 @@ export default function Dashboard({ navigate }: DashboardProps) {
   const outstandingAmount = pendingRecords.reduce((sum, r) => sum + r.amount, 0)
   const percentSettled = totalCommitted > 0 ? Math.round((settledAmount / totalCommitted) * 100) : 0
 
+  const allUnpaid = [
+    ...bills.filter(b => b.status !== 'paid').map(b => ({
+      ...b,
+      type: 'bill',
+      amount: Number(b.amount || 0),
+      category: b.classification || 'Utilities',
+    })),
+    ...loans.filter(l => l.status !== 'paid').map(l => ({
+      ...l,
+      type: 'loan',
+      amount: Number(l.amountDue || (l.totalRepayment / (l.installmentCount || 1)) || 0),
+      category: 'Loans',
+      dueDate: l.dueDate || l.firstDueDate,
+    })),
+  ].sort((a, b) => String(a.dueDate || '').localeCompare(String(b.dueDate || '')))
+  const nextBill = allUnpaid[0]
+
+  
+
   return (
     <div className="space-y-7">
       {/* Page Header */}
@@ -149,6 +168,8 @@ export default function Dashboard({ navigate }: DashboardProps) {
             <p className="text-[11px] text-[#7A9488] font-mono">Remaining to clear this cycle</p>
           </div>
         </div>
+        
+
       )}
     </div>
   );
